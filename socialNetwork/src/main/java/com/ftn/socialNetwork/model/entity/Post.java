@@ -1,13 +1,13 @@
 package com.ftn.socialNetwork.model.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Entity
 @Getter
@@ -24,12 +24,12 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false, columnDefinition = "CREATIONDATE DEFAULT CURRENT_CREATIONDATE")
+    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime creationDate;
 
-    @ElementCollection
-    private List<String> imagePaths;
 
     @ManyToOne
     private User user;
+    @ManyToOne
+    private Image image;
 }

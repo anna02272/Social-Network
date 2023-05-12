@@ -1,11 +1,12 @@
 package com.ftn.socialNetwork.model.entity;
 
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,19 +24,18 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
+
     private LocalDateTime lastLogin;
     @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
     private String lastName;
-    @Column(nullable = false)
-    private String profileImagePath;
 
     @Column(nullable = false)
     private EUserType type;
-
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Image image;
 
 }

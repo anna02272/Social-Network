@@ -1,6 +1,6 @@
 package com.ftn.socialNetwork.model.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class FriendRequest {
     @Column(nullable = false)
     private boolean approved;
 
-    @Column(nullable = false, columnDefinition = "CREATEDAT DEFAULT CURRENT_CREATEDAT")
+    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime created_at;
     @Column(nullable = false)
     private LocalDateTime at;

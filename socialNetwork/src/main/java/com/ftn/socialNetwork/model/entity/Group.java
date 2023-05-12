@@ -1,6 +1,6 @@
 package com.ftn.socialNetwork.model.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groups")
+@Table(name = "groups_table")
 public class Group {
 
     @Id
@@ -30,8 +30,8 @@ public class Group {
     private LocalDate creationDate;
 
     @Column(nullable = false)
-    private boolean isSuspended;
+    private boolean isSuspended = false;
 
-    @Column(nullable = false)
-    private String suspendedReason;
+    @Column(nullable = true)
+    private String suspendedReason = "";
 }

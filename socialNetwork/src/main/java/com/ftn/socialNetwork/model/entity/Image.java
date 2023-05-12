@@ -6,29 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groupRequests")
-public class GroupRequest {
-
+@Table(name = "images")
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private boolean approved ;
+    private String path;
 
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime created_at;
-
-    @Column(nullable = false)
-    private LocalDateTime at;
-
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }
