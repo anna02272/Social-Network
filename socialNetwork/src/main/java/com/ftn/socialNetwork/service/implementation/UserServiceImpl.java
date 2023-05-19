@@ -4,6 +4,7 @@ import com.ftn.socialNetwork.model.dto.UserDTO;
 import com.ftn.socialNetwork.model.entity.EUserType;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.repository.UserRepository;
+import com.ftn.socialNetwork.security.TokenUtils;
 import com.ftn.socialNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TokenUtils tokenUtils;
 
     @Override
     public User createUser(User user) {
@@ -78,4 +82,14 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         return userRepository.findAll();
     }
+    @Override
+    public void changePassword(String username, String newPassword) {
+        User user = userRepository.findByUsername(username);
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
+    }
+
+
 }

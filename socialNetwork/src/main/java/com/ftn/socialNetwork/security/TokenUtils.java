@@ -3,10 +3,13 @@ package com.ftn.socialNetwork.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +23,7 @@ public class TokenUtils {
     @Value("3600000")
     private Long expiration;
 
+
     public String getUsernameFromToken(String token) {
         String username;
         try {
@@ -30,6 +34,18 @@ public class TokenUtils {
         }
         return username;
     }
+    public Long getIdFromToken(String token) {
+        Long id;
+        try {
+            Claims claims = this.getClaimsFromToken(token);
+            id = Long.valueOf(claims.getId());
+        } catch (Exception e) {
+            id = null;
+        }
+        return id;
+    }
+
+
 
     private Claims getClaimsFromToken(String token) {
         Claims claims;
@@ -64,7 +80,6 @@ public class TokenUtils {
                 && !isTokenExpired(token);
     }
 
-
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<String, Object>();
         claims.put("sub", userDetails.getUsername());
@@ -78,4 +93,6 @@ public class TokenUtils {
     public int getExpiredIn() {
         return expiration.intValue();
     }
+
+
 }

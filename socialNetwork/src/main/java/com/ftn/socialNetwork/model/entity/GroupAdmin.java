@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
+
 @Entity
 @Getter
 @Setter
@@ -17,6 +20,10 @@ public class GroupAdmin{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne(mappedBy = "groupAdmin")
     private Group group;
+
+
+    @ManyToOne
+    private User user;
 }

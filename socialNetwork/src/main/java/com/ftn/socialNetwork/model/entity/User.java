@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,5 +38,13 @@ public class User {
     private EUserType type;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Image image;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<GroupAdmin> groupAdmins;
+
+    @OneToMany
+    private List<Post> post;
+
+
+
 
 }

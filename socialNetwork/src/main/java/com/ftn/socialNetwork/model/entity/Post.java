@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -26,10 +27,8 @@ public class Post {
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime creationDate;
-
-
-    @ManyToOne
+    @OneToOne
     private User user;
-    @ManyToOne
-    private Image image;
+    @OneToMany
+    private List<Image> image;
 }

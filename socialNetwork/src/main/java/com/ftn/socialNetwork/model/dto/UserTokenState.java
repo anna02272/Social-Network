@@ -1,19 +1,25 @@
 package com.ftn.socialNetwork.model.dto;
 
 
+import javax.servlet.http.HttpServletResponse;
+
 public class UserTokenState {
 
     private String accessToken;
     private Long expiresIn;
+    private HttpServletResponse response;
 
     public UserTokenState() {
         this.accessToken = null;
         this.expiresIn = null;
+        this.response = null;
+
     }
 
     public UserTokenState(String accessToken, long expiresIn) {
         this.accessToken = accessToken;
         this.expiresIn = expiresIn;
+
     }
 
     public String getAccessToken() {
@@ -31,5 +37,10 @@ public class UserTokenState {
     public void setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
     }
+
+
+
+
+
 
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -26,12 +27,20 @@ public class Group {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private LocalDate creationDate;
+    @Column(nullable = false,  columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime creationDate;
 
     @Column(nullable = false)
     private boolean isSuspended = false;
 
     @Column(nullable = true)
     private String suspendedReason = "";
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "group_admin_id")
+    private GroupAdmin groupAdmin;
+
+
+
+
 }
