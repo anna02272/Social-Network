@@ -19,7 +19,7 @@ public class Administrator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false)
-    private User user;
+//    @OneToOne(optional = false)
+//    private User user;
 
 }

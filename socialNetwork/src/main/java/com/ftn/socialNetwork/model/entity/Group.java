@@ -1,6 +1,8 @@
 package com.ftn.socialNetwork.model.entity;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,9 +39,9 @@ public class Group {
     @Column(nullable = true)
     private String suspendedReason = "";
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "group_admin_id")
-    private GroupAdmin groupAdmin;
+    @JsonIgnore
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<GroupAdmin> groupAdmin;
 
 
 

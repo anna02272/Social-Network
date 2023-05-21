@@ -1,6 +1,8 @@
 package com.ftn.socialNetwork.model.entity;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +21,12 @@ public class GroupAdmin{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne(mappedBy = "groupAdmin")
-    private Group group;
-
-
+    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }
