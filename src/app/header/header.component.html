@@ -1,0 +1,44 @@
+<mat-toolbar class="app-navbar">
+  <div class="col d-flex align-items-center">
+    <img
+      src="assets/images/smiley6.jpg"
+      alt="Logo"
+      [style.width.px]="60"
+      [style.height.px]="60"
+    />
+  </div>
+  <div class="right">
+    <div fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="flex-end center">
+      <button
+        *ngIf="hasSignedIn()"
+        [matMenuTriggerFor]="userMenu"
+        class="greeting-button"
+        mat-button
+        mat-ripple
+      >
+        <span>Hello, {{ userName() }}</span>
+      </button>
+      <button
+        *ngIf="hasSignedIn()"
+        [matMenuTriggerFor]="userMenu"
+        class="greeting-hamburger"
+        mat-icon-button
+        mat-ripple
+      >
+      
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <mat-menu
+        #userMenu
+        [overlapTrigger]="false"
+        class="app-header-userMenu"
+        yposition="below"
+      >
+      
+        <app-user-menu></app-user-menu>
+      </mat-menu>
+      
+    </div>
+  </div>
+</mat-toolbar>
