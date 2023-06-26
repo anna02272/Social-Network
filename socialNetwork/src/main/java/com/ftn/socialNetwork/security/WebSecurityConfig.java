@@ -64,17 +64,6 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/logout").permitAll()
 
-                .antMatchers(HttpMethod.POST, "/api/groups/create").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/groups/update/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/groups/delete/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/groups/find/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/groups/all/{id}").permitAll()
-
-                .antMatchers(HttpMethod.POST, "/api/posts/create").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/posts/update/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/posts/delete/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/posts/find/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/posts/all/{id}").permitAll()
                 .anyRequest().authenticated().and()
                  .cors().and()
 

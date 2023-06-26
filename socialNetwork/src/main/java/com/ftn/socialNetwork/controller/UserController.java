@@ -73,9 +73,9 @@ public class UserController {
     public ResponseEntity<UserTokenState> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
-        if (isUserLoggedIn(authenticationRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(null);
-        }
+//        if (isUserLoggedIn(authenticationRequest.getUsername())) {
+//            return ResponseEntity.badRequest().body(null);
+//        }
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword()));

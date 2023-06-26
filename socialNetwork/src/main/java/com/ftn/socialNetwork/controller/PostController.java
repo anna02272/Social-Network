@@ -39,7 +39,6 @@ public class PostController {
         User user = userService.findByUsername(username);
         post.setUser(user);
         post.setCreationDate(LocalDateTime.now());
-
         Post createdPost = postService.createPost(post);
 
         return ResponseEntity.ok(createdPost);

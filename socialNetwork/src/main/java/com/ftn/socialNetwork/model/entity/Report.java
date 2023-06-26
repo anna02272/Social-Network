@@ -20,7 +20,7 @@ public class Report {
     private Long id;
 
     @Column(nullable = false)
-    private ERepostReason reason;
+    private EReportReason reason;
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDate timestamp;

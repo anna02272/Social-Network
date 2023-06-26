@@ -1,6 +1,6 @@
 package com.ftn.socialNetwork.model.entity;
 
-public enum ERepostReason {
+public enum EReportReason {
     BREAKES_RULES,
     HARASSMENT,
     HATE,
