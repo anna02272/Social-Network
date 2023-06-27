@@ -4,10 +4,12 @@ import com.ftn.socialNetwork.model.dto.JwtAuthenticationRequest;
 import com.ftn.socialNetwork.model.dto.UserDTO;
 import com.ftn.socialNetwork.model.dto.UserTokenState;
 import com.ftn.socialNetwork.model.entity.ChangePassword;
+import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.security.TokenUtils;
 import com.ftn.socialNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -105,7 +107,11 @@ public class UserController {
     }
 
 
-
+  @GetMapping("/find/{id}")
+  public ResponseEntity<User> getUserById(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    User user = userService.findOneById(id);
+    return ResponseEntity.ok(user);
+  }
     @GetMapping("/all")
     public List<User> loadAll() {
         return this.userService.findAll();

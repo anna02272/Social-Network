@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -83,9 +84,12 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postService.findAll();
-        return ResponseEntity.ok(posts);
-    }
+  @GetMapping("/all")
+  public ResponseEntity<List<Post>> getAllPosts() {
+    List<Post> posts = postService.findAll();
+    Collections.sort(posts, (post1, post2) -> post2.getCreationDate().compareTo(post1.getCreationDate()));
+
+    return ResponseEntity.ok(posts);
+  }
+
 }
