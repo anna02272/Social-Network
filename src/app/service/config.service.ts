@@ -20,6 +20,10 @@ export class ConfigService {
     return this._signup_url;
   }
 
+  get user_url(): string {
+    return this._user_url;
+  }
+
   private _whoami_url = this._user_url + '/whoami';
 
   get whoami_url(): string {
