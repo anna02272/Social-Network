@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
-
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -12,15 +11,12 @@ import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { UserMenuComponent } from './user-menu/user-menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-
 import {ApiService} from './service/api.service';
 import {GroupService} from './service/group.service';
 import {PostService} from './service/post.service';
@@ -34,7 +30,10 @@ import { TokenInterceptor } from './interceptor/TokenInterceptor';
 import { GroupComponent } from './group/group.component';
 import { PostComponent } from './post/post.component';
 import { CreatePostComponent } from './create-post/create-post.component';
-
+import { GroupsComponent } from './groups/groups.component';
+import { FirendsComponent } from './firends/firends.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { FriendRequestComponent } from './friend-request/friend-request.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +45,11 @@ import { CreatePostComponent } from './create-post/create-post.component';
     UserMenuComponent,
     GroupComponent,
     PostComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    GroupsComponent,
+    FirendsComponent,
+    UserProfileComponent,
+    FriendRequestComponent
   ],
   imports: [
     HttpClientModule,
@@ -66,7 +69,7 @@ import { CreatePostComponent } from './create-post/create-post.component';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true
+      multi: true,
     },
     GroupService,
     PostService,
@@ -74,7 +77,8 @@ import { CreatePostComponent } from './create-post/create-post.component';
     ApiService,
     UserService,
     ConfigService,
-    AuthGuard
+    AuthGuard,
+    CreatePostComponent
   ],
   bootstrap: [AppComponent]
 })

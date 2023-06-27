@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import {UserService} from '../service/user.service';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { UserService } from '../service/user.service';
 import { Post } from '../post/post';
-import { ConfigService, PostService } from '../service';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import { PostService } from '../service';
+import { PostRefreshService } from '../service/postrefresh.service';
 
 
 @Component({
@@ -11,35 +10,53 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.css']
 })
-export class CreatePostComponent implements OnInit{
-  post : Post;
- 
+export class CreatePostComponent implements OnInit {
+  post!: Post;
+
+  @ViewChild('createModal') createModal!: ElementRef;
+
   constructor(
     private userService: UserService,
-    private postService : PostService,
-    private route: ActivatedRoute, 
-    private router: Router, 
-    private config: ConfigService
-    ) {
-      this.post = new Post('', new Date());
-    }
+    private postService: PostService,
+    public postRefreshService: PostRefreshService
+  ) {}
+
 
   ngOnInit() {
+    this.userService.getMyInfo().subscribe(user => {
+      this.post = new Post(0, '', new Date(), user); 
+      });
+    
+  
   }
+  
   onSubmit() {
-    this.postService.createPost(this.post).subscribe(result =>this.goToHome());
+      this.createPost();
   }
 
-  goToHome() {
-    this.router.navigate(['/home']);
+  createPost() {
+    this.postService.createPost(this.post).subscribe(() => {
+      this.postRefreshService.refreshPosts();
+      this.post.content = '';
+      this.closeModal();
+    });
   }
+
+  
+  closeModal() {
+    this.createModal.nativeElement.dismiss();
+  }
+
+  openModal() {
+    this.createModal.nativeElement.show();
+  }
+
   hasSignedIn() {
     return !!this.userService.currentUser;
   }
+
   userName() {
     const user = this.userService.currentUser;
-    return user.username;
+    return user ? user.username : '';
   }
-
 }
-
