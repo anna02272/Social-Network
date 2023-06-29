@@ -44,6 +44,9 @@ public class User {
     @OneToMany
     private List<Post> post;
 
+  @OneToMany
+  private List<Reaction> reaction;
+
 
 
 

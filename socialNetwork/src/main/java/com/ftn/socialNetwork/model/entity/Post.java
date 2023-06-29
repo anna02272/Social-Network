@@ -31,4 +31,7 @@ public class Post {
     private User user;
     @OneToMany
     private List<Image> image;
+
+  @OneToMany
+  private List<Reaction> reactions;
 }

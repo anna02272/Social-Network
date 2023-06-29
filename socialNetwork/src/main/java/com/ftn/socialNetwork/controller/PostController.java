@@ -26,10 +26,6 @@ public class PostController {
     private UserService userService;
 
     @Autowired
-    private TokenUtils tokenUtils;
-
-
-    @Autowired
     public PostController(PostService postService) {
         this.postService = postService;
     }

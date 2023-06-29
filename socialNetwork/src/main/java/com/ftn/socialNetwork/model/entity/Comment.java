@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,4 +33,8 @@ public class Comment {
 
     @ManyToOne
     private User user;
+
+
+  @OneToMany
+  private List<Reaction> reactions;
 }

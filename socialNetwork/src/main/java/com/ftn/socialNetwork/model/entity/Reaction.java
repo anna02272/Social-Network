@@ -27,6 +27,13 @@ public class Reaction {
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDate timeStamp;
 
-    @ManyToOne
-    private User user;
+  @OneToOne
+  private User user;
+
+  @ManyToOne
+  private Post post;
+
+  @ManyToOne
+  private Comment comment;
+
 }

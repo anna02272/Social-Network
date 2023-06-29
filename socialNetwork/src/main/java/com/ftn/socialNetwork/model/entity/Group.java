@@ -33,13 +33,14 @@ public class Group {
     @Column(nullable = false,  columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime creationDate;
 
-    @Column(nullable = false)
-    private boolean isSuspended = false;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isSuspended;
 
-    @Column(nullable = true)
-    private String suspendedReason = "";
+    @Column(nullable = true, columnDefinition = "varchar(255) default ''")
+    private String suspendedReason;
 
-    @JsonIgnore
+
+  @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<GroupAdmin> groupAdmin;
 
