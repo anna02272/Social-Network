@@ -18,7 +18,7 @@ export class PostService {
   }
 
   deletePost(id: number) {
-  return this.apiService.delete(this.config.post_url + '/delete/' + id);
+  return this.apiService.put(this.config.post_url + '/delete/' + id);
 }
   
 updatePost(postId: number, post: Post) {
