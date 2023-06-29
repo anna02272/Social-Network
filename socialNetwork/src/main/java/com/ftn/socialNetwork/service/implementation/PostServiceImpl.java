@@ -1,12 +1,16 @@
 package com.ftn.socialNetwork.service.implementation;
 
+import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.repository.PostRepository;
 import com.ftn.socialNetwork.service.PostService;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service
@@ -46,4 +50,16 @@ public class PostServiceImpl implements PostService {
     public List<Post> findAll() {
         return postRepository.findAll();
     }
+
+  @Autowired
+  private EntityManager entityManager;
+
+  public List<Post> findAllByIsDeleted(boolean isDeleted) {
+    Session session = entityManager.unwrap(Session.class);
+    Filter filter = session.enableFilter("deletedPostFilter");
+    filter.setParameter("isDeleted", isDeleted);
+    List<Post> posts = postRepository.findAll();
+    session.disableFilter("deletedPostFilter");
+    return posts;
+  }
 }

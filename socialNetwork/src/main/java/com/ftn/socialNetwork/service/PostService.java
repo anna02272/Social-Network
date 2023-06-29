@@ -1,5 +1,6 @@
 package com.ftn.socialNetwork.service;
 
+import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Post;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
@@ -11,4 +12,5 @@ public interface PostService {
     Post deletePost(Long id);
     Post findOneById(Long id) throws ChangeSetPersister.NotFoundException;
     List<Post> findAll();
+  List<Post> findAllByIsDeleted(boolean isDeleted);
 }

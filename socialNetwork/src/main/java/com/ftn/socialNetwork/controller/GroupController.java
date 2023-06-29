@@ -1,9 +1,6 @@
 package com.ftn.socialNetwork.controller;
 
-import com.ftn.socialNetwork.model.entity.Group;
-import com.ftn.socialNetwork.model.entity.GroupAdmin;
-import com.ftn.socialNetwork.model.entity.Post;
-import com.ftn.socialNetwork.model.entity.User;
+import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.security.TokenUtils;
 import com.ftn.socialNetwork.service.GroupAdminService;
 import com.ftn.socialNetwork.service.GroupService;
@@ -55,12 +52,13 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
     User user = userService.findByUsername(username);
 
     group.setCreationDate(LocalDateTime.now());
-
+   group.setIsDeleted(false);
     Group createdGroup = groupService.createGroup(group);
 
     GroupAdmin groupAdmin = new GroupAdmin();
     groupAdmin.setGroup(createdGroup);
     groupAdmin.setUser(user);
+
     GroupAdmin createdGroupAdmin = groupAdminService.save(groupAdmin);
 
 
@@ -86,6 +84,9 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
         if (group.getSuspendedReason() != null) {
             existingGroup.setSuspendedReason(group.getSuspendedReason());
         }
+      if (group.getIsDeleted()!= null){
+        existingGroup.setIsDeleted(group.getIsDeleted());
+      }
 
         Group updatedGroup = groupService.updateGroup(existingGroup);
 
@@ -97,10 +98,23 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteGroup(@PathVariable Long id) {
-        groupService.deleteGroup(id);
-        return ResponseEntity.noContent().build();
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<Void> deleteGroup(@PathVariable Long id) {
+//        groupService.deleteGroup(id);
+//        return ResponseEntity.noContent().build();
+//    }
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<Group> delete(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+      Group existing = groupService.findOneById(id);
+
+      if (existing == null) {
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+      }
+
+      existing.setIsDeleted(true);
+      Group updated = groupService.updateGroup(existing);
+
+      return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
@@ -111,7 +125,7 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
 
     @GetMapping("/all")
     public ResponseEntity<List<Group>> getAllGroups() {
-        List<Group> groups = groupService.findAll();
+        List<Group> groups = groupService.findAllByIsDeleted(false);
         return ResponseEntity.ok(groups);
     }
 }

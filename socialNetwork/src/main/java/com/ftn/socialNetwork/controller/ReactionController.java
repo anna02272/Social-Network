@@ -46,6 +46,13 @@ public class ReactionController {
     if (post == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+    Reaction existingReaction = reactionService.findReactionByPostAndUser(post, user);
+    if (existingReaction != null) {
+      existingReaction.setType(reaction.getType());
+      reactionService.create(existingReaction);
+      return ResponseEntity.ok(existingReaction);
+    }
+
     reaction.setPost(post);
     Reaction createdReaction = reactionService.create(reaction);
 
@@ -61,6 +68,12 @@ public class ReactionController {
     Comment comment = commentService.findOneById(commentId);
     if (comment == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    Reaction existingReaction = reactionService.findReactionByCommentAndUser(comment, user);
+    if (existingReaction != null) {
+      existingReaction.setType(reaction.getType());
+      reactionService.create(existingReaction);
+      return ResponseEntity.ok(existingReaction);
     }
     reaction.setComment(comment);
     Reaction createdReaction = reactionService.create(reaction);

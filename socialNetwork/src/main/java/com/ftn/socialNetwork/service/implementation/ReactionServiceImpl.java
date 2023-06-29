@@ -34,5 +34,14 @@ public class ReactionServiceImpl implements ReactionService {
     return reactionRepository.save(reaction);
   }
 
+  public Reaction findReactionByPostAndUser(Post post, User user) {
+    return reactionRepository.findByPostAndUser(post, user);
+  }
+
+  public Reaction findReactionByCommentAndUser(Comment comment, User user) {
+    return reactionRepository.findByCommentAndUser(comment, user);
+  }
+
+
 
 }

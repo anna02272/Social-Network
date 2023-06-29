@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "posts")
+@FilterDef(name = "deletedPostFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedPostFilter", condition = "is_deleted = :isDeleted")
 public class Post {
 
     @Id
@@ -27,6 +32,9 @@ public class Post {
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime creationDate;
+
+  @Column(nullable = false, columnDefinition = "boolean default false")
+  private Boolean isDeleted ;
     @OneToOne
     private User user;
     @OneToMany
@@ -34,4 +42,6 @@ public class Post {
 
   @OneToMany
   private List<Reaction> reactions;
+
+
 }

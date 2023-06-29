@@ -1,12 +1,16 @@
 package com.ftn.socialNetwork.service.implementation;
 
+import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Group;
 import com.ftn.socialNetwork.repository.GroupRepository;
 import com.ftn.socialNetwork.service.GroupService;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service
@@ -51,4 +55,16 @@ public class GroupServiceImpl implements GroupService {
     public List<Group> findAll() {
         return groupRepository.findAll();
     }
+
+  @Autowired
+  private EntityManager entityManager;
+
+  public List<Group> findAllByIsDeleted(boolean isDeleted) {
+    Session session = entityManager.unwrap(Session.class);
+    Filter filter = session.enableFilter("deletedGroupFilter");
+    filter.setParameter("isDeleted", isDeleted);
+    List<Group> groups = groupRepository.findAll();
+    session.disableFilter("deletedGroupFilter");
+    return groups;
+  }
 }

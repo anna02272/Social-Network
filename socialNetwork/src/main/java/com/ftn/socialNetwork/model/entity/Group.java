@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "groups_table")
+@FilterDef(name = "deletedGroupFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedGroupFilter", condition = "is_deleted = :isDeleted")
 public class Group {
 
     @Id
@@ -39,7 +44,8 @@ public class Group {
     @Column(nullable = true, columnDefinition = "varchar(255) default ''")
     private String suspendedReason;
 
-
+  @Column(nullable = false, columnDefinition = "boolean default false")
+  private Boolean isDeleted ;
   @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<GroupAdmin> groupAdmin;

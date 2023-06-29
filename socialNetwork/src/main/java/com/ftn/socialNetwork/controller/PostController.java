@@ -1,5 +1,6 @@
 package com.ftn.socialNetwork.controller;
 
+import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.security.TokenUtils;
@@ -36,6 +37,7 @@ public class PostController {
         User user = userService.findByUsername(username);
         post.setUser(user);
         post.setCreationDate(LocalDateTime.now());
+        post.setIsDeleted(false);
         Post createdPost = postService.createPost(post);
 
         return ResponseEntity.ok(createdPost);
@@ -61,6 +63,9 @@ public class PostController {
         if (post.getImage()!= null){
             existingPost.setImage(post.getImage());
         }
+      if (post.getIsDeleted()!= null){
+        existingPost.setIsDeleted(post.getIsDeleted());
+      }
 
 
         Post updatedPost = postService.updatePost(existingPost);
@@ -68,10 +73,23 @@ public class PostController {
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
-        return ResponseEntity.noContent().build();
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+//        postService.deletePost(id);
+//        return ResponseEntity.noContent().build();
+//    }
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<Post> delete(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+      Post existing =postService.findOneById(id);
+
+      if (existing == null) {
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+      }
+
+      existing.setIsDeleted(true);
+      Post updated = postService.updatePost(existing);
+
+      return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
@@ -82,7 +100,7 @@ public class PostController {
 
   @GetMapping("/all")
   public ResponseEntity<List<Post>> getAllPosts() {
-    List<Post> posts = postService.findAll();
+    List<Post> posts = postService.findAllByIsDeleted(false);
     Collections.sort(posts, (post1, post2) -> post2.getCreationDate().compareTo(post1.getCreationDate()));
 
     return ResponseEntity.ok(posts);
