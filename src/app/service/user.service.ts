@@ -23,7 +23,9 @@ export class UserService {
         return user;
       }));
   }
-
+  getUserById(id : number) {
+    return this.apiService.get(this.config.user_url + "/find/" + id );
+   }
 
 
 }

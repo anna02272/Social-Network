@@ -9,6 +9,7 @@ export class PostRefreshService {
   private refreshSubject = new Subject<void>();
   private openModalSubject = new Subject<void>();
   private selectedPost: Post | null = null;
+  private editSubject = new Subject<Post>();
 
 
   refreshPosts() {
@@ -17,6 +18,9 @@ export class PostRefreshService {
   openModal(post?: Post) {
     this.selectedPost = post || null;
     this.openModalSubject.next();
+  }
+  setPost(post: Post) {
+    this.selectedPost = post;
   }
 
   getRefreshObservable() {
@@ -27,5 +31,12 @@ export class PostRefreshService {
   }
   getSelectedPost(): Post | null {
     return this.selectedPost;
+  }
+  startEditing(post: Post) {
+    this.editSubject.next(post);
+  }
+
+  getEditObservable() {
+    return this.editSubject.asObservable();
   }
 }

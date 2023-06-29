@@ -18,7 +18,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {ApiService} from './service/api.service';
-import {GroupService} from './service/group.service';
 import {PostService} from './service/post.service';
 import {AuthService} from './service/auth.service';
 import {UserService} from './service/user.service';
@@ -34,6 +33,9 @@ import { GroupsComponent } from './groups/groups.component';
 import { FirendsComponent } from './firends/firends.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { FriendRequestComponent } from './friend-request/friend-request.component';
+import { EditPostComponent } from './edit-post/edit-post.component';
+import { GroupAdminService } from './service/groupadmin.service';
+import { GroupService } from './service';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,8 @@ import { FriendRequestComponent } from './friend-request/friend-request.componen
     GroupsComponent,
     FirendsComponent,
     UserProfileComponent,
-    FriendRequestComponent
+    FriendRequestComponent,
+    EditPostComponent
   ],
   imports: [
     HttpClientModule,
@@ -78,7 +81,8 @@ import { FriendRequestComponent } from './friend-request/friend-request.componen
     UserService,
     ConfigService,
     AuthGuard,
-    CreatePostComponent
+    CreatePostComponent,
+    GroupAdminService
   ],
   bootstrap: [AppComponent]
 })
