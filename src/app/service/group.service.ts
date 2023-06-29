@@ -18,7 +18,7 @@ export class GroupService {
     }
   
     deleteGroup(id: number) {
-    return this.apiService.delete(this.config.group_url + '/delete/' + id);
+    return this.apiService.put(this.config.group_url + '/delete/' + id);
   }
     
   updateGroup(groupId: number, group: Group) {
