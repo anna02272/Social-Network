@@ -1,14 +1,25 @@
 <div class="container-fluid">
   <div class="row justify-content-evenly">
+    <div class="col-lg-4">
+      <app-groups></app-groups>
+    </div>
+  
 <div class="col-12 col-lg-6 pb-5">
+
   <div
     class="d-flex flex-column justify-content-center w-100 mx-auto"
     style="padding-top: 56px; max-width: 680px"
   > <!-- posts -->
-            <!-- p 1 -->
+  <div _ngcontent-sji-c1="" class="pt-1 mb-3">
+    <button _ngcontent-sji-c1="" type="submit" class="btn btn-warning btn-lg btn-block" 
+   > Sort ascending </button>
+    <button _ngcontent-sji-c1="" type="submit" class="btn btn-warning btn-lg btn-block" 
+   > Sort descending</button>
+  </div>
             <!-- <div class="bg-white p-4 rounded shadow mt-3">
               <!-- author -->
             <div *ngFor="let post of posts">
+              
               <div class="d-flex justify-content-between">
                 <!-- avatar -->
                 <div class="d-flex">
@@ -39,8 +50,10 @@
                   <li class="d-flex align-items-center">
                     <a
                       class="dropdown-item d-flex justify-content-around align-items-center fs-7"
-                       style="cursor: pointer"
+                       style="cursor: pointer"  data-bs-toggle="modal"
+                       data-bs-target="#groupModal"
                        *ngIf="post.user.username == userName()"
+                       (click)="editPost(post)" 
                     >
                       Edit Post</a
                     >
@@ -79,8 +92,7 @@
                       <i class="text-danger fab fa-gratipay"></i>
                       <i class="text-warning fas fa-grin-squint"></i>
                     </div>
-                    <p class="m-0 text-muted fs-7">Phu, Tuan, and 3 others</p>
-                  </div>
+                    </div>
                   <!-- comments start-->
                   <div class="accordion" id="accordionExample">
                     <div class="accordion-item border-0">
@@ -93,8 +105,7 @@
                           aria-expanded="false"
                           aria-controls="collapsePost1"
                         >
-                          <p class="m-0">2 Comments</p>
-                        </div>
+                         </div>
                       </h2>
                       <hr />
                       <!-- comment & like bar -->
@@ -169,7 +180,6 @@
                                   <li class="d-flex align-items-center">
                                     <a
                                       class="dropdown-item d-flex justify-content-around align-items-center fs-7"
-                                      href="#"
                                     >
                                       Edit Comment</a
                                     >
@@ -246,7 +256,6 @@
             </div>
             </div>
             </div>
-            <div class="container-fluid">
-              <div class="row justify-content-evenly">
+                
           
            

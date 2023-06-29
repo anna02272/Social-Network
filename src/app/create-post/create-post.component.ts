@@ -21,17 +21,27 @@ export class CreatePostComponent implements OnInit {
     public postRefreshService: PostRefreshService
   ) {}
 
-
   ngOnInit() {
     this.userService.getMyInfo().subscribe(user => {
-      this.post = new Post(0, '', new Date(), user); 
-      });
-    
+      this.post = new Post(0, '', new Date(), user);
+    });
   
+    const selectedPost = this.postRefreshService.getSelectedPost();
+    if (selectedPost) {
+      this.post = { ...selectedPost };
+      this.openModal();
+    }
   }
   
+  
+  
   onSubmit() {
+    if (this.post.id) {
+      this.updatePost();
+    } else {
       this.createPost();
+    }
+    
   }
 
   createPost() {
@@ -42,6 +52,22 @@ export class CreatePostComponent implements OnInit {
     });
   }
 
+  updatePost() {
+    this.postService.updatePost(this.post.id, this.post).subscribe(() => {
+      this.postRefreshService.refreshPosts();
+      this.post.content = '';
+   
+      this.closeModal();
+    });
+  }
+
+  onModalHidden() {
+    this.userService.getMyInfo().subscribe(user => {
+      this.post = new Post(0, '', new Date(), user); 
+      });
+    const postForm = this.createModal.nativeElement.querySelector('form');
+    postForm.reset();
+  }
   
   closeModal() {
     this.createModal.nativeElement.dismiss();
@@ -50,6 +76,7 @@ export class CreatePostComponent implements OnInit {
   openModal() {
     this.createModal.nativeElement.show();
   }
+  
 
   hasSignedIn() {
     return !!this.userService.currentUser;

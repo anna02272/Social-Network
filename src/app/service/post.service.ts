@@ -21,10 +21,10 @@ export class PostService {
   return this.apiService.delete(this.config.post_url + '/delete/' + id);
 }
   
-updatePost(id: number) {
-  return this.apiService.put(this.config.post_url + '/update/' + id, Post);
+updatePost(postId: number, post: Post) {
+  const url = `${this.config.post_url}/update/${postId}`;
+  return this.apiService.put(url, post);
 }
-
 
   getAllPosts() {
     return this.apiService.get(this.config.post_url + "/all");

@@ -35,6 +35,11 @@ export class ConfigService {
   get group_url(): string {
     return this._group_url;
   }
+  private _groupadmin_url = this._api_url + '/groupadmins';
+
+  get groupadmin_url(): string {
+    return this._groupadmin_url;
+  }
 
   private _post_url = this._api_url + '/posts';
 

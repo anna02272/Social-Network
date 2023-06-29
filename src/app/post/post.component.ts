@@ -14,6 +14,8 @@ declare var $: any;
 })
 export class PostComponent implements OnInit {
   posts: Post[] = [];
+  post: Post = new Post(0, '',  new Date(), this.userService.currentUser);
+
 
   constructor(
     private userService: UserService,
@@ -35,6 +37,13 @@ export class PostComponent implements OnInit {
     });
   }
 
+  editPost(post: Post): void {
+    this.postRefreshService.setPost({ ...post });
+    this.openModal();
+  }
+  
+  
+  
   deletePost(post: Post): void {
     this.postService.deletePost(post.id).subscribe(() => {
       this.posts = this.posts.filter(p => p.id !== post.id);
@@ -52,7 +61,7 @@ export class PostComponent implements OnInit {
       this.openModal();
     });
   }
-
+  
 
   openModal() {
     $('#createModal').modal('show');
