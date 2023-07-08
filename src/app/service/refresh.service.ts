@@ -4,10 +4,10 @@ import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class GroupRefreshService {
+export class RefreshService {
   private refreshSubject = new Subject<void>();
  
-  refreshGroups() {
+  refresh() {
     this.refreshSubject.next();
   }
   getRefreshObservable() {

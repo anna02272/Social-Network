@@ -1,0 +1,47 @@
+  <!-- likes -->
+  <div
+  class="d-flex align-items-center top-0 start-0 position-absolute"
+  style="height: 50px; z-index: 5"
+>
+<div class="me-2">
+  <i class="text-primary fas fa-thumbs-up"></i>
+  <span id="like-reaction-count-{{post.id}}"></span>
+  <i class="text-primary fas fa-thumbs-down"></i>
+  <span id="dislike-reaction-count-{{post.id}}"></span>
+  <i class="text-danger fab fa-gratipay"></i>
+  <span id="heart-reaction-count-{{post.id}}"></span>
+</div>
+
+  </div><div class="d-flex justify-content-around">
+  <div
+    class="dropdown-item rounded d-flex justify-content-center align-items-center pointer text-muted p-1"
+    (click)="selectedReaction = like; reactToPost()"
+    > 
+    <i  id="like-reaction-icon-{{post.id}}" class="fas fa-thumbs-up me-3"> </i>
+    <p class="m-0">Like</p>
+  </div>
+  <div
+    class="dropdown-item rounded d-flex justify-content-center align-items-center pointer text-muted p-1"
+    (click)="selectedReaction = dislike; reactToPost()"
+   >
+    <i id="dislike-reaction-icon-{{post.id}}" class="fas fa-thumbs-down me-3"></i>
+    <p class="m-0">Dislike</p>
+  </div>
+  <div
+    class="dropdown-item rounded d-flex justify-content-center align-items-center pointer text-muted p-1"
+    (click)="selectedReaction = heart; reactToPost()"
+   >
+    <i  id="heart-reaction-icon-{{post.id}}" class="fa-solid fa-heart"></i>
+    <p class="m-0">Heart</p>
+  </div>
+  <div
+    class="dropdown-item rounded d-flex justify-content-center align-items-center pointer text-muted p-1"
+    data-bs-toggle="collapse"
+    data-bs-target="#collapsePost1"
+    aria-expanded="false"
+    aria-controls="collapsePost1"
+  >
+    <i class="fas fa-comment-alt me-3"></i>
+    <p class="m-0">Comment</p>
+  </div>
+</div>

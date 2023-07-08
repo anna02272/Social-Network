@@ -10,7 +10,7 @@
         style="padding-top: 56px; max-width: 680px"
       >
         <!-- create post -->
-        <form (ngSubmit)="onSubmit()" #postForm="ngForm">
+        <form (ngSubmit)="combinedMethod()" #postForm="ngForm" enctype="multipart/form-data">
           <div class="bg-white p-3 mt-3 rounded border shadow">
             <p>Create Post</p>
             <!-- avatar -->
@@ -44,7 +44,7 @@
               #createModal
                (hidden.bs.modal)="onModalHidden()"
             >
-              <div class="modal-dialog modal-dialog-centered">
+              <div  class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                   <!-- head -->
                   <!-- head -->
@@ -53,7 +53,7 @@
                       class="text-dark text-center w-100 m-0"
                       id="exampleModalLabel"
                     >
-                    {{ post.id ? 'Update Post' : 'Create Post' }}
+                    {{ selectedPost.id ? 'Update Post' : 'Create Post' }}
          
                     </h5>
                     <button
@@ -87,6 +87,7 @@
                         </div>
                         <!-- text -->
 
+                        <ng-container *ngIf="post">
                         <div
                           [hidden]="!content.pristine"
                           class="alert alert-danger"
@@ -94,7 +95,8 @@
                           Content is required
                         </div>
                         <textarea
-                          [(ngModel)]="post.content"
+                        [(ngModel)]="post.content"
+                          [(ngModel)]="selectedPost.content"
                           id="content"
                           name="content"
                           placeholder="Write a post"
@@ -104,16 +106,21 @@
                           rows="5"
                           class="form-control border-0"
                         ></textarea>
-
+                      </ng-container>
                         <!-- options -->
                         <div
                           class="d-flex justify-content-between border border-1 border-light rounded p-3 mt-3"
                         >
-                          <p class="m-0">Add to your post</p>
+                       
+                          <!-- <p class="m-0">Add to your post</p> -->
+                          <div *ngIf="selectedFileName">
+                            Selected: {{ selectedFileName }}
+                          </div>
                           <div>
-                            <i
-                              class="fas fa-images fs-5 text-success pointer mx-1"
-                            ></i>
+                            <label for="fileUpload" class="upload-label">
+                              <i  class="fas fa-images fs-5 text-success pointer mx-1"></i> Upload Image
+                            </label>
+                            <input id="fileUpload" type="file" style="display: none;" (change)="onFileSelected($event)" />
                           </div>
                         </div>
                       </div>
@@ -129,7 +136,7 @@
                       class="btn btn-warning w-100"
                       data-bs-dismiss="modal"
                     >
-                    {{ post.id ? 'Update Post' : 'Create Post' }}
+                    {{ selectedPost.id ? 'Update Post' : 'Create Post' }}
            
                     </button>
                   </div>
