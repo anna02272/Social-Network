@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/reactions")
 public class ReactionController {
 
   @Autowired
-  private  ReactionService reactionService;
+  private ReactionService reactionService;
 
   @Autowired
   private UserService userService;
@@ -30,14 +31,8 @@ public class ReactionController {
   @Autowired
   private CommentService commentService;
 
-  @Autowired
-  public ReactionController(ReactionService reactionService) {
-    this.reactionService = reactionService;
-  }
-
-
   @PostMapping("/reactToPost/{id}")
-  public ResponseEntity<Reaction> reactToPost(@PathVariable("id") Long postId,@RequestBody Reaction reaction, Principal principal) throws ChangeSetPersister.NotFoundException {
+  public ResponseEntity<Reaction> reactToPost(@PathVariable("id") Long postId, @RequestBody Reaction reaction, Principal principal) throws ChangeSetPersister.NotFoundException {
     String username = principal.getName();
     User user = userService.findByUsername(username);
     reaction.setUser(user);
@@ -49,6 +44,7 @@ public class ReactionController {
     Reaction existingReaction = reactionService.findReactionByPostAndUser(post, user);
     if (existingReaction != null) {
       existingReaction.setType(reaction.getType());
+      existingReaction.setTimeStamp(LocalDate.now());
       reactionService.create(existingReaction);
       return ResponseEntity.ok(existingReaction);
     }
@@ -58,6 +54,32 @@ public class ReactionController {
 
     return ResponseEntity.ok(createdReaction);
   }
+  @GetMapping("/count/{postId}")
+  public ResponseEntity<Map<EReactionType, Integer>> countReactionsByPost(
+    @PathVariable("postId") Long postId
+  ) throws ChangeSetPersister.NotFoundException {
+    Post post = postService.findOneById(postId);
+    if (post == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    Map<EReactionType, Integer> reactionCounts = reactionService.countReactionsByPost(post);
+    return ResponseEntity.ok(reactionCounts);
+  }
+
+
+  @GetMapping("/find/{postId}/{userId}")
+  public ResponseEntity<Reaction> findReactionByPostAndUser(@PathVariable("postId") Long postId, @PathVariable("userId") Long userId) throws ChangeSetPersister.NotFoundException {
+    Post post = postService.findOneById(postId);
+    User user = userService.findOneById(userId);
+
+    if (post == null || user == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    Reaction reaction = reactionService.findReactionByPostAndUser(post, user);
+    return ResponseEntity.ok(reaction);
+  }
+
 
   @PostMapping("/reactToComment/{id}")
   public ResponseEntity<Reaction> reactToComment(@PathVariable("id") Long commentId,@RequestBody Reaction reaction, Principal principal) throws ChangeSetPersister.NotFoundException {
@@ -72,6 +94,7 @@ public class ReactionController {
     Reaction existingReaction = reactionService.findReactionByCommentAndUser(comment, user);
     if (existingReaction != null) {
       existingReaction.setType(reaction.getType());
+      existingReaction.setTimeStamp(LocalDate.now());
       reactionService.create(existingReaction);
       return ResponseEntity.ok(existingReaction);
     }

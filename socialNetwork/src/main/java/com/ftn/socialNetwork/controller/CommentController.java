@@ -1,8 +1,10 @@
 package com.ftn.socialNetwork.controller;
 
 import com.ftn.socialNetwork.model.entity.Comment;
+import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.service.CommentService;
+import com.ftn.socialNetwork.service.PostService;
 import com.ftn.socialNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -26,14 +28,14 @@ public class CommentController {
   private UserService userService;
 
   @Autowired
-  public CommentController(CommentService commentService) {
-    this.commentService = commentService;
-  }
+  private PostService postService;
 
   @PostMapping("/create")
-  public ResponseEntity<Comment> create(@RequestBody Comment comment, Principal principal) {
+  public ResponseEntity<Comment> create(@RequestBody Comment comment, @RequestParam Long postId, Principal principal) throws ChangeSetPersister.NotFoundException {
     String username = principal.getName();
     User user = userService.findByUsername(username);
+    Post post = postService.findOneById(postId);
+    comment.setPost(post);
     comment.setUser(user);
     comment.setIsDeleted(false);
     comment.setTimeStamp(LocalDate.now());
@@ -62,6 +64,9 @@ public class CommentController {
     if (comment.getUser() != null) {
       existing.setUser(comment.getUser());
     }
+    if (comment.getPost() != null) {
+      existing.setPost(comment.getPost());
+    }
 
 
     Comment updated = commentService.update(existing);
@@ -89,6 +94,13 @@ public class CommentController {
     Comment comment = commentService.findOneById(id);
     return ResponseEntity.ok(comment);
   }
+
+  @GetMapping("/findByPost/{postId}")
+  public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable Long postId) {
+    List<Comment> comments = commentService.findCommentsByPostId(postId);
+    return ResponseEntity.ok(comments);
+  }
+
 
   @GetMapping("/all")
   public ResponseEntity<List<Comment>> getAll() {

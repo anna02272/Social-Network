@@ -1,6 +1,6 @@
 package com.ftn.socialNetwork.service.implementation;
 
-import com.ftn.socialNetwork.model.entity.GroupAdmin;
+import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.repository.GroupAdminRepository;
 import com.ftn.socialNetwork.service.GroupAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +32,10 @@ public class GroupAdminServiceImpl implements GroupAdminService {
   @Override
   public List<GroupAdmin> findAll() {
     return groupAdminRepository.findAll();
+  }
+
+  @Override
+  public GroupAdmin findByGroupAndUser(Group group, User user) {
+    return groupAdminRepository.findByGroupAndUser(group, user);
   }
 }

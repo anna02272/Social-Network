@@ -7,6 +7,8 @@ import com.ftn.socialNetwork.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
@@ -14,4 +16,5 @@ public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
   Reaction findByCommentAndUser(Comment comment, User user);
 
+    List<Reaction> findByPost(Post post);
 }

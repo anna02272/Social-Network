@@ -2,6 +2,8 @@ package com.ftn.socialNetwork.service;
 
 import com.ftn.socialNetwork.model.entity.*;
 
+import java.util.Map;
+
 public interface ReactionService {
 
   Reaction create(Reaction reaction);
@@ -10,4 +12,5 @@ public interface ReactionService {
 
   Reaction findReactionByCommentAndUser(Comment comment, User user);
 
+  Map<EReactionType, Integer> countReactionsByPost(Post post);
 }

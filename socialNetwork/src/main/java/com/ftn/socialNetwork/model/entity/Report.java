@@ -18,19 +18,16 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private EReportReason reason;
-
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDate timestamp;
-
-    @ManyToOne(optional = false)
-    private User byUser;
-
     @Column(nullable = false)
     private boolean accepted;
-
     @ManyToOne
     private User user;
+    @ManyToOne
+    private Post post;
+    @ManyToOne
+    private Comment comment;
 }

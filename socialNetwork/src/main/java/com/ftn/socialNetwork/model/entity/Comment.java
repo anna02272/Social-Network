@@ -40,6 +40,9 @@ public class Comment {
     @ManyToOne
     private User user;
 
+    @ManyToOne
+    private Post post;
+
   @OneToMany(mappedBy = "parentComment")
   private List<Comment> replies;
 
@@ -48,4 +51,7 @@ public class Comment {
   private Comment parentComment;
   @OneToMany
   private List<Reaction> reactions;
+
+  @OneToMany
+  private List<Report> report;
 }

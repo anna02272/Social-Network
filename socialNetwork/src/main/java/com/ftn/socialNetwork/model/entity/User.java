@@ -38,14 +38,20 @@ public class User {
     private EUserType type;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Image image;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany
     private List<GroupAdmin> groupAdmins;
 
     @OneToMany
     private List<Post> post;
 
-  @OneToMany
-  private List<Reaction> reaction;
+    @OneToMany
+    private List<Reaction> reaction;
+
+    @OneToMany
+    private List<Report> report;
+
+    @OneToMany
+    private List<Comment> comments;
 
 
 

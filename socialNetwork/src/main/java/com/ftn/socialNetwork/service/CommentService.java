@@ -12,4 +12,6 @@ public interface CommentService {
   Comment findOneById(Long id) throws ChangeSetPersister.NotFoundException;
   List<Comment> findAll();
   List<Comment> findAllByIsDeleted(boolean isDeleted);
+
+  List<Comment> findCommentsByPostId(Long postId);
 }

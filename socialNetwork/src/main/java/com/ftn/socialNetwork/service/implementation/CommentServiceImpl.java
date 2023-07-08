@@ -2,6 +2,7 @@ package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.repository.CommentRepository;
+import com.ftn.socialNetwork.repository.PostRepository;
 import com.ftn.socialNetwork.service.CommentService;
 import org.hibernate.Filter;
 import org.hibernate.Session;
@@ -19,9 +20,7 @@ public class CommentServiceImpl implements CommentService {
   private CommentRepository commentRepository;
 
   @Autowired
-  public CommentServiceImpl(CommentRepository commentRepository) {
-    this.commentRepository = commentRepository;
-  }
+  private PostRepository postRepository;
 
   @Override
   public Comment create(Comment comment) {
@@ -44,6 +43,11 @@ public class CommentServiceImpl implements CommentService {
     return commentRepository.findById(id)
       .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
   }
+  @Override
+  public List<Comment> findCommentsByPostId(Long postId) {
+    return commentRepository.findByPostId(postId);
+  }
+
 
   @Override
   public List<Comment> findAll() {

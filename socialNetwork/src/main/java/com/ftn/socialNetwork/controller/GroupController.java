@@ -22,29 +22,15 @@ import java.util.List;
 @RestController
 @RequestMapping("api/groups")
 public class GroupController {
+  @Autowired
     private GroupService groupService;
-
-
-    @Autowired
-    public GroupController(GroupService groupService) {
-        this.groupService = groupService;
-    }
 
     @Autowired
     UserService userService;
 
-
     @Autowired
     GroupAdminService groupAdminService;
 
-    @Autowired
-    TokenUtils tokenUtils;
-
-    @GetMapping("/whoami")
-    public User user(Principal user) {
-
-        return this.userService.findByUsername(user.getName());
-    }
 
 @PostMapping("/create")
 public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal principal) {

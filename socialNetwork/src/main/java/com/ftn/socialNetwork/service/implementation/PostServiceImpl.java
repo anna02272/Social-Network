@@ -19,11 +19,6 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
 
-    @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
-
     @Override
     public Post createPost(Post post) {
         return postRepository.save(post);

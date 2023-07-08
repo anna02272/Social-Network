@@ -1,14 +1,13 @@
 package com.ftn.socialNetwork.model.entity;
 
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "images")
@@ -24,6 +23,6 @@ public class Image {
     @JoinColumn(name = "user_id")
     private User user;
 
-   @OneToOne
+   @ManyToOne
     private Post post;
 }

@@ -35,13 +35,19 @@ public class Post {
 
   @Column(nullable = false, columnDefinition = "boolean default false")
   private Boolean isDeleted ;
-    @OneToOne
+    @ManyToOne
     private User user;
     @OneToMany
     private List<Image> image;
 
   @OneToMany
   private List<Reaction> reactions;
+
+  @OneToMany
+  private List<Report> report;
+  @OneToMany
+  private List<Comment> comments;
+
 
 
 }

@@ -2,6 +2,7 @@ package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Group;
+import com.ftn.socialNetwork.model.entity.GroupAdmin;
 import com.ftn.socialNetwork.repository.GroupRepository;
 import com.ftn.socialNetwork.service.GroupService;
 import org.hibernate.Filter;
@@ -18,11 +19,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     private GroupRepository groupRepository;
-
-    @Autowired
-    public GroupServiceImpl(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository;
-    }
 
     @Override
     public Group createGroup(Group group) {
@@ -41,15 +37,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group deleteGroup(Long id) {
-        groupRepository.deleteById(id);
+      groupRepository.deleteById(id);
         return null;
     }
 
-    @Override
-    public Group findOneById(Long id) throws ChangeSetPersister.NotFoundException {
-        return groupRepository.findById(id)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
-    }
+  @Override
+  public Group findOneById(Long id) throws ChangeSetPersister.NotFoundException {
+    return groupRepository.findById(id)
+      .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+  }
 
     @Override
     public List<Group> findAll() {

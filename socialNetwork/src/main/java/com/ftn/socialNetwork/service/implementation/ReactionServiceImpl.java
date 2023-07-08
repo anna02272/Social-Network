@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReactionServiceImpl implements ReactionService {
@@ -23,23 +26,33 @@ public class ReactionServiceImpl implements ReactionService {
 
   @Autowired
   private CommentRepository commentRepository;
-  @Autowired
-  public ReactionServiceImpl(ReactionRepository reactionRepository) {
-    this.reactionRepository = reactionRepository;
-  }
-
 
   @Override
   public Reaction create(Reaction reaction) {
     return reactionRepository.save(reaction);
   }
 
+  @Override
   public Reaction findReactionByPostAndUser(Post post, User user) {
     return reactionRepository.findByPostAndUser(post, user);
   }
 
+  @Override
   public Reaction findReactionByCommentAndUser(Comment comment, User user) {
     return reactionRepository.findByCommentAndUser(comment, user);
+  }
+
+  @Override
+  public Map<EReactionType, Integer> countReactionsByPost(Post post) {
+    List<Reaction> reactions = reactionRepository.findByPost(post);
+
+    Map<EReactionType, Integer> reactionCounts = new HashMap<>();
+    for (Reaction reaction : reactions) {
+      EReactionType reactionType = reaction.getType();
+      reactionCounts.put(reactionType, reactionCounts.getOrDefault(reactionType, 0) + 1);
+    }
+
+    return reactionCounts;
   }
 
 

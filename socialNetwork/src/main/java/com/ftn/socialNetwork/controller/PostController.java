@@ -1,9 +1,11 @@
 package com.ftn.socialNetwork.controller;
 
 import com.ftn.socialNetwork.model.entity.Comment;
+import com.ftn.socialNetwork.model.entity.Image;
 import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.security.TokenUtils;
+import com.ftn.socialNetwork.service.ImageService;
 import com.ftn.socialNetwork.service.PostService;
 import com.ftn.socialNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,13 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,9 +33,7 @@ public class PostController {
     private UserService userService;
 
     @Autowired
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
+    private ImageController imageController;
 
     @PostMapping("/create")
     public ResponseEntity<Post> createPost(@RequestBody Post post, Principal principal) {
@@ -43,7 +47,39 @@ public class PostController {
         return ResponseEntity.ok(createdPost);
     }
 
-    @PutMapping("/update/{id}")
+//  @PostMapping("/create")
+//  public ResponseEntity<Post> createPost(@RequestPart("post") Post post,
+//                                         @RequestPart(value = "image", required = false) MultipartFile[] images,
+//                                         Principal principal) {
+//    String username = principal.getName();
+//    User user = userService.findByUsername(username);
+//    post.setUser(user);
+//    post.setCreationDate(LocalDateTime.now());
+//    post.setIsDeleted(false);
+//
+//    // Save post
+//    Post createdPost = postService.createPost(post);
+//
+//    // Save images if provided
+//    if (images != null && images.length > 0) {
+//      List<Image> postImages = new ArrayList<>();
+//      for (MultipartFile image : images) {
+//        String imagePath = imageController.saveImage(image);
+//        if (imagePath != null) {
+//          Image postImage = new Image();
+//          postImage.setPath(imagePath);
+//          postImage.setUser(user);
+//          postImage.setPost(createdPost);
+//          postImages.add(postImage);
+//        }
+//      }
+//      createdPost.setImage(postImages);
+//    }
+//
+//    return ResponseEntity.ok(createdPost);
+//  }
+
+  @PutMapping("/update/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable("id") Long postId, @RequestBody Post post) throws ChangeSetPersister.NotFoundException {
         Post existingPost = postService.findOneById(postId);
 
