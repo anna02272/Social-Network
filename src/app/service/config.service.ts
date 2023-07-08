@@ -47,6 +47,24 @@ export class ConfigService {
     return this._post_url;
   }
 
+  private _comment_url = this._api_url + '/comments';
+
+  get comment_url(): string {
+    return this._comment_url;
+  }
+
+  private _reaction_url = this._api_url + '/reactions';
+
+  get reaction_url(): string {
+    return this._reaction_url;
+  }
+
+  private _report_url = this._api_url + '/reports';
+
+  get report_url(): string {
+    return this._report_url;
+  }
+
   
   }
 

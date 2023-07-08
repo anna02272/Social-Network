@@ -1,41 +1,20 @@
-import { User } from "../user";
-
-export class GroupAdmin {
-  id: number;
-  groupId: number;
-  userId: number;
-
-  constructor(id: number, groupId: number, userId: number) {
-    this.id = id;
-    this.groupId = groupId;
-    this.userId = userId;
-  }
-}
-
+import { GroupAdmin } from "./groupAdmin";
 export class Group {
   id: number;
   name: string;
   description: string;
   creationDate: Date;
-  isSuspended: boolean;
-  suspendedReason: string;
-  groupAdmin: string;
+  isPublic: boolean;
+  imageUrl: string;
+  groupAdmin: GroupAdmin; 
 
-  constructor(
-    id: number,
-    name: string,
-    description: string,
-    creationDate: Date,
-    isSuspended: boolean,
-    suspendedReason: string,
-    groupAdmin: string 
-  ) {
+  constructor(id: number, name: string, description: string, creationDate: Date, isPublic: boolean, imageUrl: string, groupAdmin: GroupAdmin) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.creationDate = creationDate;
-    this.isSuspended = isSuspended;
-    this.suspendedReason = suspendedReason;
+    this.isPublic = isPublic;
+    this.imageUrl = imageUrl;
     this.groupAdmin = groupAdmin; 
   }
 }

@@ -33,9 +33,13 @@ import { GroupsComponent } from './groups/groups.component';
 import { FirendsComponent } from './firends/firends.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { FriendRequestComponent } from './friend-request/friend-request.component';
-import { EditPostComponent } from './edit-post/edit-post.component';
 import { GroupAdminService } from './service/groupadmin.service';
 import { GroupService } from './service';
+import { CommentComponent } from './comment/comment.component';
+import { ReactionComponent } from './reaction/reaction.component';
+import { ReportComponent } from './report/report.component';
+import { CommentService } from './service/comment.service';
+import { ReactionService } from './service/reaction.service';
 
 @NgModule({
   declarations: [
@@ -52,7 +56,9 @@ import { GroupService } from './service';
     FirendsComponent,
     UserProfileComponent,
     FriendRequestComponent,
-    EditPostComponent
+    CommentComponent,
+    ReactionComponent,
+    ReportComponent
   ],
   imports: [
     HttpClientModule,
@@ -82,7 +88,9 @@ import { GroupService } from './service';
     ConfigService,
     AuthGuard,
     CreatePostComponent,
-    GroupAdminService
+    GroupAdminService,
+    CommentService,
+    ReactionService
   ],
   bootstrap: [AppComponent]
 })

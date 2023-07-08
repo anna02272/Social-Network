@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { GroupService } from '../service/group.service';
 import { Group } from '../group/group';
-import { GroupRefreshService } from '../service/grouprefresh.service';
 import { GroupAdminService } from '../service/groupadmin.service';
+import { RefreshService } from '../service/refresh.service';
+import { User } from '../user';
 declare var $: any;
 
 @Component({
@@ -13,7 +14,7 @@ declare var $: any;
 })
 export class GroupsComponent implements OnInit {
   groups: Group[] = [];
-  group: Group = new Group(0, '', '', new Date(), false, '', '');
+  group: Group = new Group(0, '', '', new Date(), false, '', this.userService.currentUser)
 
 
   @ViewChild('groupModal') groupModal!: ElementRef;
@@ -21,14 +22,13 @@ export class GroupsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private groupService: GroupService,
-    private groupRefreshService: GroupRefreshService,
+    private refreshService: RefreshService,
     private groupAdminService: GroupAdminService
   ) {}
 
   ngOnInit() {
     this.loadGroups();
     this.subscribeToRefreshGroups();
-    this.fetchGroupAdmins();
   }
 
   onSubmit() {
@@ -41,7 +41,7 @@ export class GroupsComponent implements OnInit {
   
   createGroup() {
     this.groupService.createGroup(this.group).subscribe(() => {
-      this.groupRefreshService.refreshGroups();
+      this.refreshService.refresh();
       this.group.name = '';
       this.group.description = '';
 
@@ -50,7 +50,7 @@ export class GroupsComponent implements OnInit {
   }
   updateGroup() {
     this.groupService.updateGroup(this.group.id, this.group).subscribe(() => {
-      this.groupRefreshService.refreshGroups();
+      this.refreshService.refresh();
       this.group.name = '';
       this.group.description = '';
   
@@ -73,29 +73,27 @@ export class GroupsComponent implements OnInit {
   loadGroups() {
     this.groupService.getAllGroups().subscribe((data: Group[]) => {
       this.groups = data;
+      this.fetchGroupAdmins();
     });
   }
-
+  private fetchGroupAdmins() {
+    this.groups.forEach(group => {
+      if (group.groupAdmin && group.groupAdmin.user) {
+        const userId = group.groupAdmin.user.id;
+        this.userService.getUserById(userId).subscribe((user: User) => {
+          group.groupAdmin.user = user;
+        });
+      }
+    });
+  }
+  
+  
   private subscribeToRefreshGroups() {
-    this.groupRefreshService.getRefreshObservable().subscribe(() => {
+    this.refreshService.getRefreshObservable().subscribe(() => {
       this.loadGroups();
     });
   }
 
-  private fetchGroupAdmins() {
-    this.groupAdminService.getAllGroupAdmins().subscribe((groupAdmins: any[]) => {
-      groupAdmins.forEach((groupAdmin: any) => {
-        if (groupAdmin.userId !== undefined) { // Check if userId is defined
-          this.userService.getUserById(groupAdmin.userId).subscribe(user => {
-            const group = this.groups.find(g => g.id === groupAdmin.groupId) as Group | undefined;
-            if (group) {
-              group.groupAdmin = user.username;
-            }
-          });
-        }
-      });
-    });
-  }
 
   
   closeModal() {
@@ -108,7 +106,7 @@ export class GroupsComponent implements OnInit {
   }
   
   onModalHidden() {
-    this.group = new Group(0, '', '', new Date(), false, '', '');
+    this.group = new Group(0, '', '', new Date(), false, '', this.userService.currentUser );
     const groupForm = this.groupModal.nativeElement.querySelector('form');
     groupForm.reset();
   }
