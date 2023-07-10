@@ -68,8 +68,6 @@
               <label class="form-label" for="email">Email</label>
             </div>
             <div class="form-outline mb-0">
-              <p *ngIf="form.controls['firstName'].errors?.['minlength']" class="text-danger">
-               Firstname must be at least 4 characters long. </p>
               <input
                 formControlName="firstName"
                 type="text"
@@ -82,8 +80,6 @@
             </div>
 
             <div class="form-outline mb-0">
-              <p *ngIf="form.controls['lastName'].errors?.['minlength']" class="text-danger">
-                Lastname must be at least 4 characters long. </p>
               <input
                 formControlName="lastName"
                 type="text"

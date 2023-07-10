@@ -29,28 +29,52 @@
               aria-labelledby="post1CommentMenuButton"
             >
               <li class="d-flex align-items-center">
-                <a  (click)="edit(comment)"
+                <a *ngIf="comment.user.username == userName()"
+                  (click)="edit(comment)"
                   class="dropdown-item d-flex justify-content-around align-items-center fs-7"
-                > 
+                >
                   Edit Comment</a
                 >
               </li>
               <li class="d-flex align-items-center">
-                <a
+                <a *ngIf="comment.user.username == userName()"
                   class="dropdown-item d-flex justify-content-around align-items-center fs-7"
-                   (click)="delete(comment)"
+                  (click)="delete(comment)"
                 >
                   Delete Comment</a
                 >
               </li>
             </ul>
           </div>
-          <p class="fw-bold m-0">{{comment.user.username}}</p>
-          <p class="m-0 fs-7 bg-gray p-2 rounded">{{comment.text}}</p>
+          <p class="fw-bold m-0">{{ comment.user.username }}</p>
+          <span class="text-muted fs-7">{{ comment.timeStamp }}</span>
+
+          <form (ngSubmit)="onSubmitUpdate(comment)">
+            <div class="d-flex align-items-center">
+              <input
+                type="text"
+                [id]="'comment-' + comment.id"
+                [name]="'comment-' + comment.id"
+                class="form-control border-0 rounded-pill bg-gray"
+                [disabled]="editingCommentId !== comment.id"
+                [(ngModel)]="comment.text"
+              />
+
+              <button
+                *ngIf="editingCommentId === comment.id"
+                type="submit"
+                class="btn btn-warning btn-sm ms-auto"
+              >
+                Update
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      <app-reaction></app-reaction>
+
+      <app-reaction-comment [comment]="comment"></app-reaction-comment>
     </div>
+
     <!-- create comment -->
     <form class="d-flex my-1" (ngSubmit)="onSubmit()">
       <div>
@@ -67,14 +91,10 @@
         name="comment"
         class="form-control border-0 rounded-pill bg-gray"
         placeholder="Write a comment"
-        [(ngModel)]="comment.text"
-        
+        [(ngModel)]="newCommentText"
       />
-      <button
-      type="submit"
-      class="btn btn-warning btn-sm "
-    > Post
-    </button>
+
+      <button type="submit" class="btn btn-warning btn-sm">Post</button>
     </form>
   </div>
 </div>

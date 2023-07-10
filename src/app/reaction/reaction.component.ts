@@ -52,12 +52,13 @@ export class ReactionComponent {
     
     checkUserReaction(): void {
       this.userService.getMyInfo().subscribe(user => {
-        this.user = user;
-        if (user.id !== undefined) {
+        if (user && user.id) {
+          this.user = user;
+    
           for (const post of this.posts) {
-            if (post.id !== undefined) {
+            if (post && post.id) {
               this.reactionService.findReactionByPostAndUser(post.id, user.id).subscribe(reaction => {
-                if (reaction && reaction.post.id === post.id) {
+                if (reaction && reaction.post && reaction.post.id && reaction.post.id === post.id) {
                   switch (reaction.type) {
                     case EReactionType.LIKE:
                       this.changeReactionColor('blue', `like-reaction-icon-${post.id}`);
@@ -69,12 +70,13 @@ export class ReactionComponent {
                       this.changeReactionColor('blue', `heart-reaction-icon-${post.id}`);
                       break;
                   }
-                  
                 }
-                this.reactionService.countReactionsByPost(post.id).subscribe(reactionCounts => {
-                  this.updateReactionCount(reactionCounts, post.id);
-                });
-                
+    
+                if (post.id) {
+                  this.reactionService.countReactionsByPost(post.id).subscribe(reactionCounts => {
+                    this.updateReactionCount(reactionCounts, post.id);
+                  });
+                }
               });
             }
           }

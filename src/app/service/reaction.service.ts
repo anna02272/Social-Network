@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {ConfigService} from './config.service';
 import { Reaction } from '../reaction/reaction';
-import { Observable } from 'rxjs';
+
 
 
 @Injectable()
@@ -19,13 +19,22 @@ export class ReactionService {
     return this.apiService.post(url, reaction);
   }
   findReactionByPostAndUser(postId : number, userId : number) {
-    return this.apiService.get(this.config.reaction_url + "/find/" + postId + "/" + userId );
+    return this.apiService.get(this.config.reaction_url + "/find/post/" + postId +  "/user/"  + userId );
    }
 
    countReactionsByPost(postId : number) {
-    return this.apiService.get(this.config.reaction_url + "/count/" + postId );
+    return this.apiService.get(this.config.reaction_url + "/count/post/" + postId );
    }
-   
-  
+   reactToComment(commentId: number, reaction: Reaction){
+    const url = `${this.config.reaction_url}/reactToComment/${commentId}`;
+     return this.apiService.post(url, reaction);
+   }
+   findReactionByCommentAndUser(commentId : number, userId : number) {
+    return this.apiService.get(this.config.reaction_url + "/find/comment/" + commentId + "/user/" + userId );
+   }
+
+   countReactionsByComment(commentId : number) {
+    return this.apiService.get(this.config.reaction_url + "/count/comment/" + commentId );
+   }
     }
 

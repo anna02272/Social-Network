@@ -11,15 +11,9 @@ export class PostRefreshService {
   private post$ = new BehaviorSubject<any>({});
   selectedPost$ = this.post$.asObservable();
 
-  private posts$ = new BehaviorSubject<any>({});
-  selectedPosts$ = this.posts$.asObservable();
 
   setPost(post: any) {
     this.post$.next(post);
-  }
-
-  setPosts(posts: any) {
-    this.posts$.next(posts);
   }
   
   refreshPosts() {

@@ -12,10 +12,10 @@ export class CommentService {
     private config: ConfigService
   ) {
   }
-
-    create(comment: Comment){
-      return this.apiService.post(this.config.comment_url + "/create", comment);
-    }
+    create(postId: number, comment: Comment){
+      const url = `${this.config.comment_url}/create/${postId}`;
+       return this.apiService.post(url, comment);
+     }
   
     delete(id: number) {
     return this.apiService.put(this.config.comment_url + '/delete/' + id);
@@ -36,7 +36,7 @@ export class CommentService {
      getCommentsByPostId(postId : number) {
       return this.apiService.get(this.config.comment_url + "/findByPost/" + postId );
      }
-  
+    
   
   }
 

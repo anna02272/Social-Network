@@ -3,6 +3,8 @@ import { UserService } from '../service';
 import { CommentService } from '../service/comment.service';
 import { Comment } from './comment';
 import {RefreshService } from '../service/refresh.service';
+import { PostRefreshService } from '../service/postrefresh.service';
+import { Post } from '../post/post';
 
 @Component({
   selector: 'app-comment',
@@ -10,11 +12,13 @@ import {RefreshService } from '../service/refresh.service';
   styleUrls: ['./comment.component.css']
 })
 export class CommentComponent {
-  
   @Input() postId!: number;
   comments: Comment[] = [];
-  comment: Comment = new Comment(0,'',new Date(),false, this.userService.currentUser,[],[],[],[]
-  );
+  comment = new Comment(0,'',new Date(),false, this.userService.currentUser,[],[],[],[] );
+  @Input() post!: Post;
+  editingCommentId: number | null = null;
+  newCommentText: string = '';
+  editingComment!: Comment;
 
   constructor(
     private userService: UserService,
@@ -28,28 +32,44 @@ export class CommentComponent {
   }
 
   onSubmit() {
-    if (this.comment.id) {
-      this.update();
-    } else {
       this.create();
+  }
+
+  onSubmitUpdate(comment: Comment) {
+    this.update(comment);
+  }
+  
+
+  create() {
+    if (this.post.id !== undefined) {
+      const newComment = new Comment(
+        0,
+        this.newCommentText,
+        new Date(),
+        false,
+        this.userService.currentUser,
+        [],
+        [],
+        [],
+        []
+      );
+  
+      this.commentService.create(this.post.id, newComment).subscribe(() => {
+        this.refreshService.refresh();
+        this.newCommentText = '';
+      });
     }
   }
-  create() {
-    this.commentService.create(this.comment).subscribe(() => {
+  
+  update(comment: Comment) {
+    this.commentService.update(comment.id, comment).subscribe(() => {
       this.refreshService.refresh();
-      this.comment.text = '';
-    });
-  }
-  update() {
-    this.commentService.update(this.comment.id, this.comment).subscribe(() => {
-      this.refreshService.refresh();
-      this.comment.text = '';
-    
     });
   }
 
     edit(comment: Comment): void {
       this.comment = { ...comment }; 
+      this.editingCommentId = comment.id;
     }
 
     delete(comment: Comment): void {
@@ -59,10 +79,17 @@ export class CommentComponent {
     }
   
     load() {
-      this.commentService.getAll().subscribe((data: Comment[]) => { // Fetch comments by post ID
-        this.comments = data;
-      });
+      if (this.post && this.post.id) {
+        this.commentService.getCommentsByPostId(this.post.id).subscribe((data: Comment[]) => {
+          this.comments = data;
+        });
+      } else {
+        this.comments = [];
+      }
     }
+    
+    
+    
   
     private subscribeToRefresh() {
       this.refreshService.getRefreshObservable().subscribe(() => {
