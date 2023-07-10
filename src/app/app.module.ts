@@ -40,6 +40,7 @@ import { ReactionComponent } from './reaction/reaction.component';
 import { ReportComponent } from './report/report.component';
 import { CommentService } from './service/comment.service';
 import { ReactionService } from './service/reaction.service';
+import { ReactionCommentComponent } from './reaction-comment/reaction-comment.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { ReactionService } from './service/reaction.service';
     FriendRequestComponent,
     CommentComponent,
     ReactionComponent,
-    ReportComponent
+    ReportComponent,
+    ReactionCommentComponent
   ],
   imports: [
     HttpClientModule,

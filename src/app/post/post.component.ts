@@ -43,6 +43,7 @@ export class PostComponent implements OnInit {
     this.postRefreshService.setPost(post);
     this.openModal();
     }
+   
   
   deletePost(post: Post): void {
     this.postService.deletePost(post.id).subscribe(() => {
