@@ -55,6 +55,17 @@ public class ReactionServiceImpl implements ReactionService {
     return reactionCounts;
   }
 
+  @Override
+  public Map<EReactionType, Integer> countReactionsByComment(Comment comment) {
+    List<Reaction> reactions = reactionRepository.findByComment(comment);
 
+    Map<EReactionType, Integer> reactionCounts = new HashMap<>();
+    for (Reaction reaction : reactions) {
+      EReactionType reactionType = reaction.getType();
+      reactionCounts.put(reactionType, reactionCounts.getOrDefault(reactionType, 0) + 1);
+    }
+
+    return reactionCounts;
+  }
 
 }

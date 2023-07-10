@@ -14,4 +14,6 @@ public interface CommentService {
   List<Comment> findAllByIsDeleted(boolean isDeleted);
 
   List<Comment> findCommentsByPostId(Long postId);
+
+  List<Comment> findByPostIdAndIsDeleted(boolean isDeleted, Long postId);
 }

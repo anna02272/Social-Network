@@ -47,7 +47,14 @@ public class CommentServiceImpl implements CommentService {
   public List<Comment> findCommentsByPostId(Long postId) {
     return commentRepository.findByPostId(postId);
   }
-
+  public List<Comment> findByPostIdAndIsDeleted (boolean isDeleted, Long postId) {
+    Session session = entityManager.unwrap(Session.class);
+    Filter filter = session.enableFilter("deletedCommentFilter");
+    filter.setParameter("isDeleted", isDeleted);
+    List<Comment> comments = commentRepository.findByPostId(postId);
+    session.disableFilter("deletedCommentFilter");
+    return comments;
+  }
 
   @Override
   public List<Comment> findAll() {

@@ -30,8 +30,8 @@ public class CommentController {
   @Autowired
   private PostService postService;
 
-  @PostMapping("/create")
-  public ResponseEntity<Comment> create(@RequestBody Comment comment, @RequestParam Long postId, Principal principal) throws ChangeSetPersister.NotFoundException {
+  @PostMapping("/create/{id}")
+  public ResponseEntity<Comment> create(@PathVariable("id") Long postId, @RequestBody Comment comment, Principal principal) throws ChangeSetPersister.NotFoundException {
     String username = principal.getName();
     User user = userService.findByUsername(username);
     Post post = postService.findOneById(postId);
@@ -97,7 +97,7 @@ public class CommentController {
 
   @GetMapping("/findByPost/{postId}")
   public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable Long postId) {
-    List<Comment> comments = commentService.findCommentsByPostId(postId);
+    List<Comment> comments = commentService.findByPostIdAndIsDeleted(false, postId);
     return ResponseEntity.ok(comments);
   }
 

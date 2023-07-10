@@ -17,4 +17,6 @@ public interface ReactionRepository extends JpaRepository<Reaction, Long> {
   Reaction findByCommentAndUser(Comment comment, User user);
 
     List<Reaction> findByPost(Post post);
+
+  List<Reaction> findByComment(Comment comment);
 }

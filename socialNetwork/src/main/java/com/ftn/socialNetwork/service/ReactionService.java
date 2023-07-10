@@ -13,4 +13,6 @@ public interface ReactionService {
   Reaction findReactionByCommentAndUser(Comment comment, User user);
 
   Map<EReactionType, Integer> countReactionsByPost(Post post);
+
+  Map<EReactionType, Integer> countReactionsByComment(Comment comment);
 }

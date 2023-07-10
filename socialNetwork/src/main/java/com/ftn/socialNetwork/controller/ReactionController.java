@@ -54,7 +54,7 @@ public class ReactionController {
 
     return ResponseEntity.ok(createdReaction);
   }
-  @GetMapping("/count/{postId}")
+  @GetMapping("/count/post/{postId}")
   public ResponseEntity<Map<EReactionType, Integer>> countReactionsByPost(
     @PathVariable("postId") Long postId
   ) throws ChangeSetPersister.NotFoundException {
@@ -67,7 +67,7 @@ public class ReactionController {
   }
 
 
-  @GetMapping("/find/{postId}/{userId}")
+  @GetMapping("/find/post/{postId}/user/{userId}")
   public ResponseEntity<Reaction> findReactionByPostAndUser(@PathVariable("postId") Long postId, @PathVariable("userId") Long userId) throws ChangeSetPersister.NotFoundException {
     Post post = postService.findOneById(postId);
     User user = userService.findOneById(userId);
@@ -102,6 +102,31 @@ public class ReactionController {
     Reaction createdReaction = reactionService.create(reaction);
 
     return ResponseEntity.ok(createdReaction);
+  }
+  @GetMapping("/count/comment/{commentId}")
+  public ResponseEntity<Map<EReactionType, Integer>> countReactionsByComment(
+    @PathVariable("commentId") Long commentId
+  ) throws ChangeSetPersister.NotFoundException {
+    Comment comment = commentService.findOneById(commentId);
+    if (comment == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    Map<EReactionType, Integer> reactionCounts = reactionService.countReactionsByComment(comment);
+    return ResponseEntity.ok(reactionCounts);
+  }
+
+
+  @GetMapping("/find/comment/{commentId}/user/{userId}")
+  public ResponseEntity<Reaction> findReactionByCommentAndUser(@PathVariable("commentId") Long commentId, @PathVariable("userId") Long userId) throws ChangeSetPersister.NotFoundException {
+    Comment comment = commentService.findOneById(commentId);
+    User user = userService.findOneById(userId);
+
+    if (comment == null || user == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    Reaction reaction = reactionService.findReactionByCommentAndUser(comment, user);
+    return ResponseEntity.ok(reaction);
   }
 
 
