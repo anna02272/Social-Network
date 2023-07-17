@@ -141,5 +141,19 @@ public class PostController {
 
     return ResponseEntity.ok(posts);
   }
+  @GetMapping("/ascendingAll")
+  public ResponseEntity<List<Post>> getAllAscending(){
+    List<Post> posts = postService.findAllByIsDeleted(false);
+    Collections.sort(posts, (post1, post2) -> post1.getCreationDate().compareTo(post2.getCreationDate()));
+
+    return ResponseEntity.ok(posts);
+  }
+  @GetMapping("/descendingAll")
+  public ResponseEntity<List<Post>> getAllDescending(){
+    List<Post> posts = postService.findAllByIsDeleted(false);
+    Collections.sort(posts, (post1, post2) -> post2.getCreationDate().compareTo(post1.getCreationDate()));
+
+    return ResponseEntity.ok(posts);
+  }
 
 }

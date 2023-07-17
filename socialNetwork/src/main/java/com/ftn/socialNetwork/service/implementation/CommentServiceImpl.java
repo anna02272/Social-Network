@@ -72,4 +72,8 @@ public class CommentServiceImpl implements CommentService {
     session.disableFilter("deletedCommentFilter");
     return comments;
   }
+  public List<Comment> findAllByParentCommentId(Long parentCommentId) {
+    return commentRepository.findAllByParentCommentId(parentCommentId);
+  }
+
 }

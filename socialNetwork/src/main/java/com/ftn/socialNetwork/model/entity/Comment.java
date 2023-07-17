@@ -43,11 +43,12 @@ public class Comment {
     @ManyToOne
     private Post post;
 
-  @OneToMany(mappedBy = "parentComment")
+  @OneToMany
+//    (mappedBy = "parentComment")
   private List<Comment> replies;
 
   @ManyToOne
-  @JoinColumn(name = "parent_comment_id")
+//  @JoinColumn(name = "parent_comment_id")
   private Comment parentComment;
   @OneToMany
   private List<Reaction> reactions;
