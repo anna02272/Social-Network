@@ -17,7 +17,7 @@ declare var $: any;
 export class PostComponent implements OnInit {
   posts: Post[] = [];
   comments: Comment[] =[];
-  
+  sortingOrder: string = 'ascending';
 
   constructor(
     private userService: UserService,
@@ -33,10 +33,21 @@ export class PostComponent implements OnInit {
     
   }
 
+  // loadPosts() {
+  //   this.postService.getAllPosts().subscribe((data: Post[]) => {
+  //     this.posts = data;
+  //       });
+  // }
   loadPosts() {
-    this.postService.getAllPosts().subscribe((data: Post[]) => {
-      this.posts = data;
-        });
+    if (this.sortingOrder === 'ascending') {
+      this.postService.getAllAscending().subscribe((data: Post[]) => {
+        this.posts = data;
+      });
+    } else {
+      this.postService.getAllDescending().subscribe((data: Post[]) => {
+        this.posts = data;
+      });
+    }
   }
 
   onSelectedPost(post: Post) {
@@ -62,8 +73,22 @@ export class PostComponent implements OnInit {
       this.openModal();
     });
   }
-  
 
+  toggleSortingOrder() {
+    this.sortingOrder = this.sortingOrder === 'ascending' ? 'descending' : 'ascending';
+    this.loadPosts();
+  }
+
+  sortAscending() {
+    this.sortingOrder = 'ascending';
+    this.loadPosts();
+  }
+  
+  sortDescending() {
+    this.sortingOrder = 'descending';
+    this.loadPosts();
+  }
+     
   openModal() {
     $('#createModal').modal('show');
   }
@@ -74,6 +99,11 @@ export class PostComponent implements OnInit {
   userName() {
     const user = this.userService.currentUser;
     return user ? user.username : '';
+    
+  }
+  userType() {
+    const user = this.userService.currentUser;
+    return user ? user.type : '';
   }
   reactToPost(post: Post, reaction: Reaction): void {
     this.reactionService.reactToPost(post.id, reaction).subscribe(() => {

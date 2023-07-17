@@ -29,6 +29,31 @@ export class CommentService {
     getAll() {
       return this.apiService.get(this.config.comment_url + "/all");
      }
+     getAllAscending(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/ascendingAll" + "/" + postId);
+     }
+     getAllDescending(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/descendingAll" + "/" + postId );
+     }
+     getAllByAscendingLikes(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/likesAscendingAll" + "/" + postId );
+     }
+     getAllByDescendingLikes(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/likesDescendingAll" + "/" + postId );
+     }
+     getAllByAscendingDislikes(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/dislikesAscendingAll" + "/" + postId );
+     }
+     getAllByDescendingDislikes(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/dislikesDescendingAll" + "/" + postId );
+     }
+     getAllByAscendingHearts(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/heartsAscendingAll" + "/" + postId );
+     }
+     getAllByDescendingHearts(postId : number) {
+      return this.apiService.get(this.config.comment_url + "/heartsDescendingAll" + "/" + postId );
+     }
+   
      getById(id : number) {
       return this.apiService.get(this.config.comment_url + "/find/" + id );
      }

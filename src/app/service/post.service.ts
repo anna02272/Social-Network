@@ -29,6 +29,12 @@ updatePost(postId: number, post: Post) {
   getAllPosts() {
     return this.apiService.get(this.config.post_url + "/all");
    }
+   getAllAscending() {
+    return this.apiService.get(this.config.post_url + "/ascendingAll");
+   }
+   getAllDescending() {
+    return this.apiService.get(this.config.post_url + "/descendingAll");
+   }
    getPostById(id : number) {
     return this.apiService.get(this.config.post_url + "/find/" + id );
    }

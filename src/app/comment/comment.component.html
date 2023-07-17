@@ -5,6 +5,21 @@
   data-bs-parent="#accordionExample"
 >
   <hr />
+  <div _ngcontent-sji-c1="" class="pt-1">
+      <button type="button" (click)="toggleSortingOrder('date')" class="btn btn-warning btn-block custom-margin">
+       <i class="fa-solid fa-calendar-days"></i> {{ sortingOrder === 'ascending' ? 'descending' : 'ascending' }}
+      </button>  
+      <button type="button" (click)="toggleSortingOrder('likes')" class="btn btn-warning btn-block custom-margin">
+        <i class="fas fa-thumbs-up"></i> {{ sortingOrder === 'likesAscending' ? 'descending' : 'ascending' }}
+      </button> 
+      <button type="button" (click)="toggleSortingOrder('dislikes')" class="btn btn-warning btn-block custom-margin">
+        <i class="fas fa-thumbs-down"></i> {{ sortingOrder === 'dislikesAscending' ? 'descending' : 'ascending' }}
+      </button>
+      <button type="button" (click)="toggleSortingOrder('hearts')" class="btn btn-warning btn-block custom-margin">
+        <i class="fa-solid fa-heart"></i> {{ sortingOrder === 'heartsAscending' ? 'descending' : 'ascending' }}
+      </button>  
+    </div>
+  
   <div class="accordion-body">
     <!-- comment -->
     <div *ngFor="let comment of comments">
@@ -28,8 +43,16 @@
               class="dropdown-menu border-0 shadow"
               aria-labelledby="post1CommentMenuButton"
             >
+            <li class="d-flex align-items-center">
+              <a 
+              (click)="reply(comment)"
+                class="dropdown-item d-flex justify-content-around align-items-center fs-7"
+              >
+                Reply To Comment</a
+              >
+            </li>
               <li class="d-flex align-items-center">
-                <a *ngIf="comment.user.username == userName()"
+                <a *ngIf="comment.user.username == userName() || userType() === 'ADMIN'" 
                   (click)="edit(comment)"
                   class="dropdown-item d-flex justify-content-around align-items-center fs-7"
                 >
@@ -37,7 +60,7 @@
                 >
               </li>
               <li class="d-flex align-items-center">
-                <a *ngIf="comment.user.username == userName()"
+                <a *ngIf="comment.user.username === userName() || post.user.username === userName() || userType() === 'ADMIN'"
                   class="dropdown-item d-flex justify-content-around align-items-center fs-7"
                   (click)="delete(comment)"
                 >
@@ -69,8 +92,34 @@
               </button>
             </div>
           </form>
+          <!-- Reply to comment -->
+          <form class="d-flex my-1"    
+          *ngIf="replyingCommentId === comment.id && this.showReplyForm"
+           (ngSubmit)="onSubmit()">
+            <div>
+              <img
+                src="https://source.unsplash.com/collection/happy-people"
+                alt="avatar"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover"
+              />
+            </div>
+            <input
+              type="text"
+              [id]="'comment-' + comment.id"
+              [name]="'comment-' + comment.id"
+              class="form-control border-0 rounded-pill bg-gray"
+              placeholder="Reply to a comment"
+              [(ngModel)]="replyCommentText"
+            />
+          
+      
+            <button type="submit" class="btn btn-warning btn-sm">Reply</button>
+          </form>
+          
         </div>
       </div>
+      
 
       <app-reaction-comment [comment]="comment"></app-reaction-comment>
     </div>
@@ -85,7 +134,7 @@
           style="width: 38px; height: 38px; object-fit: cover"
         />
       </div>
-      <input
+      <input   
         type="text"
         id="comment"
         name="comment"
