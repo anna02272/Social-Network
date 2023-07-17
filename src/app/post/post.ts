@@ -5,6 +5,8 @@ export class Post {
   content: string;
   creationDate: Date;
   user: User; 
+  
+  expandedComments: boolean = false;
 
   constructor(id: number, content: string, creationDate: Date, user: User) {
     this.id = id;

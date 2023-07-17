@@ -46,7 +46,8 @@
           <li class="d-flex align-items-center">
             <a
               class="dropdown-item d-flex justify-content-around align-items-center fs-7"
-               style="cursor: pointer"  (click)="deleteGroup(group)"
+               style="cursor: pointer"     *ngIf="userType() === 'ADMIN'"
+               (click)="deleteGroup(group)"
             >
               Delete Group</a
             >

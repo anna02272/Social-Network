@@ -119,4 +119,8 @@ export class GroupsComponent implements OnInit {
     const user = this.userService.currentUser;
     return user ? user.username : '';
   }
+  userType() {
+    const user = this.userService.currentUser;
+    return user ? user.type : '';
+  }
 }
