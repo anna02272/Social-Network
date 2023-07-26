@@ -1,0 +1,38 @@
+<div class="header-for-bg position-relative">
+  <div class="background-header">
+    <img
+      src="assets/images/smiley4rotate.jpg"
+      class="img-fluid"
+      style="width: 1350px; height: 150px"
+      alt="header-bg"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-2">
+        <img
+          class="rounded-circle img-fluid avatar-100"
+          src="assets/images/smiley6.jpg"
+        />
+      </div>
+      <div class="col-lg-8">
+        <div class="info">
+          <h4>{{ group.name }}</h4>
+          <p>{{ group.description }}</p>
+          <p>Creation date: {{ formatDate(group.creationDate) }}</p>
+          <p>Created by: {{ group.groupAdmin.user.username }}</p>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <button type="submit" class="btn btn-warning">Join group</button>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <app-create-post></app-create-post>
+  <app-post></app-post>
+</div>
