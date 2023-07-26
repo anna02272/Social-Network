@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,58 +27,52 @@ import java.util.List;
 @RestController
 @RequestMapping("api/posts")
 public class PostController {
-    @Autowired
-    private PostService postService;
+  @Autowired
+  private PostService postService;
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @Autowired
-    private ImageController imageController;
+  @Autowired
+  private ImageService imageService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Post> createPost(@RequestBody Post post, Principal principal) {
+//    @PostMapping("/create")
+//    public ResponseEntity<Post> createPost(@RequestBody Post post, Principal principal) {
+//        String username = principal.getName();
+//        User user = userService.findByUsername(username);
+//        post.setUser(user);
+//        post.setCreationDate(LocalDateTime.now());
+//        post.setIsDeleted(false);
+//        Post createdPost = postService.createPost(post);
+//
+//        return ResponseEntity.ok(createdPost);
+//}
+  @PostMapping("/create")
+  public ResponseEntity<Post> createPost(@RequestBody Post post,
+                                         @RequestPart(required = false) MultipartFile[] images,
+                                       Principal principal) {
         String username = principal.getName();
         User user = userService.findByUsername(username);
         post.setUser(user);
         post.setCreationDate(LocalDateTime.now());
         post.setIsDeleted(false);
+      List<Image> savedImages = new ArrayList<>();
+      if (images != null && images.length > 0) {
+        for (MultipartFile imageFile : images) {
+          Image image = new Image();
+          String imagePath = imageService.saveImage(imageFile);
+          image.setPath(imagePath);
+          image.setPost(post);
+          savedImages.add(image);
+        }
+      }
+       post.setImages(savedImages);
         Post createdPost = postService.createPost(post);
 
         return ResponseEntity.ok(createdPost);
-    }
+}
 
-//  @PostMapping("/create")
-//  public ResponseEntity<Post> createPost(@RequestPart("post") Post post,
-//                                         @RequestPart(value = "image", required = false) MultipartFile[] images,
-//                                         Principal principal) {
-//    String username = principal.getName();
-//    User user = userService.findByUsername(username);
-//    post.setUser(user);
-//    post.setCreationDate(LocalDateTime.now());
-//    post.setIsDeleted(false);
-//
-//    // Save post
-//    Post createdPost = postService.createPost(post);
-//
-//    // Save images if provided
-//    if (images != null && images.length > 0) {
-//      List<Image> postImages = new ArrayList<>();
-//      for (MultipartFile image : images) {
-//        String imagePath = imageController.saveImage(image);
-//        if (imagePath != null) {
-//          Image postImage = new Image();
-//          postImage.setPath(imagePath);
-//          postImage.setUser(user);
-//          postImage.setPost(createdPost);
-//          postImages.add(postImage);
-//        }
-//      }
-//      createdPost.setImage(postImages);
-//    }
-//
-//    return ResponseEntity.ok(createdPost);
-//  }
+
 
   @PutMapping("/update/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable("id") Long postId, @RequestBody Post post) throws ChangeSetPersister.NotFoundException {
@@ -96,8 +91,8 @@ public class PostController {
         if (post.getUser() != null) {
             existingPost.setUser(post.getUser());
         }
-        if (post.getImage()!= null){
-            existingPost.setImage(post.getImage());
+        if (post.getImages()!= null){
+            existingPost.setImages(post.getImages());
         }
       if (post.getIsDeleted()!= null){
         existingPost.setIsDeleted(post.getIsDeleted());

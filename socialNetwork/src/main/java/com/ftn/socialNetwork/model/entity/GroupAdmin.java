@@ -21,12 +21,11 @@ public class GroupAdmin{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "group_id")
+
+  @JsonIgnore
+    @OneToOne
     private Group group;
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+
+    @OneToOne
     private User user;
 }

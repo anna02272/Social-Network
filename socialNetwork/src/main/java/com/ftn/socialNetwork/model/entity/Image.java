@@ -25,4 +25,5 @@ public class Image {
 
    @ManyToOne
     private Post post;
+
 }

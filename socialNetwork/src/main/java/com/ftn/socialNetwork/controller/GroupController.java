@@ -47,8 +47,7 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
 
     GroupAdmin createdGroupAdmin = groupAdminService.save(groupAdmin);
 
-
-    return ResponseEntity.ok(createdGroup);
+  return ResponseEntity.ok(createdGroup);
 }
     @PutMapping("/update/{id}")
     public ResponseEntity<Group> updateGroup(@PathVariable("id") Long groupId, @RequestBody Group group) throws ChangeSetPersister.NotFoundException {

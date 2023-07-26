@@ -37,8 +37,9 @@ public class Post {
   private Boolean isDeleted ;
     @ManyToOne
     private User user;
-    @OneToMany
-    private List<Image> image;
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+  private List<Image> images;
+
 
   @OneToMany
   private List<Reaction> reactions;

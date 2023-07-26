@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,21 +75,19 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
-
-//        if (isUserLoggedIn(authenticationRequest.getUsername())) {
-//            return ResponseEntity.badRequest().body(null);
-//        }
-
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+       authenticationRequest.getUsername(), authenticationRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetails user = (UserDetails) authentication.getPrincipal();
-        String jwt = tokenUtils.generateToken(user);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String jwt = tokenUtils.generateToken(userDetails);
         int expiresIn = tokenUtils.getExpiredIn();
 
         updateUserLoginStatus(authenticationRequest.getUsername(), true);
+        User user = userService.findByUsername(authenticationRequest.getUsername());
+        user.setLastLogin(LocalDateTime.now());
+        userService.updateUser(user);
 
         return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
     }
@@ -141,6 +140,27 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+  @PutMapping("/update/{id}")
+  public ResponseEntity<User> update(@PathVariable("id") Long userId, @RequestBody User user) throws ChangeSetPersister.NotFoundException {
+    User existing = userService.findOneById(userId);
+    if (existing == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    if (user.getProfileName() != null) {
+      existing.setProfileName(user.getProfileName());
+    }
+    if (user.getFirstName() != null) {
+      existing.setFirstName(user.getFirstName());
+    }
+    if (user.getLastName() != null) {
+      existing.setLastName(user.getLastName());
+    }
+    if (user.getDescription() != null) {
+      existing.setDescription(user.getDescription());
+    }
+    User updated = userService.updateUser(existing);
+    return new ResponseEntity<>(updated, HttpStatus.OK);
+  }
 
 
 }

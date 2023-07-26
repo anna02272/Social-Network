@@ -2,7 +2,7 @@ package com.ftn.socialNetwork.model.entity;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +11,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -46,9 +44,9 @@ public class Group {
 
   @Column(nullable = false, columnDefinition = "boolean default false")
   private Boolean isDeleted ;
-  @JsonIgnore
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private List<GroupAdmin> groupAdmin;
+
+  @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, optional = true)
+  private GroupAdmin groupAdmin;
 
 
 
