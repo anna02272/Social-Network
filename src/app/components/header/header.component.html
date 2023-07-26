@@ -1,0 +1,95 @@
+<mat-toolbar class="app-navbar">
+  <div class="col d-flex align-items-center">
+    <img
+      src="assets/images/smiley6.jpg"
+      alt="Logo"
+      [style.width.px]="60"
+      [style.height.px]="60"
+    />  
+      <!-- search bar -->
+      <div class="input-group ms-2" type="button" *ngIf="hasSignedIn()">
+        <!-- desktop -->
+        <span
+          class="input-group-prepend d-none d-lg-block"
+          id="searchMenu"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          data-bs-auto-close="outside"
+        >
+    <div class="input-group-text bg-gray border-0 rounded-pill" style="min-height: 40px; min-width: 230px">
+      <i class="fas fa-search me-2 text-muted"></i>
+      <p class="m-0 fs-7 text-muted">Search</p>
+    </div>
+  </span>
+     <!-- search menu -->
+     <ul
+     class="dropdown-menu overflow-auto border-0 shadow p-3"
+     aria-labelledby="searchMenu"
+     style="width: 20em; max-height: 600px"
+   >
+     <!-- search input -->
+     <li>
+       <input
+         type="text"
+         class="rounded-pill border-0 bg-gray dropdown-item"
+         placeholder="Search"
+         autofocus
+       />
+     </li>
+     </ul>
+ 
+    <!-- home -->
+    <div class="mx-4 nav__btn nav__btn-active">
+      <button type="button" class="btn px-4" routerLink="/home">
+        <i class="fas fa-home text-muted fs-4"></i>
+      </button>
+    </div>
+
+      <!-- group -->
+      <div class="mx-4 nav__btn nav__btn-active">
+        <button type="button" class="btn px-4" routerLink="/groups">
+          <i class="fas fa-users text-muted fs-4" ></i>
+        </button>
+    </div>
+  </div>
+  </div>
+ 
+  <div class="right"  *ngIf="hasSignedIn()">
+    <div fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="flex-end center">
+      <img
+      src="assets/images/smiley6.jpg"
+      class="rounded-circle me-2"
+      style="width: 38px; height: 38px; object-fit: cover"
+    />
+      <button
+        *ngIf="hasSignedIn()"
+        [matMenuTriggerFor]="userMenu"
+        class="greeting-button"
+        mat-button
+        mat-ripple
+      >
+        <span>{{ profileName ? profileName : username()}}</span>
+      </button>
+      <button
+        *ngIf="hasSignedIn()"
+        [matMenuTriggerFor]="userMenu"
+        class="greeting-hamburger"
+        mat-icon-button
+        mat-ripple
+      >
+      
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <mat-menu
+        #userMenu
+        [overlapTrigger]="false"
+        class="app-header-userMenu"
+        yposition="below"
+      >
+        <app-user-menu></app-user-menu>
+      </mat-menu>
+      
+    </div>
+  </div>
+</mat-toolbar>

@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from './service/auth.guard'; 
+import { AuthGuard } from './services/auth.guard'; 
 
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import {GroupComponent } from './group/group.component';
-import {PostComponent } from './post/post.component';
-import {HomeComponent } from './home/home.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import {GroupComponent } from './components/group/group.component';
+import {PostComponent } from './components/post/post.component';
+import {HomeComponent } from './components/home/home.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { GroupsComponent } from './components/groups/groups.component';
 
 
 
@@ -31,9 +33,17 @@ const routes: Routes = [
   },
   {
     path: 'groups',
+    component: GroupsComponent,
+    canActivate: [AuthGuard] 
+  },
+  {
+    path: 'group',
     component: GroupComponent,
     canActivate: [AuthGuard] 
   },
+  { path: 'group/:id',
+   component: GroupComponent,
+   canActivate: [AuthGuard]  },
   {
     path: 'posts',
     component: PostComponent,
@@ -43,7 +53,13 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     canActivate: [AuthGuard] 
-  }
+  },
+  {
+    path: 'profile',
+    component: UserProfileComponent,
+    canActivate: [AuthGuard] 
+  },
+
 ];
 
 @NgModule({

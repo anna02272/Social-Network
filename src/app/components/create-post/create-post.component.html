@@ -1,0 +1,143 @@
+
+<div class="container-fluid">
+  <div class="row justify-content-evenly">
+    <div class="col-12 col-lg-6 pb-3">
+      <div
+        class="d-flex flex-column justify-content-center w-100 mx-auto"
+        style="padding-top: 56px; max-width: 680px"
+      >
+        <!-- create post -->
+        <form (ngSubmit)="combinedMethod()" #postForm="ngForm" enctype="multipart/form-data">
+          <div class="bg-white p-3 mt-3 rounded border shadow">
+            <p>Create Post</p>
+            <!-- avatar -->
+            <div class="d-flex" type="button">
+              <div class="p-1">
+                <img
+                src="assets/images/smiley6.jpg"
+                  class="rounded-circle me-2"
+                  style="width: 38px; height: 38px; object-fit: cover"
+                />
+              </div>
+
+              <input
+                type="text"
+                class="form-control rounded-pill border-0 bg-gray pointer"
+                disabled
+                placeholder="What's on your mind,  {{ userName() }}?"
+                data-bs-toggle="modal"
+                data-bs-target="#createModal"
+              />
+            </div>
+            <!-- create modal -->
+            <div
+              class="modal fade"
+              id="createModal"
+              tabindex="-1"
+              aria-labelledby="createModalLabel"
+              aria-hidden="true"
+              data-bs-backdrop="false"
+              #createModal
+               (hidden.bs.modal)="onModalHidden()"
+            >
+              <div  class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <!-- head -->
+                  <!-- head -->
+                  <div class="modal-header align-items-center">
+                    <h5
+                      class="text-dark text-center w-100 m-0"
+                      id="exampleModalLabel"
+                    >
+                    {{ selectedPost.id ? 'Update Post' : 'Create Post' }}
+         
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <!-- body -->
+                  <div class="modal-body">
+                    <div class="my-1 p-1">
+                      <div class="d-flex flex-column">
+                        <!-- name -->
+                        <div class="d-flex align-items-center">
+                          <div class="p-2">
+                            <img
+                            src="assets/images/smiley6.jpg"
+                              
+                              class="rounded-circle"
+                              style="
+                                width: 38px;
+                                height: 38px;
+                                object-fit: cover;
+                              "
+                            />
+                          </div>
+                          <div>
+                            <p class="m-0 fw-bold">{{ userName() }}</p>
+                          </div>
+                        </div>
+                        <!-- text -->
+
+                        <ng-container *ngIf="post">
+                        <div
+                          [hidden]="!content.pristine"
+                          class="alert alert-danger"
+                        >
+                          Content is required
+                        </div>
+                        <textarea
+                        [(ngModel)]="post.content"
+                          [(ngModel)]="selectedPost.content"
+                          id="content"
+                          name="content"
+                          placeholder="Write a post"
+                          required
+                          #content="ngModel"
+                          cols="30"
+                          rows="5"
+                          class="form-control border-0"
+                        ></textarea>
+                      </ng-container>
+                        <!-- options -->
+                        <div
+                          class="d-flex justify-content-between border border-1 border-light rounded p-3 mt-3"
+                        >
+                       
+                          <div>
+                            <label for="fileUpload" class="upload-label">
+                              <i  class="fas fa-images fs-5 text-success pointer mx-1"></i>
+                            </label>
+                            <input type="file" name="images" accept="image/*" (change)="onFileSelected($event)" multiple />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- end -->
+                  </div>
+                  <!-- footer -->
+                  <div class="modal-footer">
+                    <button
+                      type="submit"
+                      [disabled]="!postForm.form.valid"
+                      class="btn btn-warning w-100"
+                      data-bs-dismiss="modal"
+                    >
+                    {{ selectedPost.id ? 'Update Post' : 'Create Post' }}
+           
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
