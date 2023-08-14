@@ -61,7 +61,12 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> create(@RequestBody @Validated UserDTO newUser){
-
+      if (userService.existsByUsername(newUser.getUsername())) {
+        return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+      }
+      if (userService.existsByEmail(newUser.getEmail())) {
+        return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+      }
         User createdUser = userService.createUser(newUser);
 
         if(createdUser == null){

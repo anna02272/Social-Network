@@ -24,10 +24,14 @@ public class Report {
     private LocalDate timestamp;
     @Column(nullable = false)
     private boolean accepted;
+  @Column(nullable = false, columnDefinition = "boolean default false")
+  private Boolean isDeleted ;
     @ManyToOne
     private User user;
     @ManyToOne
     private Post post;
     @ManyToOne
     private Comment comment;
+    @ManyToOne
+    private User reportedUser;
 }

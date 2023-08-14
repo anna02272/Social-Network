@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,7 +20,7 @@ public class Administrator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @OneToOne(optional = false)
-//    private User user;
+  @OneToMany
+  private List<Banned> banned;
 
 }

@@ -13,4 +13,5 @@ public interface GroupService {
     List<Group> findAll();
 
   List<Group> findAllByIsDeleted(boolean isDeleted);
+  boolean existsByName(String name);
 }

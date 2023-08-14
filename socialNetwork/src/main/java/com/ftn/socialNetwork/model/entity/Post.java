@@ -49,6 +49,8 @@ public class Post {
   @OneToMany
   private List<Comment> comments;
 
+  @ManyToOne
+  private Group group;
 
 
 }

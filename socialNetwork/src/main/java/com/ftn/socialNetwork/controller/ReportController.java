@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/reports")
@@ -36,15 +38,18 @@ public class ReportController {
     report.setUser(user);
     report.setTimestamp(LocalDate.now());
     report.setAccepted(false);
+    report.setIsDeleted(false);
     Post post = postService.findOneById(postId);
     if (post == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
     Report existing = reportService.findReportByPostAndUser(post, user);
     if (existing != null) {
-      existing.setReason(report.getReason());
-      reportService.create(existing);
-      return ResponseEntity.ok(existing);
+      if (!existing.getIsDeleted()) {
+        existing.setReason(report.getReason());
+        reportService.create(existing);
+        return ResponseEntity.ok(existing);
+      }
     }
 
     report.setPost(post);
@@ -60,15 +65,18 @@ public class ReportController {
     report.setUser(user);
     report.setTimestamp(LocalDate.now());
     report.setAccepted(false);
+    report.setIsDeleted(false);
     Comment comment = commentService.findOneById(commentId);
     if (comment == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
     Report existing = reportService.findReportByCommentAndUser(comment, user);
     if (existing != null) {
-      existing.setReason(report.getReason());
-      reportService.create(existing);
-      return ResponseEntity.ok(existing);
+      if (!existing.getIsDeleted()) {
+        existing.setReason(report.getReason());
+        reportService.create(existing);
+        return ResponseEntity.ok(existing);
+      }
     }
     report.setComment(comment);
     Report created = reportService.create(report);
@@ -76,30 +84,78 @@ public class ReportController {
     return ResponseEntity.ok(created);
   }
 
-  //dodaj usera koji je prijavljen a koji je prijavio!
   @PostMapping("/reportUser/{id}")
-  public ResponseEntity<Report> reportUser(@PathVariable("id") Long userId,@RequestBody Report report, Principal principal) throws ChangeSetPersister.NotFoundException {
+  public ResponseEntity<Report> reportUser(@PathVariable("id") Long reportedUserId,@RequestBody Report report, Principal principal) throws ChangeSetPersister.NotFoundException {
     String username = principal.getName();
-    User loggedUser = userService.findByUsername(username);
-    report.setUser(loggedUser);
+    User user = userService.findByUsername(username);
+    report.setUser(user);
     report.setTimestamp(LocalDate.now());
     report.setAccepted(false);
-    User user = userService.findOneById(userId);
-    if (user == null) {
+    report.setIsDeleted(false);
+    User reportedUser = userService.findOneById(reportedUserId);
+    if (reportedUser == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-    Report existing = reportService.findReportByUserAndUser(user, user);
+    Report existing = reportService.findReportByReportedUserAndUser(reportedUser, user);
     if (existing != null) {
-      existing.setReason(report.getReason());
-      reportService.create(existing);
-      return ResponseEntity.ok(existing);
+      if (!existing.getIsDeleted()) {
+        existing.setReason(report.getReason());
+        reportService.create(existing);
+        return ResponseEntity.ok(existing);
+      }
     }
-    report.setUser(user);
+    report.setReportedUser(reportedUser);
     Report created = reportService.create(report);
 
     return ResponseEntity.ok(created);
   }
+  @PutMapping("/approve/{id}")
+  public ResponseEntity<Report> approve(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    Report existing = reportService.findOneById(id);
 
+    if (existing == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    existing.setAccepted(true);
+    existing.setIsDeleted(true);
+    if (existing.getPost() != null) {
+      existing.getPost().setIsDeleted(true);
+    } else if (existing.getComment() != null) {
+      existing.getComment().setIsDeleted(true);
+    }
+    Report updated = reportService.update(existing);
+
+    return new ResponseEntity<>(updated, HttpStatus.OK);
+  }
+  @PutMapping("/decline/{id}")
+  public ResponseEntity<Report> decline(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    Report existing = reportService.findOneById(id);
+
+    if (existing == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    existing.setIsDeleted(true);
+    Report updated = reportService.update(existing);
+
+    return new ResponseEntity<>(updated, HttpStatus.OK);
+  }
+
+  @GetMapping("/allPosts")
+  public ResponseEntity<List<Report>> getAllReportsForPosts() {
+    List<Report> reports = reportService.findAllReportsForPosts();
+    return ResponseEntity.ok(reports);
+  }
+  @GetMapping("/allComments")
+  public ResponseEntity<List<Report>> getAllReportsForComments() {
+    List<Report> reports = reportService.findAllReportsForComments();
+    return ResponseEntity.ok(reports);
+  }
+
+  @GetMapping("/allUsers")
+  public ResponseEntity<List<Report>> getAllReportsForUsers() {
+    List<Report> reports = reportService.findAllReportsForReportedUsers();
+    return ResponseEntity.ok(reports);
+  }
 
 }
 

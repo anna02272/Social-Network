@@ -63,4 +63,8 @@ public class GroupServiceImpl implements GroupService {
     session.disableFilter("deletedGroupFilter");
     return groups;
   }
+  public boolean existsByName(String name) {
+    return groupRepository.existsByName(name);
+  }
+
 }

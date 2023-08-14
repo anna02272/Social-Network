@@ -57,6 +57,9 @@ public class User {
     @OneToMany
     private List<Comment> comments;
 
+  @OneToMany
+  private List<GroupRequest> groupRequest;
+
 
 
 

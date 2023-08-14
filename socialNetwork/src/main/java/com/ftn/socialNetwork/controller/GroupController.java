@@ -34,6 +34,9 @@ public class GroupController {
 
 @PostMapping("/create")
 public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal principal) {
+  if (groupService.existsByName(group.getName())) {
+    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+  }
     String username = principal.getName();
     User user = userService.findByUsername(username);
 
@@ -53,6 +56,9 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
     public ResponseEntity<Group> updateGroup(@PathVariable("id") Long groupId, @RequestBody Group group) throws ChangeSetPersister.NotFoundException {
         Group existingGroup = groupService.findOneById(groupId);
 
+      if (groupService.existsByName(group.getName())) {
+        return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+      }
         if (existingGroup == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

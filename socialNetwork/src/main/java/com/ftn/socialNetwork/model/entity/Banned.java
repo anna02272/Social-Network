@@ -24,5 +24,8 @@ public class Banned {
     private LocalDate timeStamp;
 
     @ManyToOne
-    private User user;
+    private Administrator administrator;
+
+    @ManyToOne
+    private GroupAdmin groupAdmin;
 }

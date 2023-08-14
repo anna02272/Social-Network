@@ -36,41 +36,41 @@ public class PostController {
   @Autowired
   private ImageService imageService;
 
-//    @PostMapping("/create")
-//    public ResponseEntity<Post> createPost(@RequestBody Post post, Principal principal) {
-//        String username = principal.getName();
-//        User user = userService.findByUsername(username);
-//        post.setUser(user);
-//        post.setCreationDate(LocalDateTime.now());
-//        post.setIsDeleted(false);
-//        Post createdPost = postService.createPost(post);
-//
-//        return ResponseEntity.ok(createdPost);
-//}
-  @PostMapping("/create")
-  public ResponseEntity<Post> createPost(@RequestBody Post post,
-                                         @RequestPart(required = false) MultipartFile[] images,
-                                       Principal principal) {
+    @PostMapping("/create")
+    public ResponseEntity<Post> createPost(@RequestBody Post post, Principal principal) {
         String username = principal.getName();
         User user = userService.findByUsername(username);
         post.setUser(user);
         post.setCreationDate(LocalDateTime.now());
         post.setIsDeleted(false);
-      List<Image> savedImages = new ArrayList<>();
-      if (images != null && images.length > 0) {
-        for (MultipartFile imageFile : images) {
-          Image image = new Image();
-          String imagePath = imageService.saveImage(imageFile);
-          image.setPath(imagePath);
-          image.setPost(post);
-          savedImages.add(image);
-        }
-      }
-       post.setImages(savedImages);
         Post createdPost = postService.createPost(post);
 
         return ResponseEntity.ok(createdPost);
 }
+//  @PostMapping("/create")
+//  public ResponseEntity<Post> createPost(@RequestBody Post post,
+//                                         @RequestPart(required = false) MultipartFile[] images,
+//                                       Principal principal) {
+//        String username = principal.getName();
+//        User user = userService.findByUsername(username);
+//        post.setUser(user);
+//        post.setCreationDate(LocalDateTime.now());
+//        post.setIsDeleted(false);
+//      List<Image> savedImages = new ArrayList<>();
+//      if (images != null && images.length > 0) {
+//        for (MultipartFile imageFile : images) {
+//          Image image = new Image();
+//          String imagePath = imageService.saveImage(imageFile);
+//          image.setPath(imagePath);
+//          image.setPost(post);
+//          savedImages.add(image);
+//        }
+//      }
+//       post.setImages(savedImages);
+//        Post createdPost = postService.createPost(post);
+//
+//        return ResponseEntity.ok(createdPost);
+//}
 
 
 

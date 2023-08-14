@@ -12,6 +12,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -48,6 +49,10 @@ public class Group {
   @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, optional = true)
   private GroupAdmin groupAdmin;
 
+  @OneToMany
+  private List<Post> post;
 
+  @OneToMany
+  private  List<GroupRequest> groupRequest;
 
 }

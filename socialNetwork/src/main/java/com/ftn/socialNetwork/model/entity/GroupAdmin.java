@@ -28,4 +28,7 @@ public class GroupAdmin{
 
     @OneToOne
     private User user;
+
+  @OneToMany
+  private List<Banned> banned;
 }
