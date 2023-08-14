@@ -5,8 +5,14 @@ import { Group } from 'src/app/models/group';
 import { RefreshService } from '../../services/refresh.service';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-declare var $: any;
+import { GroupRequestService } from 'src/app/services/groupRequest.service';
+import { GroupRequest } from 'src/app/models/groupRequest';
 
+declare var $: any;
+interface DisplayMessage {
+  msgType: string;
+  msgBody: string;
+}
 @Component({
   selector: 'app-groups',
   templateUrl: './groups.component.html',
@@ -16,12 +22,17 @@ declare var $: any;
 export class GroupsComponent implements OnInit {
   groups: Group[] = [];
   group: Group = new Group(0, '', '', new Date(), false, '', this.userService.currentUser)
-
+  groupRequest : GroupRequest =  new GroupRequest(0, false, new Date(),null, this.userService.currentUser, this.group )
+  notification: DisplayMessage = {} as DisplayMessage;
+  submitted = false;
   @ViewChild('groupModal') groupModal!: ElementRef;
+  showSuccessMessage: boolean = false;
+  showErrorMessage: boolean = false;
 
   constructor(
     private userService: UserService,
     private groupService: GroupService,
+    private groupRequestService: GroupRequestService,
     private refreshService: RefreshService,
     private datePipe: DatePipe,
     private router: Router
@@ -33,35 +44,70 @@ export class GroupsComponent implements OnInit {
   }
 
   onSubmit() {
+    this.notification = { msgType: '', msgBody: '' };
+    this.submitted = true;
+
     if (this.group.id) {
       this.updateGroup();
     } else {
       this.createGroup();
     }
+    
   }
   
   createGroup() {
-    this.groupService.createGroup(this.group).subscribe(() => {
-      this.refreshService.refresh();
-      this.group.name = '';
-      this.group.description = '';
-
-      this.closeModal();
-    });
-  }
-  isGroupNameTaken(): boolean {
-    return this.groups.some(group => group.name === this.group.name);
+    this.groupService.createGroup(this.group).subscribe(
+      () => {
+        this.refreshService.refresh();
+        this.group.name = '';
+        this.group.description = '';
+        this.closeModal();
+      },
+      (error) => {
+        this.submitted = false;
+        if (error.status === 409) {
+          this.notification = { msgType: 'error', msgBody: 'Group with that name already exists.' };
+        } else {
+          this.notification = { msgType: 'error', msgBody: error['error'].message };
+         }
+      }
+    );
   }
   
   updateGroup() {
-    this.groupService.updateGroup(this.group.id, this.group).subscribe(() => {
-      this.refreshService.refresh();
-      this.group.name = '';
-      this.group.description = '';
-  
-      this.closeModal();
-    });
+    this.groupService.updateGroup(this.group.id, this.group).subscribe(
+      () => {
+        this.refreshService.refresh();
+        this.group.name = '';
+        this.group.description = '';
+        this.closeModal();
+      },
+      (error) => {
+        this.submitted = false;
+        if (error.status === 409) {
+          this.notification = { msgType: 'error', msgBody: 'Group name already exists.' };
+        } else {
+          this.notification = { msgType: 'error', msgBody: error['error'].message };
+         }
+      }
+    );
   }
+  
+  createGroupRequest(group: Group) {
+    this.groupRequest.group = group; 
+    this.groupRequestService.create(group.id, this.groupRequest).subscribe(
+      () => {
+        this.showSuccessMessage = true;
+      },
+      (error) => {
+        if (error.status === 400) {
+          this.showErrorMessage = true;
+        }
+      }
+    );
+    this.showSuccessMessage = false;
+  }
+  
   
   editGroup(group: Group): void {
     this.group = { ...group }; 
@@ -104,7 +150,6 @@ export class GroupsComponent implements OnInit {
     this.group = new Group(0, '', '', new Date(), false, '', this.userService.currentUser );
     const groupForm = this.groupModal.nativeElement.querySelector('form');
     groupForm.reset();
-    
   }
 
   hasSignedIn() {

@@ -6,7 +6,9 @@ import { PostRefreshService } from '../../services/postrefresh.service';
 import { ReactionService } from '../../services/reaction.service';
 import { Reaction } from '../../models/reaction';
 import { DatePipe } from '@angular/common';
-
+import { ReportComponent } from '../report/report.component';
+import { MatDialog } from '@angular/material/dialog';
+import { User } from 'src/app/models/user';
 
 declare var $: any;
 @Component({
@@ -25,7 +27,8 @@ export class PostComponent implements OnInit {
     private postService: PostService,
     private postRefreshService: PostRefreshService,
     private reactionService: ReactionService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -94,7 +97,25 @@ export class PostComponent implements OnInit {
   openModal() {
     $('#createModal').modal('show');
   }
+ 
+  openReportModal(post: Post) {
+    const dialogRef = this.dialog.open(ReportComponent, {
+      width: '500px', 
+      data: { postId: post.id },
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+  openUserReportModal(user: User) {
+    const dialogRef = this.dialog.open(ReportComponent, {
+      width: '500px', 
+      data: { reportedUserId: user.id },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
   userName() {
     const user = this.userService.currentUser;
     return user ? user.username : '';

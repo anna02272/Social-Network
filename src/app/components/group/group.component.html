@@ -26,13 +26,24 @@
         </div>
       </div>
       <div class="col-lg-2">
-        <button type="submit" class="btn btn-warning">Join group</button>
+        <button *ngIf="group.groupAdmin.user.username != userName()"
+        type="submit" class="btn btn-warning"
+        (click)="createGroupRequest(group)">Join group</button>
+        <button *ngIf="group.groupAdmin.user.username == userName()"
+        [routerLink]="['/groupRequests', group.id]" class="btn btn-warning">Group requests</button>
       </div>
     </div>
   </div>
-
+  <p id = "message" *ngIf="showSuccessMessage">
+    Group request sent successfully!
+  </p>
+  <p id="error-message" *ngIf="showErrorMessage">
+    You already sent a request for this group.
+  </p>
+  
   <hr />
-
-  <app-create-post></app-create-post>
+  <div *ngIf="showContent || group.groupAdmin.user.username === userName()">
+    <app-create-post></app-create-post>
   <app-post></app-post>
+</div>
 </div>

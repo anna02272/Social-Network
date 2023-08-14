@@ -61,6 +61,24 @@
                       Delete Post</a
                     >
                   </li>
+                  <li class="d-flex align-items-center">
+                    <a
+                      class="dropdown-item d-flex justify-content-around align-items-center fs-7"
+                      style="cursor: pointer"
+                      (click)="openReportModal(post)"
+                    >
+                      Report Post
+                    </a>
+                  </li>
+                  <li class="d-flex align-items-center">
+                    <a
+                      class="dropdown-item d-flex justify-content-around align-items-center fs-7"
+                      style="cursor: pointer"
+                      (click)="openUserReportModal(post.user)"
+                    >
+                      Report User
+                    </a>
+                  </li>
                 </ul>
               </div>
               <!-- post content -->

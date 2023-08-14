@@ -95,4 +95,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   .custom-margin {
     margin-right: 10px; 
   }
-  
+  #message {
+    color: green;
+    font-weight: bold;
+  }
+  #error-message{
+    color: red;
+    font-weight: bold;
+  }

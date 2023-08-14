@@ -41,6 +41,13 @@ import { ReportComponent } from './components/report/report.component';
 import { CommentService } from './services/comment.service';
 import { ReactionService } from './services/reaction.service';
 import { ReactionCommentComponent } from './components/reaction-comment/reaction-comment.component';
+import { GroupRequestComponent } from './components/group-request/group-request.component';
+import { GroupRequestService } from './services/groupRequest.service';
+import { ReportsComponent } from './components/reports/reports.component';
+import { ReportService } from './services/report.service';
+import { MatDialogModule } from '@angular/material/dialog';
+import { RequestsComponent } from './components/requests/requests.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +66,10 @@ import { ReactionCommentComponent } from './components/reaction-comment/reaction
     CommentComponent,
     ReactionComponent,
     ReportComponent,
-    ReactionCommentComponent
+    ReactionCommentComponent,
+    GroupRequestComponent,
+    ReportsComponent,
+    RequestsComponent
   ],
   imports: [
     HttpClientModule,
@@ -73,7 +83,8 @@ import { ReactionCommentComponent } from './components/reaction-comment/reaction
     AppRoutingModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule,
   ],
   providers: [ 
     {
@@ -91,7 +102,9 @@ import { ReactionCommentComponent } from './components/reaction-comment/reaction
     CreatePostComponent,
     GroupAdminService,
     CommentService,
-    ReactionService
+    ReactionService, 
+    GroupRequestService,
+    ReportService,
   ],
   bootstrap: [AppComponent]
 })

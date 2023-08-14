@@ -66,6 +66,13 @@
                   Delete Comment</a
                 >
               </li>
+              <li class="d-flex align-items-center">
+              <a   class="dropdown-item d-flex justify-content-around align-items-center fs-7"
+              (click)="openReportModal(comment)"
+              >
+                  Report Comment</a
+                >
+              </li>
             </ul>
           </div>
           <p class="fw-bold m-0">{{ comment.user.profileName ? comment.user.profileName: comment.user.username }}</p>

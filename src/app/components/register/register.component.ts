@@ -63,20 +63,22 @@ export class RegisterComponent implements OnInit {
     this.notification = { msgType: '', msgBody: '' };
     this.submitted = true;
 
-    this.authService.signup(this.form.value)
-      .subscribe(data => {
-        console.log(data);
+    this.authService.signup(this.form.value).subscribe(
+      (data) => {
         this.authService.login(this.form.value).subscribe(() => {
           this.userService.getMyInfo().subscribe();
         });
-        this.router.navigate(["/home"]);
+        this.router.navigate(['/home']);
       },
-        error => {
-          this.submitted = false;
-          console.log('Sign up error');
-          console.log(error);
+      (error) => {
+        this.submitted = false;
+        if (error.status === 409) {
+          this.notification = { msgType: 'error', msgBody: 'Username or email already exists.' };
+        } else {
           this.notification = { msgType: 'error', msgBody: error['error'].message };
-        });
+        }
       }
+    );
+  }
 
 }

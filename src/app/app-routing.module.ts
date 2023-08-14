@@ -9,6 +9,10 @@ import {PostComponent } from './components/post/post.component';
 import {HomeComponent } from './components/home/home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { GroupsComponent } from './components/groups/groups.component';
+import { GroupRequestComponent } from './components/group-request/group-request.component';
+import { FriendRequestComponent } from './components/friend-request/friend-request.component';
+import { ReportComponent } from './components/report/report.component';
+import { RequestsComponent } from './components/requests/requests.component';
 
 
 
@@ -37,6 +41,19 @@ const routes: Routes = [
     canActivate: [AuthGuard] 
   },
   {
+    path: 'groupRequests',
+    component: GroupRequestComponent,
+    canActivate: [AuthGuard] 
+  },
+  { path: 'groupRequests/:id',
+  component: GroupRequestComponent,
+  canActivate: [AuthGuard]  },
+  {
+    path: 'requests',
+    component: RequestsComponent,
+    canActivate: [AuthGuard] 
+  },
+  {
     path: 'group',
     component: GroupComponent,
     canActivate: [AuthGuard] 
@@ -57,6 +74,11 @@ const routes: Routes = [
   {
     path: 'profile',
     component: UserProfileComponent,
+    canActivate: [AuthGuard] 
+  },
+  {
+    path: 'report',
+    component: ReportComponent,
     canActivate: [AuthGuard] 
   },
 

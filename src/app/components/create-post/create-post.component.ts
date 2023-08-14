@@ -37,7 +37,7 @@ export class CreatePostComponent implements OnInit {
 
   ngOnInit() {
    this.userService.getMyInfo().subscribe(user => {
-      this.post = new Post(0, '', new Date(), user, this.image);
+      this.post = new Post(0, '', new Date(), user, null, this.image);
       
     });
     this.postRefreshService.selectedPost$.subscribe((value) => {
@@ -78,7 +78,7 @@ export class CreatePostComponent implements OnInit {
 
   onModalHidden() {
     this.userService.getMyInfo().subscribe(user => {
-      this.selectedPost = new Post(0, '', new Date(), user, this.image); 
+      this.selectedPost = new Post(0, '', new Date(), user, null, this.image); 
       });
   }
   

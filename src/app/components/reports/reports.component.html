@@ -1,0 +1,153 @@
+<div  *ngIf="userType() === 'ADMIN'">
+  <!-- Ili admin grupe ako sadrzaj pripada grupi, A usera samo admin! -->
+<div class="card" >
+    <div class="card-header d-flex justify-content-between">
+      <div class="header-title">
+        <h4 class="card-title">Post Reports</h4>
+      </div>
+    </div>
+    <div *ngFor="let reportedPost of reportedPosts">
+    <div class="card-body"  *ngIf="!reportedPost.isDeleted" >
+      <div>
+      <ul class="request-list list-inline m-0 p-0" >
+        <li class="d-flex align-items-center justify-content-between flex-wrap">
+          <div class="user-img img-fluid flex-shrink-0">
+            <div class="p-1">
+              <img
+              src="assets/images/smiley6.jpg"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover"
+              />
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6>{{reportedPost.user?.username}}</h6>
+            <span class="text-muted fs-7">{{ formatDate(reportedPost.timestamp) }}</span>
+        
+          </div>
+          <div  class="flex-grow-1 ms-3">  
+            <h6>Report for post with content: {{reportedPost.post?.content}}</h6> 
+            <h6>Reason for reporting: {{ reportedPost.reason }}</h6>
+          </div>
+          <div class="d-flex align-items-center mt-2 mt-md-0">
+            <div class="confirm-click-btn">
+              <a class="me-3 btn btn-warning rounded confirm-btn"
+              (click)="approve(reportedPost)"
+                >Accept</a
+              >
+            </div>
+            <a
+              class="btn btn-secondary rounded"
+              data-extra-toggle="delete"
+              data-closest-elem=".item"
+              (click)="decline(reportedPost)"
+              >Delete Request</a
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <div class="header-title">
+        <h4 class="card-title">Comment Reports</h4>
+      </div>
+    </div>
+    <div  *ngFor="let reportedComment of reportedComments">
+    <div class="card-body"  *ngIf="!reportedComment.isDeleted" >
+      <ul class="request-list list-inline m-0 p-0" >
+        <li class="d-flex align-items-center justify-content-between flex-wrap">
+          <div class="user-img img-fluid flex-shrink-0">
+            <div class="p-1">
+              <img
+              src="assets/images/smiley6.jpg"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover"
+              />
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6>{{reportedComment.user?.username}}</h6>
+           <span class="text-muted fs-7">{{ formatDate(reportedComment.timestamp) }}</span>
+        
+          </div>
+          <div  class="flex-grow-1 ms-3">  
+            <h6>Report for comment with text: {{reportedComment.comment?.text}}</h6> 
+            <h6>Reason for reporting: {{ reportedComment.reason }}</h6>
+          </div>
+          <div class="d-flex align-items-center mt-2 mt-md-0">
+            <div class="confirm-click-btn">
+              <a class="me-3 btn btn-warning rounded confirm-btn"
+              (click)="approve(reportedComment)"
+                >Accept</a
+              >
+            </div>
+            <a
+              class="btn btn-secondary rounded"
+              data-extra-toggle="delete"
+              data-closest-elem=".item"
+              (click)="decline(reportedComment)"
+              >Delete Request</a
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  <div class="card" >
+    <div class="card-header d-flex justify-content-between">
+      <div class="header-title">
+        <h4 class="card-title">User Reports</h4>
+      </div>
+    </div>
+    <div *ngFor="let reportedUser of reportedUsers">
+    <div class="card-body" *ngIf="!reportedUser.isDeleted" >
+      <ul class="request-list list-inline m-0 p-0">
+        <li class="d-flex align-items-center justify-content-between flex-wrap">
+          <div class="user-img img-fluid flex-shrink-0">
+            <div class="p-1">
+              <img
+              src="assets/images/smiley6.jpg"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover"
+              />
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6>{{reportedUser.user?.username}}</h6>
+            <span class="text-muted fs-7">{{ formatDate(reportedUser.timestamp) }}</span>
+        
+          </div>
+          <div  class="flex-grow-1 ms-3">  
+            <h6>Report for user with username: {{reportedUser.reportedUser?.username}}</h6> 
+            <h6>Reason for reporting: {{ reportedUser.reason }}</h6>
+          </div>
+          <div class="d-flex align-items-center mt-2 mt-md-0">
+            <div class="confirm-click-btn">
+              <a class="me-3 btn btn-warning rounded confirm-btn"
+                >Accept</a
+              >
+            </div>
+            <a
+              class="btn btn-secondary rounded"
+              data-extra-toggle="delete"
+              data-closest-elem=".item"
+              (click)="decline(reportedUser)"
+              >Delete Request</a
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  </div>
+   
+  
+  
+  
+  
