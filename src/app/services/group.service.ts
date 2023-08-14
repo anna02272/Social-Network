@@ -32,8 +32,6 @@ export class GroupService {
      getGroupById(id : number) {
       return this.apiService.get(this.config.group_url + "/find/" + id );
      }
-    
-  
-  
+     
   }
 

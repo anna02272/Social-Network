@@ -14,7 +14,12 @@
     </div>
   </div>
 </div>
-
+<p id = "message" *ngIf="showSuccessMessage">
+  Group request sent successfully!
+</p>
+<p id="error-message" *ngIf="showErrorMessage">
+  You already sent a request for this group.
+</p>
 <div class="col-lg-4">
   <div class="card">
     <div class="card-body">
@@ -28,6 +33,9 @@
           >
             Create New Group
           </button>
+          <div *ngIf="notification.msgType === 'error'" class="alert alert-danger">
+            {{ notification.msgBody }}
+          </div>
         </li>
       </ul>
     </div>
@@ -93,11 +101,14 @@
 
               <button
                 class="btn btn-warning d-block w-800"
-                fdprocessedid="0jc7jk"
+                fdprocessedid="0jc7jk"  
+                *ngIf="group.groupAdmin.user.username != userName()"
+                (click)="createGroupRequest(group)"
               >
                 Join group
               </button>
             </div>
+           
           </div>
         </div>
 
@@ -120,6 +131,8 @@
                 >
                   {{ group.id ? "Update Group" : "Create Group" }}
                 </h5>
+                
+                
                 <button
                   type="button"
                   class="btn-close"
@@ -146,10 +159,7 @@
                   <div [hidden]="group.name" class="alert alert-danger">
                     Group name is required 
                     </div>
-                    <div [hidden]="!isGroupNameTaken()" class="alert alert-danger">
-                      Group name is already taken. Please choose a different name.
-                  </div>
-
+                  
                   <!-- description -->
                 
                   <div class="form-group">
@@ -173,7 +183,6 @@
                     type="submit"
                     class="btn btn-warning w-100"
                     [disabled]="!groupForm.form.valid"
-                    [disabled]="isGroupNameTaken()"
                     data-bs-dismiss="modal"
                   >
                     {{ group.id ? "Update Group" : "Create Group" }}

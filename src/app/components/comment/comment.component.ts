@@ -3,9 +3,10 @@ import { UserService } from '../../services';
 import { CommentService } from '../../services/comment.service';
 import { Comment } from '../../models/comment';
 import {RefreshService } from '../../services/refresh.service';
-import { PostRefreshService } from '../../services/postrefresh.service';
 import { Post } from '../../models/post';
 import { DatePipe } from '@angular/common';
+import { ReportComponent } from '../report/report.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-comment',
@@ -31,7 +32,8 @@ export class CommentComponent {
     private userService: UserService,
     private commentService: CommentService,
     private refreshService: RefreshService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private dialog: MatDialog
   ) {  this.showReplyForm = false;}
 
   ngOnInit() {
@@ -157,7 +159,15 @@ export class CommentComponent {
     }
     this.load();
   }
-  
+  openReportModal(comment: Comment) {
+    const dialogRef = this.dialog.open(ReportComponent, {
+      width: '500px', 
+      data: { commentId: comment.id },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
   
   
     private subscribeToRefresh() {

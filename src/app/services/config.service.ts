@@ -32,6 +32,11 @@ export class ConfigService {
 
   private _group_url = this._api_url + '/groups';
 
+  get groupRequest_url(): string {
+    return this._groupRequest_url;
+  }
+  private _groupRequest_url = this._api_url + '/groupRequests';
+
   get group_url(): string {
     return this._group_url;
   }
