@@ -47,6 +47,7 @@ import { ReportsComponent } from './components/reports/reports.component';
 import { ReportService } from './services/report.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RequestsComponent } from './components/requests/requests.component';
+import { FriendRequestService } from './services/friendRequest.service';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,7 @@ import { RequestsComponent } from './components/requests/requests.component';
     ReactionService, 
     GroupRequestService,
     ReportService,
+    FriendRequestService
   ],
   bootstrap: [AppComponent]
 })

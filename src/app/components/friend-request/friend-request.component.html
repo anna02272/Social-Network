@@ -14,7 +14,8 @@
       <h4 class="card-title">Friend Request</h4>
     </div>
   </div>
-  <div class="card-body">
+  <div  *ngFor="let friendRequest of friendRequests">
+    <div *ngIf="friendRequest.at == null" class="card-body" >
     <ul class="request-list list-inline m-0 p-0">
       <li class="d-flex align-items-center justify-content-between flex-wrap">
         <div class="user-img img-fluid flex-shrink-0">
@@ -27,18 +28,20 @@
           </div>
         </div>
         <div class="flex-grow-1 ms-3">
-          <h6>Ana</h6>
+          <p class="m-0 fw-bold">{{ friendRequest.fromUser.firstName}} {{ friendRequest.fromUser.lastName}}</p>
+          <span class="text-muted fs-7">{{ formatDate(friendRequest.created_at) }}</span>
         </div>
         <div class="d-flex align-items-center mt-2 mt-md-0">
           <div class="confirm-click-btn">
             <a class="me-3 btn btn-warning rounded confirm-btn"
-              >Confirm</a
+            (click)="approve(friendRequest)" >Confirm</a
             >
           </div>
           <a
             class="btn btn-secondary rounded"
             data-extra-toggle="delete"
             data-closest-elem=".item"
+            (click)="decline(friendRequest)"
             >Delete Request</a
           >
         </div>

@@ -8,7 +8,6 @@
     />  
       <!-- search bar -->
       <div class="input-group ms-2" type="button" *ngIf="hasSignedIn()">
-        <!-- desktop -->
         <span
           class="input-group-prepend d-none d-lg-block"
           id="searchMenu"
@@ -34,8 +33,45 @@
          class="rounded-pill border-0 bg-gray dropdown-item"
          placeholder="Search"
          autofocus
+         [(ngModel)]="searchKeyword"
+         (input)="onSearch()"
+          (blur)="clearSearch()"
        />
      </li>
+     <li *ngIf="searchResults.length > 0">
+      <ul class="request-list list-inline m-0 p-0">
+        <p id = "message" *ngIf="showSuccessMessage">
+          Friend request sent successfully!
+        </p>
+        <p id="error-message" *ngIf="showErrorMessage">
+          You already sent a request for this user.
+        </p>
+        <li *ngFor="let result of searchResults" class="d-flex align-items-center justify-content-between flex-wrap">
+          <div class="user-img img-fluid flex-shrink-0">
+            <div class="p-1">
+              <img
+              src="assets/images/smiley6.jpg"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover"
+              />
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6>{{result.firstName}} {{result.lastName}}</h6>
+          </div>
+          <div class="d-flex align-items-center mt-2 mt-md-0">
+            <div class="confirm-click-btn">
+              <a class="me-1 btn btn-warning rounded confirm-btn"
+              (click)="createFriendRequest(result)"
+              *ngIf="result.username !== username()"
+                >Add friend</a
+              >
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    </li>
      </ul>
  
     <!-- home -->
@@ -60,7 +96,6 @@
   </div>
   </div>
   </div>
- 
   <div class="right"  *ngIf="hasSignedIn()">
     <div fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="flex-end center">
       <img
@@ -99,4 +134,5 @@
       
     </div>
   </div>
+  
 </mat-toolbar>

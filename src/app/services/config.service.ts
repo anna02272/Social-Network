@@ -37,6 +37,11 @@ export class ConfigService {
   }
   private _groupRequest_url = this._api_url + '/groupRequests';
 
+  get friendRequest_url(): string {
+    return this._friendRequest_url;
+  }
+  private _friendRequest_url = this._api_url + '/friendRequests';
+
   get group_url(): string {
     return this._group_url;
   }

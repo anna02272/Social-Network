@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services';
 import { DatePipe } from '@angular/common';
 import { User } from 'src/app/models/user';
+import { GroupRequestService } from 'src/app/services/groupRequest.service';
+import { FriendRequestService } from 'src/app/services/friendRequest.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -20,16 +22,34 @@ export class UserProfileComponent {
   successMessage: string = '';
   errorMessage: string = '';
   showPassword: boolean = false;
+  approvedGroups: any[] = [];
+  friends: any[] = [];
 
   constructor(
     private userService: UserService,
+    private groupRequestService: GroupRequestService,
+    private friendRequestService: FriendRequestService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
   ) {}
+
+
+  
   ngOnInit() {
     this.userService.getMyInfo().subscribe((user) => {
       this.currentUser = user;
       this.userForm.patchValue(user);
+
+      this.groupRequestService
+      .getApprovedGroupsForUser(this.currentUser.id)
+      .subscribe((approvedGroups: any[]) => {
+        this.approvedGroups = approvedGroups;
+      });
+      this.friendRequestService
+      .getApprovedFriendsForUser(this.currentUser.id)
+      .subscribe((friends: any[]) => {
+        this.friends = friends;
+      });
     });
 
     this.passwordForm = this.formBuilder.group({
@@ -47,6 +67,7 @@ export class UserProfileComponent {
       email: [{ value: '', disabled: true }],
       description: [''],
     });
+   
   }
 
 
@@ -90,6 +111,7 @@ export class UserProfileComponent {
       }
     );
   }
+  
 
   passwordsMatchValidator(group: FormGroup) {
     const newPassword = group.get('newPassword')?.value;

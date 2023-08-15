@@ -40,6 +40,9 @@ decline(id: number) {
    getByUserAndGroup(userId: number, groupId: number) {
     return this.apiService.get(`${this.config.groupRequest_url}/find/${userId}/${groupId}`);
   }
-  
+  getApprovedGroupsForUser(userId: number) {
+    const url = `${this.config.groupRequest_url}/approvedGroups/${userId}`;
+    return this.apiService.get(url);
+  }
 
 }
