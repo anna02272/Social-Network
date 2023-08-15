@@ -3,9 +3,16 @@
     <div class="col-12 col-lg-auto mb-3" style="width: 200px">
       <div class="card p-3">
         <div class="e-navlist e-navlist--active-bg">
-          <ul class="nav">
-            <p>List of groups</p>
-          </ul>
+          <p>Groups:</p>
+            <li *ngFor="let group of approvedGroups" class="nav-item">
+               <a [routerLink]="['/group', group.id]">{{ group.name }}</a>
+            </li>
+        </div>
+        <div class="e-navlist e-navlist--active-bg">
+          <p>Friends:</p>
+            <li *ngFor="let friend of friends" class="nav-item">
+               <a >{{ friend.username }}</a>
+            </li>
         </div>
       </div>
     </div>
