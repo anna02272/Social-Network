@@ -43,16 +43,18 @@ public class Group {
     @Column(nullable = true, columnDefinition = "varchar(255) default ''")
     private String suspendedReason;
 
-  @Column(nullable = false, columnDefinition = "boolean default false")
-  private Boolean isDeleted ;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean isDeleted ;
 
-  @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, optional = true)
-  private GroupAdmin groupAdmin;
+    @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, optional = true)
+    private GroupAdmin groupAdmin;
 
-  @OneToMany
-  private List<Post> post;
+    @OneToMany
+    private List<Post> post;
 
-  @OneToMany
-  private  List<GroupRequest> groupRequest;
+    @OneToMany
+    private  List<GroupRequest> groupRequest;
+    @OneToMany
+    private List<Banned> banned;
 
 }

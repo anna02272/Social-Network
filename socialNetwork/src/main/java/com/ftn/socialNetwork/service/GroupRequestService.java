@@ -6,6 +6,7 @@ import com.ftn.socialNetwork.model.entity.User;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
 import java.util.List;
+import java.util.Set;
 
 public interface GroupRequestService {
     GroupRequest create(GroupRequest groupRequest);
@@ -14,4 +15,5 @@ public interface GroupRequestService {
     List<GroupRequest> findAll();
     List<GroupRequest> findAllByGroupId(Long groupId);
     GroupRequest findByUserAndGroup(User user, Group group);
+  Set<Group> getApprovedGroupsForUser(User user);
 }

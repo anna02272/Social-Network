@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,12 +90,40 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
+  @Override
   public boolean existsByUsername(String username) {
     return userRepository.existsByUsername(username);
   }
-
+  @Override
   public boolean existsByEmail(String email) {
     return userRepository.existsByEmail(email);
   }
+  @Override
+  public List<User> searchUsersByNameOrLastName(String keyword) {
+    List<User> users = userRepository.findAll();
+    List<User> foundUsers = new ArrayList<>();
 
+    for (User user : users) {
+      if (user.getFirstName().toLowerCase().contains(keyword.toLowerCase()) ||
+        user.getLastName().toLowerCase().contains(keyword.toLowerCase())) {
+        foundUsers.add(user);
+      }
+    }
+
+    return foundUsers;
+  }
+  @Override
+  public List<User> searchUsersByFirstNameAndLastName(String firstName, String lastName) {
+    List<User> users = userRepository.findAll();
+    List<User> foundUsers = new ArrayList<>();
+
+    for (User user : users) {
+      if (user.getFirstName().toLowerCase().contains(firstName.toLowerCase()) &&
+        user.getLastName().toLowerCase().contains(lastName.toLowerCase())) {
+        foundUsers.add(user);
+      }
+    }
+
+    return foundUsers;
+  }
 }

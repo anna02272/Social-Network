@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GroupRequestServiceImpl implements GroupRequestService {
@@ -51,6 +53,14 @@ public class GroupRequestServiceImpl implements GroupRequestService {
   @Override
   public GroupRequest findByUserAndGroup(User user, Group group){
     return groupRequestRepository.findByUserAndGroup(user, group);
+  }
+  @Override
+  public Set<Group> getApprovedGroupsForUser(User user) {
+    List<GroupRequest> approvedGroupRequests = groupRequestRepository.findByUserAndApproved(user, true);
+    Set<Group> approvedGroups = approvedGroupRequests.stream()
+      .map(GroupRequest::getGroup)
+      .collect(Collectors.toSet());
+    return approvedGroups;
   }
 
 }

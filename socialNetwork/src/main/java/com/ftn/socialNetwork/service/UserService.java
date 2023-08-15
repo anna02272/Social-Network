@@ -14,10 +14,10 @@ public interface UserService {
     User findOneById(Long id);
     User findByUsername(String username);
     List<User> findAll();
-
    void changePassword(String username, String newPassword);
    boolean existsByUsername(String username);
    boolean existsByEmail(String email) ;
-
+  List<User> searchUsersByNameOrLastName(String keyword);
+  List<User> searchUsersByFirstNameAndLastName(String firstName, String lastName) ;
 }
 

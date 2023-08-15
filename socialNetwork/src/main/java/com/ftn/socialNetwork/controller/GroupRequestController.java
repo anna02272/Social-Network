@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/groupRequests")
@@ -97,6 +98,11 @@ public class GroupRequestController {
     GroupRequest groupRequest = groupRequestService.findByUserAndGroup(user, group);
     return ResponseEntity.ok(groupRequest);
   }
-
+  @GetMapping("/approvedGroups/{userId}")
+  public ResponseEntity<Set<Group>> getApprovedGroupsForUser(@PathVariable Long userId) {
+    User user = userService.findOneById(userId);
+    Set<Group> approvedGroups = groupRequestService.getApprovedGroupsForUser(user);
+    return ResponseEntity.ok(approvedGroups);
+  }
 
 }

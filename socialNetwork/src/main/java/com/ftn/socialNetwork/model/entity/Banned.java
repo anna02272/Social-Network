@@ -15,17 +15,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Table(name = "banned")
 public class Banned {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDate timeStamp;
-
-    @ManyToOne
-    private Administrator administrator;
-
+    @Column
+    private String reason;
+//    @ManyToOne
+//    private Administrator administrator;
     @ManyToOne
     private GroupAdmin groupAdmin;
+    @ManyToOne
+    private Group group;
+    @ManyToOne
+    private  User user;
 }
