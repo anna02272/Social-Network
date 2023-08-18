@@ -20,14 +20,15 @@ public class Banned {
     private Long id;
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDate timeStamp;
-    @Column
-    private String reason;
-//    @ManyToOne
-//    private Administrator administrator;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isBlocked;
     @ManyToOne
     private GroupAdmin groupAdmin;
     @ManyToOne
     private Group group;
+    @ManyToOne
+    private  User bannedUser;
     @ManyToOne
     private  User user;
 }

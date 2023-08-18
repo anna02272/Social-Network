@@ -11,6 +11,7 @@ import org.hibernate.annotations.ParamDef;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -37,10 +38,10 @@ public class Post {
   private Boolean isDeleted ;
     @ManyToOne
     private User user;
-  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-  private List<Image> images;
-
-
+//  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//  @JoinTable(name = "post_images", joinColumns = {@JoinColumn(name = "post_id")},
+//    inverseJoinColumns = {@JoinColumn(name = "image_id")})
+//  private Set<Image> images;
   @OneToMany
   private List<Reaction> reactions;
 

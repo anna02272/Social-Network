@@ -12,5 +12,6 @@ public interface PostService {
     Post deletePost(Long id);
     Post findOneById(Long id) throws ChangeSetPersister.NotFoundException;
     List<Post> findAll();
+  List<Post> findAllByGroupId(Long groupId);
   List<Post> findAllByIsDeleted(boolean isDeleted);
 }

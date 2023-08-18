@@ -8,6 +8,7 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -37,5 +38,17 @@ public class GroupAdminServiceImpl implements GroupAdminService {
   @Override
   public GroupAdmin findByGroupAndUser(Group group, User user) {
     return groupAdminRepository.findByGroupAndUser(group, user);
+  }
+  @Override
+  public boolean existsByGroupAndUser(Group group, User user) {
+    return groupAdminRepository.existsByGroupAndUser(group, user);
+  }
+  @Override
+  public GroupAdmin findByUsername(String username) {
+    Optional<GroupAdmin> groupAdmin = groupAdminRepository.findFirstByUsername(username);
+    if (!groupAdmin.isEmpty()) {
+      return groupAdmin.get();
+    }
+    return null;
   }
 }

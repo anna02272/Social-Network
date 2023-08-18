@@ -12,6 +12,7 @@ public interface GroupService {
     Group findOneById(Long id) throws ChangeSetPersister.NotFoundException;
     List<Group> findAll();
 
-  List<Group> findAllByIsDeleted(boolean isDeleted);
+  List<Group> findAllByIsSuspended(boolean isDeleted);
   boolean existsByName(String name);
+  List<Group> findAllByIsDeletedWithGroupAdmins(boolean isDeleted);
 }

@@ -15,15 +15,20 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = true)
+    @Column
     private String path;
+    @Column
+    private String type;
+    @Column(length = 50000000)
+    private byte[] picByte;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+//    @OneToOne
+//    private User user;
 
-   @ManyToOne
-    private Post post;
+  public Image(String originalFilename, String contentType, byte[] bytes) {
+  }
+
+//   @ManyToOne
+//    private Post post;
 
 }

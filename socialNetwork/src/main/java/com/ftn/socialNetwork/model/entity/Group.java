@@ -20,8 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "groups_table")
-@FilterDef(name = "deletedGroupFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedGroupFilter", condition = "is_deleted = :isDeleted")
+@FilterDef(name = "suspendedGroupFilter", parameters = @ParamDef(name = "isSuspended", type = "boolean"))
+@Filter(name = "suspendedGroupFilter", condition = "is_suspended = :isSuspended")
 public class Group {
 
     @Id
@@ -40,21 +40,18 @@ public class Group {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isSuspended;
 
-    @Column(nullable = true, columnDefinition = "varchar(255) default ''")
+    @Column
     private String suspendedReason;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private Boolean isDeleted ;
-
-    @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, optional = true)
-    private GroupAdmin groupAdmin;
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<GroupAdmin> groupAdmin;
 
     @OneToMany
     private List<Post> post;
 
     @OneToMany
     private  List<GroupRequest> groupRequest;
-    @OneToMany
-    private List<Banned> banned;
+//    @OneToMany
+//    private List<Banned> banned;
 
 }

@@ -22,10 +22,10 @@ public class GroupAdmin{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JsonIgnore
-    @OneToOne
+    @ManyToOne
     private Group group;
     @OneToOne
     private User user;
-    @OneToMany
-    private List<Banned> banned;
+//    @OneToMany
+//    private List<Banned> banned;
 }

@@ -213,5 +213,9 @@ public ResponseEntity<Comment> delete(@PathVariable Long id) throws ChangeSetPer
     Collections.reverse(comments);
     return ResponseEntity.ok(comments);
   }
-
+//  @GetMapping("/{commentId}/replies")
+//  public ResponseEntity<List<Comment>> getRepliesForComment(@PathVariable Long commentId) {
+//    List<Comment> replies = commentService.getRepliesForComment(commentId);
+//    return ResponseEntity.ok(replies);
+//  }
 }

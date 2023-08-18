@@ -39,8 +39,8 @@ public class User {
     private String description;
     @Column(nullable = true)
     private String profileName;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Image image;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+//    private Image image;
     @OneToMany
     private List<GroupAdmin> groupAdmins;
     @OneToMany
@@ -54,10 +54,11 @@ public class User {
     @OneToMany
     private List<GroupRequest> groupRequest;
     @OneToMany
-    private List<Banned> banned;
-    @OneToMany
     private List<FriendRequest> sentFriendRequests;
     @OneToMany
     private List<FriendRequest> receivedFriendRequests;
+//    @OneToMany
+//    private List<Banned> banned;
+
 
 }

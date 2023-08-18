@@ -96,14 +96,14 @@ public class ReportController {
     if (reportedUser == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-    Report existing = reportService.findReportByReportedUserAndUser(reportedUser, user);
-    if (existing != null) {
-      if (!existing.getIsDeleted()) {
-        existing.setReason(report.getReason());
-        reportService.create(existing);
-        return ResponseEntity.ok(existing);
-      }
-    }
+//    Report existing = reportService.findReportByReportedUserAndUser(reportedUser, user);
+//    if (existing != null) {
+//      if (!existing.getIsDeleted()) {
+//        existing.setReason(report.getReason());
+//        reportService.create(existing);
+//        return ResponseEntity.ok(existing);
+//      }
+//    }
     report.setReportedUser(reportedUser);
     Report created = reportService.create(report);
 

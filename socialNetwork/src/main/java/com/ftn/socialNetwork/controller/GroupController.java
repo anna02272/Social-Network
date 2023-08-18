@@ -41,12 +41,16 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
     User user = userService.findByUsername(username);
 
     group.setCreationDate(LocalDateTime.now());
-   group.setIsDeleted(false);
+   group.setSuspended(false);
     Group createdGroup = groupService.createGroup(group);
 
     GroupAdmin groupAdmin = new GroupAdmin();
     groupAdmin.setGroup(createdGroup);
     groupAdmin.setUser(user);
+
+    List<GroupAdmin> groupAdmins = new ArrayList<>();
+    groupAdmins.add(groupAdmin);
+    createdGroup.setGroupAdmin(groupAdmins);
 
     GroupAdmin createdGroupAdmin = groupAdminService.save(groupAdmin);
 
@@ -56,13 +60,12 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
     public ResponseEntity<Group> updateGroup(@PathVariable("id") Long groupId, @RequestBody Group group) throws ChangeSetPersister.NotFoundException {
         Group existingGroup = groupService.findOneById(groupId);
 
-      if (groupService.existsByName(group.getName())) {
-        return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-      }
         if (existingGroup == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
+      if (!existingGroup.getName().equals(group.getName()) && groupService.existsByName(group.getName())) {
+        return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+      }
         if (group.getName() != null) {
             existingGroup.setName(group.getName());
         }
@@ -75,18 +78,14 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
         if (group.getSuspendedReason() != null) {
             existingGroup.setSuspendedReason(group.getSuspendedReason());
         }
-      if (group.getIsDeleted()!= null){
-        existingGroup.setIsDeleted(group.getIsDeleted());
+      if (group.isSuspended()){
+        existingGroup.setSuspended(group.isSuspended());
       }
 
         Group updatedGroup = groupService.updateGroup(existingGroup);
 
         return new ResponseEntity<>(updatedGroup, HttpStatus.OK);
     }
-
-
-
-
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    @DeleteMapping("/delete/{id}")
@@ -95,18 +94,38 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
 //        return ResponseEntity.noContent().build();
 //    }
     @PutMapping("/delete/{id}")
-    public ResponseEntity<Group> delete(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<Group> delete(@PathVariable Long id, @RequestBody String suspendedReason) throws ChangeSetPersister.NotFoundException {
       Group existing = groupService.findOneById(id);
 
       if (existing == null) {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
       }
-
-      existing.setIsDeleted(true);
+      existing.setSuspended(true);
+      existing.setSuspendedReason(suspendedReason);
       Group updated = groupService.updateGroup(existing);
 
       return new ResponseEntity<>(updated, HttpStatus.OK);
     }
+  @PostMapping("/createGroupAdmin/{groupId}/{userId}")
+  public ResponseEntity<GroupAdmin> createGroupAdmin(@PathVariable Long groupId,@PathVariable Long userId) throws ChangeSetPersister.NotFoundException {
+    User user = userService.findOneById(userId);
+    Group group = groupService.findOneById(groupId);
+
+    if (groupAdminService.existsByGroupAndUser(group, user)) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+
+    GroupAdmin groupAdmin = new GroupAdmin();
+    groupAdmin.setGroup(group);
+    groupAdmin.setUser(user);
+
+    List<GroupAdmin> groupAdmins = new ArrayList<>();
+    groupAdmins.add(groupAdmin);
+
+    GroupAdmin createdGroupAdmin = groupAdminService.save(groupAdmin);
+
+    return ResponseEntity.ok(createdGroupAdmin);
+  }
 
     @GetMapping("/find/{id}")
     public ResponseEntity<Group> getGroupById(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
@@ -116,7 +135,8 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
 
     @GetMapping("/all")
     public ResponseEntity<List<Group>> getAllGroups() {
-        List<Group> groups = groupService.findAllByIsDeleted(false);
+        List<Group> groups = groupService.findAllByIsSuspended(false);
         return ResponseEntity.ok(groups);
     }
+
 }

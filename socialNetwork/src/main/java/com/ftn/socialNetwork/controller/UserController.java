@@ -3,10 +3,12 @@ package com.ftn.socialNetwork.controller;
 import com.ftn.socialNetwork.model.dto.JwtAuthenticationRequest;
 import com.ftn.socialNetwork.model.dto.UserDTO;
 import com.ftn.socialNetwork.model.dto.UserTokenState;
+import com.ftn.socialNetwork.model.entity.Banned;
 import com.ftn.socialNetwork.model.entity.ChangePassword;
 import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.security.TokenUtils;
+import com.ftn.socialNetwork.service.BannedService;
 import com.ftn.socialNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -38,7 +40,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
-
+    @Autowired
+  BannedService bannedService;
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -82,7 +85,6 @@ public class UserController {
             @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
        authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -91,6 +93,12 @@ public class UserController {
 
         updateUserLoginStatus(authenticationRequest.getUsername(), true);
         User user = userService.findByUsername(authenticationRequest.getUsername());
+
+        Banned existingBanned = bannedService.findExistingBanned(user);
+        if (existingBanned != null && existingBanned.isBlocked()) {
+          return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         user.setLastLogin(LocalDateTime.now());
         userService.updateUser(user);
 
