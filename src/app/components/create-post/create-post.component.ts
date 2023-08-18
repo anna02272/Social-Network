@@ -1,10 +1,11 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Post } from '../../models/post';
 import { PostService } from '../../services';
 import { PostRefreshService } from '../../services/postrefresh.service';
 import { HttpClient } from '@angular/common/http';
 import { Image } from 'src/app/models/image';
+import { Group } from 'src/app/models/group';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class CreatePostComponent implements OnInit {
   selectedFile!: File;
   selectedFileName!: string;
   image! : Image[];
+  @Input() group!: Group;
 
 
   @ViewChild('createModal') createModal!: ElementRef;
@@ -57,16 +59,22 @@ export class CreatePostComponent implements OnInit {
   combinedMethod() {
     this.onSubmit();
   }
-  
-
 
   createPost() {
+    if (this.group === undefined) {
     this.postService.createPost(this.post).subscribe(() => {
       this.postRefreshService.refreshPosts();
       this.post.content = '';
       this.closeModal();
     });
-  }
+  }else {
+    this.postService.createGroupPost(this.group.id, this.post).subscribe(() => {
+      this.postRefreshService.refreshPosts();
+      this.post.content = '';
+      this.closeModal();
+  });
+}
+}
 
   updatePost() {
     this.postService.updatePost(this.selectedPost.id, this.selectedPost).subscribe(() => {

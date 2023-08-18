@@ -3,7 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Group } from 'src/app/models/group';
 import { GroupRequest } from 'src/app/models/groupRequest';
-import { GroupService, UserService } from 'src/app/services';
+import { Post } from 'src/app/models/post';
+import { GroupService, PostService, UserService } from 'src/app/services';
 import { GroupRequestService } from 'src/app/services/groupRequest.service';
 
 
@@ -65,7 +66,7 @@ export class GroupComponent implements OnInit {
         }
       );
   }  
-  
+ 
   formatDate(date: any): string {
     const [year, month, day, hour, minute] = date;
     const formattedDate = new Date(year, month - 1, day, hour, minute);

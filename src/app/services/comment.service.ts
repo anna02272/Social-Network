@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {ConfigService} from './config.service';
 import { Comment } from '../models/comment';
+import { Observable } from 'rxjs';
 
 
 @Injectable()
@@ -61,7 +62,7 @@ export class CommentService {
      getCommentsByPostId(postId : number) {
       return this.apiService.get(this.config.comment_url + "/findByPost/" + postId );
      }
-    
+     
   
   }
 

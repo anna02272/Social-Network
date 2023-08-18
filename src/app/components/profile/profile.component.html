@@ -1,0 +1,159 @@
+<div class="container" style="width: 800px">
+    <div class="row flex-lg-nowrap">
+      <div class="col-12 col-lg-auto mb-3" style="width: 200px">
+        <div class="card p-3">
+          <div class="e-navlist e-navlist--active-bg">
+            <p>Groups:</p>
+              <li *ngFor="let group of approvedGroups" class="nav-item">
+                 <a  style="cursor: pointer;" [routerLink]="['/group', group.id]">{{ group.name }}</a>
+              </li>
+          </div>
+          <div class="e-navlist e-navlist--active-bg">
+            <p>Friends:</p>
+              <li *ngFor="let friend of friends" class="nav-item">
+                 <a  style="cursor: pointer;" [routerLink]="['/profile',friend.id]">{{ friend.username }}</a>
+              </li>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="user">
+      <div class="col">
+        <div class="row">
+          <div class="col mb-3">
+            <div class="card" style="width: 800px">
+              <div class="card-body" >
+                <div class="e-profile">
+                  <div class="row">
+                    <div class="col-12 col-sm-auto mb-3">
+                      <div class="mx-auto" style="width: 140px">
+                        <div
+                          class="d-flex justify-content-center align-items-center rounded"
+                          style="
+                            height: 140px;
+                            background-color: rgb(233, 236, 239);
+                          "
+                        >
+                          <span
+                            style="
+                              color: rgb(166, 168, 170);
+                              font: bold 8pt Arial;
+                            "
+                            >140x140</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                   
+                    <div
+                      class="col d-flex flex-column flex-sm-row justify-content-between mb-3"
+                    >
+                      <div class="text-center text-sm-left mb-2 mb-sm-0">
+                      
+                        <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">
+                          {{ user.firstName }} {{ user.lastName }}
+                        </h4>
+                        <p class="mb-0">{{ user.profileName ? user.profileName : user.username }}</p>
+                        <div class="text-muted"><small><p>Last seen: {{ formatDate(user.lastLogin) }}</p>
+                          <button
+                          type="submit"
+                          class="btn btn-warning w-100"
+                          data-bs-dismiss="modal"
+                          (click)="openUserReportModal(user)"
+                        >
+                          Report User
+                        </button>
+                        </small></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-content pt-3">
+                    <div class="tab-pane active">
+                      <form [formGroup]="profileForm">
+                      
+                        <div class="row">
+                          <div class="col">
+                            <div class="row">
+                              <div class="col">
+                                <div class="form-group">
+                                  <label>First Name</label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="name"
+                                    formControlName="firstName"
+                                    
+                                  />
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="form-group">
+                                  <label>Last Name</label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="username"
+                                    formControlName="lastName" 
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                                <div class="form-group">
+                                  <label>Username</label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    formControlName="username"
+                                  />
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="form-group">
+                                  <label>Email</label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    formControlName="email"
+                                    
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                                <div class="form-group">
+                                  <label>Profile name</label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    formControlName="profileName"
+                                  />
+                                  </div>
+                                  </div>
+                              <div class="col mb-3">
+                                <div class="form-group">
+                                  <label>About</label>
+                                  <textarea
+                                    class="form-control"
+                                    rows="5"
+                                    formControlName="description"
+                                  ></textarea>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                     
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

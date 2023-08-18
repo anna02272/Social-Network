@@ -5,13 +5,13 @@
         <div class="e-navlist e-navlist--active-bg">
           <p>Groups:</p>
             <li *ngFor="let group of approvedGroups" class="nav-item">
-               <a [routerLink]="['/group', group.id]">{{ group.name }}</a>
+               <a  style="cursor: pointer;" [routerLink]="['/group', group.id]">{{ group.name }}</a>
             </li>
         </div>
         <div class="e-navlist e-navlist--active-bg">
           <p>Friends:</p>
             <li *ngFor="let friend of friends" class="nav-item">
-               <a >{{ friend.username }}</a>
+               <a  style="cursor: pointer;" [routerLink]="['/profile',friend.id]">{{ friend.username }}</a>
             </li>
         </div>
       </div>

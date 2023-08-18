@@ -17,7 +17,6 @@ export class HeaderComponent implements OnInit {
   friendRequest : FriendRequest =  new FriendRequest(0, false, new Date(),null, this.userService.currentUser, this.forUser )
   showSuccessMessage: boolean = false;
   showErrorMessage: boolean = false;
-  friends: any[] = [];
 
   constructor( private userService: UserService,
     private friendRequestService: FriendRequestService) { }
@@ -26,11 +25,6 @@ export class HeaderComponent implements OnInit {
       this.userService.currentUser$.subscribe((user) => {
         if (user) {
           this.profileName = user.profileName;
-          // this.friendRequestService
-          //   .getApprovedFriendsForUser(user.id)
-          //   .subscribe((friends: any[]) => {
-          //     this.friends = friends;
-          //   });
         }
       });
     }
@@ -69,7 +63,6 @@ export class HeaderComponent implements OnInit {
       this.showSuccessMessage = false;
       this.showErrorMessage = false;
     }
-   
   hasSignedIn() {
     return !!this.userService.currentUser;
   }

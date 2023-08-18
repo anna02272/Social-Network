@@ -7,6 +7,8 @@ import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { GroupRequestService } from 'src/app/services/groupRequest.service';
 import { GroupRequest } from 'src/app/models/groupRequest';
+import { SuspendComponent } from '../suspend/suspend.component';
+import { MatDialog } from '@angular/material/dialog';
 
 declare var $: any;
 interface DisplayMessage {
@@ -21,7 +23,7 @@ interface DisplayMessage {
 })
 export class GroupsComponent implements OnInit {
   groups: Group[] = [];
-  group: Group = new Group(0, '', '', new Date(), false, '', this.userService.currentUser)
+  group: Group = new Group(0, '', '', new Date(), false, '', [])
   groupRequest : GroupRequest =  new GroupRequest(0, false, new Date(),null, this.userService.currentUser, this.group )
   notification: DisplayMessage = {} as DisplayMessage;
   submitted = false;
@@ -35,7 +37,8 @@ export class GroupsComponent implements OnInit {
     private groupRequestService: GroupRequestService,
     private refreshService: RefreshService,
     private datePipe: DatePipe,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -113,13 +116,6 @@ export class GroupsComponent implements OnInit {
     this.group = { ...group }; 
     this.openModal();
   }
-  
-
-  deleteGroup(group: Group): void {
-    this.groupService.deleteGroup(group.id).subscribe(() => {
-      this.groups = this.groups.filter(p => p.id !== group.id);
-    });
-  }
 
   loadGroups() {
     this.groupService.getAllGroups().subscribe((data: Group[]) => {
@@ -151,6 +147,20 @@ export class GroupsComponent implements OnInit {
     const groupForm = this.groupModal.nativeElement.querySelector('form');
     groupForm.reset();
   }
+  openSuspendModal(group: Group) {
+    const dialogRef = this.dialog.open(SuspendComponent, {
+      width: '500px', 
+      data: { groupId: group.id },
+    });
+  
+    dialogRef.componentInstance.groupSuspended.subscribe((deletedGroupId: number) => {
+      this.groups = this.groups.filter(group => group.id !== deletedGroupId);
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+  
 
   hasSignedIn() {
     return !!this.userService.currentUser;

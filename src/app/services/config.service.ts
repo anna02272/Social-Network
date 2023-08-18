@@ -29,8 +29,10 @@ export class ConfigService {
   get whoami_url(): string {
     return this._whoami_url;
   }
-
-  private _group_url = this._api_url + '/groups';
+  get banned_url(): string {
+    return this._banned_url;
+  }
+  private _banned_url = this._api_url + '/banned';
 
   get groupRequest_url(): string {
     return this._groupRequest_url;
@@ -45,6 +47,8 @@ export class ConfigService {
   get group_url(): string {
     return this._group_url;
   }
+  private _group_url = this._api_url + '/groups';
+
   private _groupadmin_url = this._api_url + '/groupadmins';
 
   get groupadmin_url(): string {

@@ -30,7 +30,6 @@ import { GroupComponent } from './components/group/group.component';
 import { PostComponent } from './components/post/post.component';
 import { CreatePostComponent } from './components/create-post/create-post.component';
 import { GroupsComponent } from './components/groups/groups.component';
-import { FirendsComponent } from './components/firends/firends.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { FriendRequestComponent } from './components/friend-request/friend-request.component';
 import { GroupAdminService } from './services/groupadmin.service';
@@ -48,6 +47,10 @@ import { ReportService } from './services/report.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RequestsComponent } from './components/requests/requests.component';
 import { FriendRequestService } from './services/friendRequest.service';
+import { ProfileComponent } from './components/profile/profile.component';
+import { GroupPostComponent } from './components/group-post/group-post.component';
+import { SuspendComponent } from './components/suspend/suspend.component';
+import { BannedService } from './services/banned.service';
 
 @NgModule({
   declarations: [
@@ -61,7 +64,6 @@ import { FriendRequestService } from './services/friendRequest.service';
     PostComponent,
     CreatePostComponent,
     GroupsComponent,
-    FirendsComponent,
     UserProfileComponent,
     FriendRequestComponent,
     CommentComponent,
@@ -70,7 +72,10 @@ import { FriendRequestService } from './services/friendRequest.service';
     ReactionCommentComponent,
     GroupRequestComponent,
     ReportsComponent,
-    RequestsComponent
+    RequestsComponent,
+    ProfileComponent,
+    GroupPostComponent,
+    SuspendComponent
   ],
   imports: [
     HttpClientModule,
@@ -106,7 +111,8 @@ import { FriendRequestService } from './services/friendRequest.service';
     ReactionService, 
     GroupRequestService,
     ReportService,
-    FriendRequestService
+    FriendRequestService,
+    BannedService
   ],
   bootstrap: [AppComponent]
 })
