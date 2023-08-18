@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class="flex-grow-1 ms-3">
-            <h6>{{reportedPost.user?.username}}</h6>
+            <h6  style="cursor: pointer;" [routerLink]="['/profile',reportedPost.user?.id]">{{reportedPost.user?.username}}</h6>
             <span class="text-muted fs-7">{{ formatDate(reportedPost.timestamp) }}</span>
         
           </div>
@@ -70,7 +70,7 @@
             </div>
           </div>
           <div class="flex-grow-1 ms-3">
-            <h6>{{reportedComment.user?.username}}</h6>
+            <h6   style="cursor: pointer;" [routerLink]="['/profile',reportedComment.user?.id]">{{reportedComment.user?.username}}</h6>
            <span class="text-muted fs-7">{{ formatDate(reportedComment.timestamp) }}</span>
         
           </div>
@@ -118,18 +118,21 @@
             </div>
           </div>
           <div class="flex-grow-1 ms-3">
-            <h6>{{reportedUser.user?.username}}</h6>
+            <h6  [routerLink]="['/profile',reportedUser.user?.id]">{{reportedUser.user?.username}}</h6>
             <span class="text-muted fs-7">{{ formatDate(reportedUser.timestamp) }}</span>
         
           </div>
           <div  class="flex-grow-1 ms-3">  
-            <h6>Report for user with username: {{reportedUser.reportedUser?.username}}</h6> 
+            <h6  [routerLink]="['/profile',reportedUser.reportedUser?.id]"
+            style="cursor: pointer;">Report for user with username: {{reportedUser.reportedUser?.username}}</h6> 
             <h6>Reason for reporting: {{ reportedUser.reason }}</h6>
           </div>
           <div class="d-flex align-items-center mt-2 mt-md-0">
             <div class="confirm-click-btn">
               <a class="me-3 btn btn-warning rounded confirm-btn"
-                >Accept</a
+              (click)="block(reportedUser)"  
+              (click)="approve(reportedUser)"
+                >Block User</a
               >
             </div>
             <a
@@ -146,8 +149,45 @@
   </div>
   </div>
   </div>
+  <div  *ngIf="userType() === 'ADMIN'">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <div class="header-title">
+        <h4 class="card-title">Blocked Users</h4>
+      </div>
+    </div>
    
-  
-  
+    <div  *ngFor="let blockedUser of blockedUsers">
+    <div class="card-body"  *ngIf="!blockedUser.isBlocked" >
+      <ul class="request-list list-inline m-0 p-0" >
+        <li class="d-flex align-items-center justify-content-between flex-wrap">
+          <div class="user-img img-fluid flex-shrink-0">
+            <div class="p-1">
+              <img
+              src="assets/images/smiley6.jpg"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover"
+              />
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6   style="cursor: pointer;" [routerLink]="['/profile',blockedUser.bannedUser?.id]">{{blockedUser.bannedUser?.username}}</h6>
+           <span class="text-muted fs-7">{{ formatDate(blockedUser.timeStamp) }}</span>
+        
+          </div>
+          <div class="d-flex align-items-center mt-2 mt-md-0">
+            <div class="confirm-click-btn">
+              <a class="me-3 btn btn-warning rounded confirm-btn"
+              (click)="unblock(blockedUser)"
+                >Unblock</a
+              >
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  </div>
   
   

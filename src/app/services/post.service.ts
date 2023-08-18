@@ -16,6 +16,10 @@ export class PostService {
   createPost(post: Post){
     return this.apiService.post(this.config.post_url + "/create", post);
   }
+  createGroupPost(groupId: number, post: Post){
+    const url = `${this.config.post_url}/create/${groupId}`;
+     return this.apiService.post(url, post);
+   }
 
   deletePost(id: number) {
   return this.apiService.put(this.config.post_url + '/delete/' + id);
@@ -38,7 +42,15 @@ updatePost(postId: number, post: Post) {
    getPostById(id : number) {
     return this.apiService.get(this.config.post_url + "/find/" + id );
    }
-  
+   getByGroup(groupId: number) {
+    return this.apiService.get(`${this.config.post_url}/all/${groupId}`);
+  }
+  getByGroupAsc(groupId: number) {
+    return this.apiService.get(`${this.config.post_url}/allAsc/${groupId}`);
+  }
+  getByGroupDesc(groupId: number) {
+    return this.apiService.get(`${this.config.post_url}/allDesc/${groupId}`);
+  }
 
 
 }

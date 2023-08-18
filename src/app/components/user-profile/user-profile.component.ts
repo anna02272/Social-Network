@@ -5,6 +5,7 @@ import { DatePipe } from '@angular/common';
 import { User } from 'src/app/models/user';
 import { GroupRequestService } from 'src/app/services/groupRequest.service';
 import { FriendRequestService } from 'src/app/services/friendRequest.service';
+import { Group } from 'src/app/models/group';
 
 @Component({
   selector: 'app-user-profile',
@@ -22,8 +23,8 @@ export class UserProfileComponent {
   successMessage: string = '';
   errorMessage: string = '';
   showPassword: boolean = false;
-  approvedGroups: any[] = [];
-  friends: any[] = [];
+  approvedGroups: Group[] = [];
+  friends: User[] = [];
 
   constructor(
     private userService: UserService,

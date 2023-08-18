@@ -4,6 +4,8 @@ import { ReportService } from 'src/app/services/report.service';
 import { DatePipe } from '@angular/common';
 import { UserService } from 'src/app/services';
 import { RefreshService } from 'src/app/services/refresh.service';
+import { BannedService } from 'src/app/services/banned.service';
+import { Banned } from 'src/app/models/banned';
 
 @Component({
   selector: 'app-reports',
@@ -16,9 +18,12 @@ export class ReportsComponent implements OnInit {
   reportedPosts: Report[] = [];
   reportedComments: Report[] = [];
   reportedUsers: Report[] = [];
+  banned: Banned = new Banned(0, new Date(), false, null, null, this.userService.currentUser, null)
+  blockedUsers: Banned[] = [];
 
   constructor(
     private reportService: ReportService,
+    private bannedService: BannedService,
     private datePipe: DatePipe,
     private userService: UserService,
     private refreshService : RefreshService,
@@ -33,12 +38,14 @@ export class ReportsComponent implements OnInit {
     this.loadReportsForPost();
     this.loadReportsForComment();
     this.loadReportsForUser();
+    this.loadBlockedUsers();
     
   }
   refreshContent() {
     this.loadReportsForPost();
     this.loadReportsForComment();
     this.loadReportsForUser();
+    this.loadBlockedUsers();
   }
   
    loadReportsForPost() {
@@ -56,11 +63,30 @@ export class ReportsComponent implements OnInit {
       this.reportedUsers = data;
         });
   }
+  loadBlockedUsers() {
+    this.bannedService.getAllBlockedUsers().subscribe((data: Banned[]) => {
+      this.blockedUsers = data;
+        });
+  }
   approve(report: Report) {
     this.reportService.approve(report.id).subscribe(() => {
       this.refreshService.refresh();
     });
   }
+  block(report: Report) {
+    if (report.reportedUser){
+    this.bannedService.blockUser(report.reportedUser.id, this.banned).subscribe(() => {
+      this.refreshService.refresh();
+    });
+  }
+}
+
+  unblock(banned: Banned) {
+    this.bannedService.unblockUser(banned.id).subscribe(() => {
+      this.refreshService.refresh();
+    });
+  }
+
   decline(report: Report) {
     this.reportService.decline(report.id).subscribe(() => {
       this.refreshService.refresh();

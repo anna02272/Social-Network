@@ -7,6 +7,7 @@ export class Comment {
   isDeleted: boolean;
   user: User;
   parentComment: Comment | null;
+  // replies: Comment[] | null;
   
 
   constructor(
@@ -16,6 +17,7 @@ export class Comment {
     isDeleted: boolean,
     user: User,
     parentComment: Comment | null = null,
+    // replies: Comment[] | null = null
   ) {
     this.id = id;
     this.text = text;
@@ -23,6 +25,7 @@ export class Comment {
     this.isDeleted = isDeleted;
     this.user = user;
     this.parentComment = parentComment;
+    // this.replies = replies
    
   }
 }

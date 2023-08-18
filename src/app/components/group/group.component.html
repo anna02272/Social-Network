@@ -9,7 +9,7 @@
     />
   </div>
 
-  <div class="container">
+  <div class="container" >
     <div class="row align-items-center">
       <div class="col-lg-2">
         <img
@@ -22,14 +22,14 @@
           <h4>{{ group.name }}</h4>
           <p>{{ group.description }}</p>
           <p>Creation date: {{ formatDate(group.creationDate) }}</p>
-          <p>Created by: {{ group.groupAdmin.user.username }}</p>
+          <p   *ngFor="let admin of group.groupAdmin" style="cursor: pointer;" [routerLink]="['/profile',admin.user.id]"> Group admin: {{ admin.user.username }}</p>
         </div>
       </div>
       <div class="col-lg-2">
-        <button *ngIf="group.groupAdmin.user.username != userName()"
+        <button *ngIf="group.groupAdmin[0]?.user?.username !== userName()"
         type="submit" class="btn btn-warning"
         (click)="createGroupRequest(group)">Join group</button>
-        <button *ngIf="group.groupAdmin.user.username == userName()"
+        <button *ngIf="group.groupAdmin[0]?.user?.username === userName()" style="cursor: pointer;"
         [routerLink]="['/groupRequests', group.id]" class="btn btn-warning">Group requests</button>
       </div>
     </div>
@@ -42,8 +42,9 @@
   </p>
   
   <hr />
-  <div *ngIf="showContent || group.groupAdmin.user.username === userName()">
-    <app-create-post></app-create-post>
-  <app-post></app-post>
+<div *ngFor="let admin of group.groupAdmin">
+  <div *ngIf="showContent || admin.user.username === userName()">
+    <app-create-post [group]="group"></app-create-post>
+      <app-group-post  [group]="group"></app-group-post>
 </div>
 </div>

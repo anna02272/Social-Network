@@ -1,4 +1,5 @@
-import { Component,    OnInit } from '@angular/core';
+
+import { Component,    Input,    OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Post } from '../../models/post';
 import { PostService } from '../../services';
@@ -15,18 +16,20 @@ import { Group } from 'src/app/models/group';
 
 declare var $: any;
 @Component({
-  selector: 'app-post',
-  templateUrl: './post.component.html',
-  styleUrls: ['./post.component.css'],
+  selector: 'app-group-post',
+  templateUrl: './group-post.component.html',
+  styleUrls: ['./group-post.component.css'],
   providers: [DatePipe]
 })
-export class PostComponent implements OnInit {
+export class GroupPostComponent {
+
   posts: Post[] = [];
   comments: Comment[] =[];
   sortingOrder: string = 'ascending';
   friends: User[] = [];
   currentUser!: User;
   approvedGroups: Group[] = [];
+  @Input() group!: Group;
 
   constructor(
     private userService: UserService,
@@ -43,62 +46,22 @@ export class PostComponent implements OnInit {
     this.loadPosts();
     this.subscribeToRefreshPosts();
     this.subscribeToOpenModal();
-    this.loadApprovedFriends();
   }
 
-  // loadPosts() {
-  //   this.postService.getAllPosts().subscribe((data: Post[]) => {
-  //     this.posts = data;
-  //       });
-  // }
+
   loadPosts() {
     if (this.sortingOrder === 'ascending') {
-      this.postService.getAllAscending().subscribe((data: Post[]) => {
+      this.postService.getByGroupAsc(this.group.id).subscribe((data: Post[]) => {
         this.posts = data;
       });
     } else {
-      this.postService.getAllDescending().subscribe((data: Post[]) => {
+      this.postService.getByGroupDesc(this.group.id).subscribe((data: Post[]) => {
         this.posts = data;
       });
     }
   }
 
-  loadApprovedFriends() {
-      this.userService.getMyInfo().subscribe((user) => {
-        this.currentUser = user;
-  
-        this.friendRequestService
-        .getApprovedFriendsForUser(this.currentUser.id)
-        .subscribe((friends: User[]) => {
-          this.friends = friends;
-        });
-        this.groupRequestService
-        .getApprovedGroupsForUser(this.currentUser.id)
-        .subscribe((approvedGroups: Group[]) => {
-          this.approvedGroups = approvedGroups;
-        });
-      });
-  }
 
-  shouldDisplayPost(post: Post): boolean {
-    if (post.group) {
-      const isUserMemberOfGroup = this.isUserMemberOfGroup(post.group.id);
-      if (isUserMemberOfGroup) {
-        return true;
-      } else {
-        return false; 
-      }
-    }
-    
-    return this.friends.some(friend => friend.id === post.user.id);
-  }
-  
-
-  
-  private isUserMemberOfGroup(groupId: number): boolean {
-    return this.approvedGroups.some(group => group.id === groupId);
-  }
-  
   onSelectedPost(post: Post) {
     this.postRefreshService.setPost(post);
     this.openModal();
@@ -151,7 +114,15 @@ export class PostComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
+  openUserReportModal(user: User) {
+    const dialogRef = this.dialog.open(ReportComponent, {
+      width: '500px', 
+      data: { reportedUserId: user.id },
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
   userName() {
     const user = this.userService.currentUser;
     return user ? user.username : '';
@@ -173,3 +144,4 @@ export class PostComponent implements OnInit {
   }
   
 }
+

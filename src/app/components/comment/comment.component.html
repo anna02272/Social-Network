@@ -75,7 +75,7 @@
               </li>
             </ul>
           </div>
-          <p class="fw-bold m-0">{{ comment.user.profileName ? comment.user.profileName: comment.user.username }}</p>
+          <p class="fw-bold m-0" style="cursor: pointer;" [routerLink]="['/profile', comment.user.id]">{{ comment.user.profileName ? comment.user.profileName: comment.user.username }}</p>
           <span class="text-muted fs-7">{{ formatDate(comment.timeStamp) }}</span>
 
           <form (ngSubmit)="onSubmitUpdate(comment)">

@@ -17,9 +17,9 @@ export class GroupService {
       return this.apiService.post(this.config.group_url + "/create", group);
     }
   
-    deleteGroup(id: number) {
-    return this.apiService.put(this.config.group_url + '/delete/' + id);
-  }
+    deleteGroup(id: number, suspendedReason: string) {
+      return this.apiService.put(this.config.group_url + `/delete/${id}`, suspendedReason);
+    }
     
   updateGroup(groupId: number, group: Group) {
     const url = `${this.config.group_url}/update/${groupId}`;
@@ -32,6 +32,8 @@ export class GroupService {
      getGroupById(id : number) {
       return this.apiService.get(this.config.group_url + "/find/" + id );
      }
-     
+     getByGroupAdmin(groupAdminId: number) {
+      return this.apiService.get(`${this.config.group_url}/all/${groupAdminId}`);
+    }
   }
 

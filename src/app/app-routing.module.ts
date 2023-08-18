@@ -10,9 +10,9 @@ import {HomeComponent } from './components/home/home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { GroupsComponent } from './components/groups/groups.component';
 import { GroupRequestComponent } from './components/group-request/group-request.component';
-import { FriendRequestComponent } from './components/friend-request/friend-request.component';
 import { ReportComponent } from './components/report/report.component';
 import { RequestsComponent } from './components/requests/requests.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 
 
@@ -76,6 +76,9 @@ const routes: Routes = [
     component: UserProfileComponent,
     canActivate: [AuthGuard] 
   },
+  { path: 'profile/:id',
+   component: ProfileComponent,
+   canActivate: [AuthGuard]  },
   {
     path: 'report',
     component: ReportComponent,
