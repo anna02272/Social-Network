@@ -15,6 +15,9 @@ export class BannedService {
     blockUser(userId: number, banned: Banned){
       return this.apiService.post(this.config.banned_url + `/blockUser/${userId}`, banned);
     }
+    blockGroupUser(userId: number, groupId: number, banned: Banned){
+      return this.apiService.post(this.config.banned_url + `/blockGroupUser/${userId}/${groupId}`, banned);
+    }
   
     unblockUser(id: number) {
       return this.apiService.put(this.config.banned_url + `/unblockUser/${id}`);
@@ -22,6 +25,9 @@ export class BannedService {
     
     getAllBlockedUsers() {
       return this.apiService.get(this.config.banned_url + "/allBlockedUsers");
+     }
+     getAllBlockedGroupUsers(groupId : number) {
+      return this.apiService.get(this.config.banned_url + `/allBlockedGroupUsers/${groupId}`);
      }
     
   }

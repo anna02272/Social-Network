@@ -34,5 +34,9 @@ export class SuspendComponent {
     const user = this.userService.currentUser;
     return user ? user.username : '';
   }
+  imagePath() {
+    const user = this.userService.currentUser;
+    return user ? user.image.path : '';
+  }
 }
 

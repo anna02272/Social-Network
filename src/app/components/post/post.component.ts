@@ -12,6 +12,8 @@ import { User } from 'src/app/models/user';
 import { FriendRequestService } from 'src/app/services/friendRequest.service';
 import { GroupRequestService } from 'src/app/services/groupRequest.service';
 import { Group } from 'src/app/models/group';
+import { Banned } from 'src/app/models/banned';
+import { BannedService } from 'src/app/services/banned.service';
 
 declare var $: any;
 @Component({
@@ -27,6 +29,7 @@ export class PostComponent implements OnInit {
   friends: User[] = [];
   currentUser!: User;
   approvedGroups: Group[] = [];
+  blockedGroupUsers: Banned[] = [];
 
   constructor(
     private userService: UserService,
@@ -37,6 +40,7 @@ export class PostComponent implements OnInit {
     private datePipe: DatePipe,
     private dialog: MatDialog,
     private groupRequestService: GroupRequestService,
+    private bannedService: BannedService
   ) {}
 
   ngOnInit() {
@@ -44,6 +48,7 @@ export class PostComponent implements OnInit {
     this.subscribeToRefreshPosts();
     this.subscribeToOpenModal();
     this.loadApprovedFriends();
+   
   }
 
   // loadPosts() {
@@ -55,10 +60,20 @@ export class PostComponent implements OnInit {
     if (this.sortingOrder === 'ascending') {
       this.postService.getAllAscending().subscribe((data: Post[]) => {
         this.posts = data;
+        for (const post of this.posts) {
+          if (post.group != null) {
+            this.loadBlockedGroupUsers(post);
+          }
+        }
       });
     } else {
       this.postService.getAllDescending().subscribe((data: Post[]) => {
         this.posts = data;
+        for (const post of this.posts) {
+          if (post.group != null) {
+            this.loadBlockedGroupUsers(post);
+          }
+        }
       });
     }
   }
@@ -84,7 +99,9 @@ export class PostComponent implements OnInit {
     if (post.group) {
       const isUserMemberOfGroup = this.isUserMemberOfGroup(post.group.id);
       if (isUserMemberOfGroup) {
+        if (!this.isCurrentUserBlocked()) {
         return true;
+        }
       } else {
         return false; 
       }
@@ -93,12 +110,26 @@ export class PostComponent implements OnInit {
     return this.friends.some(friend => friend.id === post.user.id);
   }
   
-
-  
+  isCurrentUserBlocked(): boolean {
+    if (!this.blockedGroupUsers) {
+      return false; 
+    }
+    return this.blockedGroupUsers.some(
+      (blockedGroupUser) => blockedGroupUser.bannedUser?.id === this.userService.currentUser.id 
+    );
+  }
+  loadBlockedGroupUsers(post: Post) {
+    if(post.group != null) {
+    this.bannedService.getAllBlockedGroupUsers(post.group.id).subscribe((data: Banned[]) => {
+      this.blockedGroupUsers = data;
+        });
+      }
+  }
   private isUserMemberOfGroup(groupId: number): boolean {
     return this.approvedGroups.some(group => group.id === groupId);
   }
   
+
   onSelectedPost(post: Post) {
     this.postRefreshService.setPost(post);
     this.openModal();

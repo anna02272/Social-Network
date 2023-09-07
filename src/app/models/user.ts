@@ -1,3 +1,5 @@
+import { Image } from "./image";
+
 export class User {
   id: number;
   username: string;
@@ -7,9 +9,10 @@ export class User {
   lastLogin: Date;
   description: string;
   profileName: string;
+  image: Image | undefined;
   
 
-  constructor(id: number, username: string, firstName: string, lastName: string, email: string, lastLogin: Date, description: string, profileName: string) {
+  constructor(id: number, username: string, firstName: string, lastName: string, email: string, lastLogin: Date, description: string, profileName: string,   image: Image | undefined) {
     this.id = id;
     this.username = username;
     this.firstName = firstName;
@@ -18,5 +21,6 @@ export class User {
     this.lastLogin = lastLogin;
     this.description = description;
     this.profileName = profileName;
+    this.image = image;
   }
 }

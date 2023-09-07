@@ -1,11 +1,16 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Banned } from 'src/app/models/banned';
 import { Group } from 'src/app/models/group';
+import { GroupAdmin } from 'src/app/models/groupAdmin';
 import { GroupRequest } from 'src/app/models/groupRequest';
 import { Post } from 'src/app/models/post';
+import { User } from 'src/app/models/user';
 import { GroupService, PostService, UserService } from 'src/app/services';
+import { BannedService } from 'src/app/services/banned.service';
 import { GroupRequestService } from 'src/app/services/groupRequest.service';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 
 @Component({
@@ -21,22 +26,35 @@ export class GroupComponent implements OnInit {
   showSuccessMessage: boolean = false;
   showErrorMessage: boolean = false;
   showContent: boolean = false;
-  
-
+  approvedUsers: User[] = [];
+  banned: Banned = new Banned(0, new Date(), false, this.userService.currentUser, null, null, null)
+  blockedGroupUsers: Banned[] = [];
   constructor(
     private groupService: GroupService,
     private route: ActivatedRoute ,
     private datePipe: DatePipe,
     private userService: UserService,
     private groupRequestService: GroupRequestService,
-  ) {}
+    private bannedService: BannedService,
+    private refreshService : RefreshService,
+  ) { this.refreshService.getRefreshObservable().subscribe(() => {
+    this.loadBlockedGroupUsers(this.group);  });}
 
   ngOnInit(): void {
     this.groupId = +this.route.snapshot.paramMap.get('id')!;
     this.groupService.getGroupById(this.groupId).subscribe((group: Group) => {
       this.group = group;
       this.checkGroupRequestStatus();
+      
+      this.groupRequestService
+      .getApprovedUsersForGroup(this.group.id)
+      .subscribe((approvedUsers: any[]) => {
+        this.approvedUsers = approvedUsers;
+      });
+      
+    this.loadBlockedGroupUsers(group);
     });
+    
   }
   createGroupRequest(group: Group) {
     this.groupRequest.group = group; 
@@ -57,8 +75,10 @@ export class GroupComponent implements OnInit {
       .getByUserAndGroup(this.userService.currentUser.id, this.group.id)
       .subscribe(
         (groupRequest) => {
-          if (groupRequest.approved) {
+          if (groupRequest.approved ) {
+            if (!this.isCurrentUserBlocked()) {
             this.showContent = true;
+            }
           }
         },
         (error) => {
@@ -66,7 +86,35 @@ export class GroupComponent implements OnInit {
         }
       );
   }  
- 
+  isCurrentUserBlocked(): boolean {
+    if (!this.blockedGroupUsers) {
+      return false; 
+    }
+    return this.blockedGroupUsers.some(
+      (blockedGroupUser) => blockedGroupUser.bannedUser?.id === this.userService.currentUser.id 
+    );
+  }
+    block(user : User, group: Group) {
+    this.bannedService.blockGroupUser(user.id, group.id, this.banned).subscribe(() => {
+      this.refreshService.refresh();
+    });
+  }
+  unblock(banned: Banned) {
+    this.bannedService.unblockUser(banned.id).subscribe(() => {
+      this.refreshService.refresh();
+    });
+  }
+  loadBlockedGroupUsers(group: Group) {
+    this.bannedService.getAllBlockedGroupUsers(group.id).subscribe((data: Banned[]) => {
+      this.blockedGroupUsers = data;
+        });
+  }
+  removeGroupAdmin(group: Group) {
+    this.groupService.removeGroupAdmin(group.id).subscribe(() => {
+        this.refreshService.refresh();
+      });
+      }
+
   formatDate(date: any): string {
     const [year, month, day, hour, minute] = date;
     const formattedDate = new Date(year, month - 1, day, hour, minute);

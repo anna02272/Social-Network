@@ -3,6 +3,7 @@ import {UserService} from '../../services/user.service';
 import { FriendRequestService } from 'src/app/services/friendRequest.service';
 import { User } from 'src/app/models/user';
 import { FriendRequest } from 'src/app/models/friendRequest';
+import { Image } from 'src/app/models/image';
 
 @Component({
   selector: 'app-header',
@@ -10,10 +11,10 @@ import { FriendRequest } from 'src/app/models/friendRequest';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  profileName: string | null = null;
+  image: Image | undefined = undefined;
   searchKeyword: string = '';
   searchResults: any[] = [];
-  forUser: User = new User(0,"", "", "", "", new Date(), "", "")
+  forUser: User = new User(0,"", "", "", "", new Date(), "", "", undefined)
   friendRequest : FriendRequest =  new FriendRequest(0, false, new Date(),null, this.userService.currentUser, this.forUser )
   showSuccessMessage: boolean = false;
   showErrorMessage: boolean = false;
@@ -24,7 +25,7 @@ export class HeaderComponent implements OnInit {
     ngOnInit() {
       this.userService.currentUser$.subscribe((user) => {
         if (user) {
-          this.profileName = user.profileName;
+         
         }
       });
     }
@@ -71,7 +72,14 @@ export class HeaderComponent implements OnInit {
     const user = this.userService.currentUser;
     return user.username;
   }
+  profileImage() {
+    const user = this.userService.currentUser;
+    return user.image?.path;
+  }
 
-
+  profileName() {
+    const user = this.userService.currentUser;
+    return user.profileName;
+  }
 
 }

@@ -49,11 +49,13 @@
         <li *ngFor="let result of searchResults" class="d-flex align-items-center justify-content-between flex-wrap">
           <div class="user-img img-fluid flex-shrink-0">
             <div class="p-1">
-              <img
-              src="assets/images/smiley6.jpg"
+              <img *ngIf="result.image?.path; else defaultImage" [src]="result.image?.path"
                 class="rounded-circle me-2"
-                style="width: 38px; height: 38px; object-fit: cover"
-              />
+                style="width: 38px; height: 38px; object-fit: cover" />
+                <ng-template #defaultImage>
+                <img src="assets/images/smiley6.jpg"   class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover" />
+               </ng-template>
             </div>
           </div>
           <div class="flex-grow-1 ms-3">
@@ -98,11 +100,13 @@
   </div>
   <div class="right"  *ngIf="hasSignedIn()">
     <div fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="flex-end center">
-      <img
-      src="assets/images/smiley6.jpg"
-      class="rounded-circle me-2"
-      style="width: 38px; height: 38px; object-fit: cover"
-    />
+      <img *ngIf="profileImage(); else defaultImage" [src]="profileImage()"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover" />
+                <ng-template #defaultImage>
+                <img src="assets/images/smiley6.jpg"   class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover" />
+               </ng-template>
       <button
         *ngIf="hasSignedIn()"
         [matMenuTriggerFor]="userMenu"
@@ -110,7 +114,7 @@
         mat-button
         mat-ripple
       >
-        <span>{{ profileName ? profileName : username()}}</span>
+        <span>{{ profileName() ? profileName() : username()}}</span>
       </button>
       <button
         *ngIf="hasSignedIn()"

@@ -25,6 +25,7 @@ export class UserProfileComponent {
   showPassword: boolean = false;
   approvedGroups: Group[] = [];
   friends: User[] = [];
+  selectedImage!: File;
 
   constructor(
     private userService: UserService,
@@ -85,6 +86,31 @@ export class UserProfileComponent {
       this.successMessage = '';
       this.errorMessage = 'An error occurred while updating the profile. Please try again.';
     });
+  }
+
+  updateProfilePicture(currentUser: User) {
+    const formData = new FormData();
+  if (this.selectedImage) {
+    formData.append('profilePicture', this.selectedImage);
+  }
+    this.userService.updateProfilePicture(currentUser.id, formData).subscribe(() => {
+      this.userService.getMyInfo().subscribe((updatedUser) => {
+        this.currentUser = updatedUser;
+        this.userService.setCurrentUser(updatedUser);
+      });
+    });
+  }
+  deleteProfilePicture(currentUser: User): void {
+    this.userService.deleteProfilePicture(currentUser.id).subscribe(() => {
+      this.userService.getMyInfo().subscribe((updatedUser) => {
+        this.currentUser = updatedUser;
+      });
+    });
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    this.selectedImage = file;
   }
   
   onSubmit() {

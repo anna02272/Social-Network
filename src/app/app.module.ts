@@ -51,6 +51,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { GroupPostComponent } from './components/group-post/group-post.component';
 import { SuspendComponent } from './components/suspend/suspend.component';
 import { BannedService } from './services/banned.service';
+import { ReplyComponent } from './reply/reply.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { BannedService } from './services/banned.service';
     RequestsComponent,
     ProfileComponent,
     GroupPostComponent,
-    SuspendComponent
+    SuspendComponent,
+    ReplyComponent
   ],
   imports: [
     HttpClientModule,
