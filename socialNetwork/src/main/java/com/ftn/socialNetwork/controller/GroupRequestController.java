@@ -104,5 +104,11 @@ public class GroupRequestController {
     Set<Group> approvedGroups = groupRequestService.getApprovedGroupsForUser(user);
     return ResponseEntity.ok(approvedGroups);
   }
+  @GetMapping("/approvedUsers/{groupId}")
+  public ResponseEntity<Set<User>> getApprovedUsersForGroup(@PathVariable Long groupId) throws ChangeSetPersister.NotFoundException {
+    Group group = groupService.findOneById(groupId);
+    Set<User> approved = groupRequestService.getGroupMembers(group);
+    return ResponseEntity.ok(approved);
+  }
 
 }

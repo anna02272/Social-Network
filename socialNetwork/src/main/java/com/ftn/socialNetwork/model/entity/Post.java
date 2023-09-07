@@ -38,10 +38,9 @@ public class Post {
   private Boolean isDeleted ;
     @ManyToOne
     private User user;
-//  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//  @JoinTable(name = "post_images", joinColumns = {@JoinColumn(name = "post_id")},
-//    inverseJoinColumns = {@JoinColumn(name = "image_id")})
-//  private Set<Image> images;
+
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+  private List<Image> images;
   @OneToMany
   private List<Reaction> reactions;
 
@@ -52,6 +51,5 @@ public class Post {
 
   @ManyToOne
   private Group group;
-
 
 }

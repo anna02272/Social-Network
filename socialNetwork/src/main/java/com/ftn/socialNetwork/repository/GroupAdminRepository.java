@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface GroupAdminRepository extends JpaRepository<GroupAdmin, Long> {
 
   GroupAdmin findByGroupAndUser(Group group, User user);
+  GroupAdmin findByGroup(Group group);
   boolean existsByGroupAndUser(Group group, User user);
-  Optional<GroupAdmin> findFirstByUsername(String username);
 }

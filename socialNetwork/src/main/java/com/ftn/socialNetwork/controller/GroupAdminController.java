@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -45,6 +46,21 @@ public class GroupAdminController {
     if (groupAdmin == null) {
       return ResponseEntity.notFound().build();
     }
+    return ResponseEntity.ok(groupAdmin);
+  }
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @DeleteMapping("/removeGroupAdmin/{groupId}")
+  public ResponseEntity<GroupAdmin> removeGroupAdmin(@PathVariable Long groupId) throws ChangeSetPersister.NotFoundException {
+    Group group = groupService.findOneById(groupId);
+    if (group == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    GroupAdmin groupAdmin = groupAdminService.findByGroup(group);
+    if (groupAdmin == null) {
+      return ResponseEntity.notFound().build();
+    }
+    groupAdminService.delete(groupAdmin);
     return ResponseEntity.ok(groupAdmin);
   }
 

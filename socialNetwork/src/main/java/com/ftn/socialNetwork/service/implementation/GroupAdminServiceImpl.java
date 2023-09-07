@@ -40,15 +40,17 @@ public class GroupAdminServiceImpl implements GroupAdminService {
     return groupAdminRepository.findByGroupAndUser(group, user);
   }
   @Override
+  public GroupAdmin findByGroup(Group group) {
+    return groupAdminRepository.findByGroup(group);
+  }
+  @Override
   public boolean existsByGroupAndUser(Group group, User user) {
     return groupAdminRepository.existsByGroupAndUser(group, user);
   }
   @Override
-  public GroupAdmin findByUsername(String username) {
-    Optional<GroupAdmin> groupAdmin = groupAdminRepository.findFirstByUsername(username);
-    if (!groupAdmin.isEmpty()) {
-      return groupAdmin.get();
-    }
+  public GroupAdmin delete(GroupAdmin groupAdmin) {
+    groupAdminRepository.delete(groupAdmin);
     return null;
   }
+
 }

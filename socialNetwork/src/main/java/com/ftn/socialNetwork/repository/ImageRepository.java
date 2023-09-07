@@ -1,13 +1,14 @@
 package com.ftn.socialNetwork.repository;
 
+import com.ftn.socialNetwork.model.entity.Banned;
 import com.ftn.socialNetwork.model.entity.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-  Optional<Image> findByPath(String path);
 
 }

@@ -63,4 +63,5 @@ public class PostServiceImpl implements PostService {
     session.disableFilter("deletedPostFilter");
     return posts;
   }
+
 }

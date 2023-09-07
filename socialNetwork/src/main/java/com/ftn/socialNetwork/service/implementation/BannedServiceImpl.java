@@ -1,6 +1,7 @@
 package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.model.entity.Banned;
+import com.ftn.socialNetwork.model.entity.Group;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.repository.BannedRepository;
 import com.ftn.socialNetwork.service.BannedService;
@@ -37,12 +38,12 @@ public class BannedServiceImpl implements BannedService {
   }
   @Override
   public List<Banned> getAllBlockedUsers(boolean isBlocked) {
-    return bannedRepository.findAllByIsBlocked(isBlocked);
+      return bannedRepository.findAllByIsBlockedAndGroup(isBlocked, null);
   }
 
   @Override
   public Banned findExistingBanned(User bannedUser) {
-    return bannedRepository.findByBannedUserAndIsBlocked(bannedUser, true);
+    return bannedRepository.findByBannedUserAndIsBlockedAndGroup(bannedUser, true, null);
   }
   @Override
   public List<Banned> getAllBlockedUsersByGroupId(boolean isBlocked, Long groupId){

@@ -2,6 +2,7 @@ package com.ftn.socialNetwork.model.entity;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Entity
@@ -17,18 +18,12 @@ public class Image {
     private Long id;
     @Column
     private String path;
-    @Column
-    private String type;
-    @Column(length = 50000000)
-    private byte[] picByte;
+    @ManyToOne
+    @JsonIgnore
+    private Post post;
+    @OneToOne
+    @JsonIgnore
+    private User user;
 
-//    @OneToOne
-//    private User user;
-
-  public Image(String originalFilename, String contentType, byte[] bytes) {
-  }
-
-//   @ManyToOne
-//    private Post post;
 
 }

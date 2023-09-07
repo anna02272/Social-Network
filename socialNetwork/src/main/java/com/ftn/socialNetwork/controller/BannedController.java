@@ -68,18 +68,21 @@ public class BannedController {
   public ResponseEntity<Banned> blockGroupUser(@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId,
                                                @RequestBody Banned banned, Principal principal) throws ChangeSetPersister.NotFoundException {
     String username = principal.getName();
-    GroupAdmin user = groupAdminService.findByUsername(username);
-    banned.setGroupAdmin(user);
-    banned.setTimeStamp(LocalDate.now());
-    banned.setBlocked(true);
-    User bannedUser = userService.findOneById(userId);
-    if (bannedUser == null) {
-      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-    }
+    User user = userService.findByUsername(username);
     Group group = groupService.findOneById(groupId);
     if (group == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+    GroupAdmin groupAdmin = groupAdminService.findByGroupAndUser(group, user);
+    banned.setGroupAdmin(groupAdmin);
+    banned.setTimeStamp(LocalDate.now());
+    banned.setBlocked(true);
+
+    User bannedUser = userService.findOneById(userId);
+    if (bannedUser == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
     Banned existingBanned = bannedService.findExistingBanned(bannedUser);
     if (existingBanned != null) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);

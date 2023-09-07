@@ -39,8 +39,8 @@ public class User {
     private String description;
     @Column(nullable = true)
     private String profileName;
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Image image;
+    @OneToOne
+    private Image image;
     @OneToMany
     private List<GroupAdmin> groupAdmins;
     @OneToMany

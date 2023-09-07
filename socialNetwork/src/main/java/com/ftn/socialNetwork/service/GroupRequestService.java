@@ -16,4 +16,5 @@ public interface GroupRequestService {
     List<GroupRequest> findAllByGroupId(Long groupId);
     GroupRequest findByUserAndGroup(User user, Group group);
   Set<Group> getApprovedGroupsForUser(User user);
+  Set<User> getGroupMembers(Group group);
 }

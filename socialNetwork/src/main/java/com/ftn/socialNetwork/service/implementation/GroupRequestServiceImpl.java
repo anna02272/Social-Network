@@ -62,5 +62,12 @@ public class GroupRequestServiceImpl implements GroupRequestService {
       .collect(Collectors.toSet());
     return approvedGroups;
   }
-
+  @Override
+  public Set<User> getGroupMembers(Group group) {
+    List<GroupRequest> approvedGroupRequests = groupRequestRepository.findByGroupAndApproved(group, true);
+    Set<User> approvedUsers = approvedGroupRequests.stream()
+      .map(GroupRequest::getUser)
+      .collect(Collectors.toSet());
+    return approvedUsers;
+  }
 }

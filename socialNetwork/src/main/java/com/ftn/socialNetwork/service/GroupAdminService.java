@@ -10,7 +10,8 @@ public interface GroupAdminService {
   GroupAdmin findOneById(Long id) throws ChangeSetPersister.NotFoundException;
   List<GroupAdmin> findAll();
   GroupAdmin findByGroupAndUser(Group group, User user);
+  GroupAdmin findByGroup(Group group);
 
   boolean existsByGroupAndUser(Group group, User user);
-  GroupAdmin findByUsername(String username);
+  GroupAdmin delete(GroupAdmin groupAdmin);
 }

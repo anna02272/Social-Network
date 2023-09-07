@@ -1,6 +1,7 @@
 package com.ftn.socialNetwork.service;
 
 import com.ftn.socialNetwork.model.entity.Banned;
+import com.ftn.socialNetwork.model.entity.Group;
 import com.ftn.socialNetwork.model.entity.User;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
