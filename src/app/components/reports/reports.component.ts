@@ -46,6 +46,7 @@ export class ReportsComponent implements OnInit {
     this.loadReportsForComment();
     this.loadReportsForUser();
     this.loadBlockedUsers();
+
   }
   
    loadReportsForPost() {
@@ -68,6 +69,7 @@ export class ReportsComponent implements OnInit {
       this.blockedUsers = data;
         });
   }
+
   approve(report: Report) {
     this.reportService.approve(report.id).subscribe(() => {
       this.refreshService.refresh();

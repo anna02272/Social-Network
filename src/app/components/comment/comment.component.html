@@ -23,12 +23,16 @@
   <div class="accordion-body">
     <!-- comment -->
     <div *ngFor="let comment of comments">
-      <div class="d-flex align-items-center my-1">
-        <img
-        src="assets/images/smiley6.jpg"
-          class="rounded-circle me-2"
-          style="width: 38px; height: 38px; object-fit: cover"
-        />
+      <div class="d-flex align-items-center my-1" *ngIf="!comment.parentComment">
+      <img *ngIf="comment.user.image?.path; else defaultImage" [src]="comment.user.image?.path"
+      class="rounded-circle me-2"
+      style="width: 38px; height: 38px; object-fit: cover" />
+      <ng-template #defaultImage>
+      <img src="assets/images/smiley6.jpg"   class="rounded-circle me-2"
+      style="width: 38px; height: 38px; object-fit: cover" />
+     </ng-template>
+
+        
         <div class="p-3 rounded comment__input w-100">
           <div class="d-flex justify-content-end">
             <i
@@ -103,11 +107,13 @@
           *ngIf="replyingCommentId === comment.id && this.showReplyForm"
            (ngSubmit)="onSubmit()">
             <div>
-              <img
-              src="assets/images/smiley6.jpg"
-                class="rounded-circle me-2"
-                style="width: 38px; height: 38px; object-fit: cover"
-              />
+              <img *ngIf="comment.user.image?.path; else defaultImage" [src]="comment.user.image?.path"
+              class="rounded-circle me-2"
+              style="width: 38px; height: 38px; object-fit: cover" />
+              <ng-template #defaultImage>
+              <img src="assets/images/smiley6.jpg"   class="rounded-circle me-2"
+              style="width: 38px; height: 38px; object-fit: cover" />
+             </ng-template>
             </div>
             <input
               type="text"
@@ -126,6 +132,8 @@
       </div>
       
 
+      
+
       <app-reaction-comment [comment]="comment"></app-reaction-comment>
       
     </div>
@@ -133,11 +141,13 @@
     <!-- create comment -->
     <form class="d-flex my-1" (ngSubmit)="onSubmit()">
       <div>
-        <img
-        src="assets/images/smiley6.jpg"
-          class="rounded-circle me-2"
-          style="width: 38px; height: 38px; object-fit: cover"
-        />
+        <img *ngIf="comment.user.image?.path; else defaultImage" [src]="comment.user.image?.path"
+        class="rounded-circle me-2"
+        style="width: 38px; height: 38px; object-fit: cover" />
+        <ng-template #defaultImage>
+        <img src="assets/images/smiley6.jpg"   class="rounded-circle me-2"
+        style="width: 38px; height: 38px; object-fit: cover" />
+       </ng-template>
       </div>
       <input   
         type="text"

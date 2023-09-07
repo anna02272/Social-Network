@@ -8,7 +8,7 @@ export class Banned {
     isBlocked: boolean;
     groupAdmin: GroupAdmin | null;
     group: Group | null;
-    user: User;
+    user: User | null;
     bannedUser : User | null;
   
     constructor(
@@ -17,7 +17,7 @@ export class Banned {
       isBlocked: boolean,
       groupAdmin: GroupAdmin | null,
       group: Group | null,
-      user: User,
+      user: User | null,
       bannedUser : User | null
     ) {
       this.id = id;

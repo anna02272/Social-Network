@@ -25,7 +25,10 @@ export class GroupService {
     const url = `${this.config.group_url}/update/${groupId}`;
     return this.apiService.put(url, group);
   }
-  
+  removeGroupAdmin(groupId: number) {
+    const url = `${this.config.groupadmin_url}/removeGroupAdmin/${groupId}`;
+    return this.apiService.delete(url);
+  }
     getAllGroups() {
       return this.apiService.get(this.config.group_url + "/all");
      }

@@ -19,11 +19,13 @@
               <div class="d-flex justify-content-between">
                 <!-- avatar -->
                 <div class="d-flex">
-                  <img
-                  src="assets/images/smiley6.jpg"
-                    class="rounded-circle me-2"
-                    style="width: 38px; height: 38px; object-fit: cover"
-                  />
+                  <img *ngIf="post.user.image?.path; else defaultImage" [src]="post.user.image?.path"
+                class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover" />
+                <ng-template #defaultImage>
+                <img src="assets/images/smiley6.jpg"   class="rounded-circle me-2"
+                style="width: 38px; height: 38px; object-fit: cover" />
+               </ng-template>
                   <div>
                     <p  style="cursor: pointer;" [routerLink]="['/profile', post.user.id]" class="m-0 fw-bold">{{ post.user.profileName ? post.user.profileName : post.user.username }}</p>
                     <p *ngIf="post.group" style="cursor: pointer;" [routerLink]="['/group', post.group.id]">group: {{ post.group.name}}</p>
@@ -82,7 +84,11 @@
                   <p>
                  {{ post.content }}
                   </p>
-                  <img *ngFor="let image of post.images" [src]="image.path" alt="post-image" />
+                  <div class="image-pair-container">     
+                 <div class="image-container" *ngFor="let image of post.images">
+                  <img [src]="image.path" />
+                </div>
+                </div>
                 </div>
                 <!-- likes & comments -->
                 <div class="post__comment mt-3 position-relative">

@@ -3,9 +3,9 @@ import { UserService } from '../../services/user.service';
 import { Post } from '../../models/post';
 import { PostService } from '../../services';
 import { PostRefreshService } from '../../services/postrefresh.service';
-import { HttpClient } from '@angular/common/http';
 import { Image } from 'src/app/models/image';
 import { Group } from 'src/app/models/group';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 
 @Component({
@@ -16,26 +16,25 @@ import { Group } from 'src/app/models/group';
 export class CreatePostComponent implements OnInit {
   post!: Post;
   selectedPost!: Post;
-  selectedFile!: File;
-  selectedFileName!: string;
   image! : Image[];
   @Input() group!: Group;
-
-
+  selectedImages: File[] = [];
   @ViewChild('createModal') createModal!: ElementRef;
+  @ViewChild('fileInput') fileInput: any;
 
   constructor(
     private userService: UserService,
     private postService: PostService,
-    public postRefreshService: PostRefreshService,
-    private http: HttpClient
+    public postRefreshService: PostRefreshService
   ) {}
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
-    this.selectedFileName = this.selectedFile ? this.selectedFile.name : '';
-  }
 
+  onFileSelected(event: any) {
+    const files: FileList = event.target.files;
+    for (let i = 0; i < files.length; i++) {
+      this.selectedImages.push(files[i]);
+    }
+  }
 
   ngOnInit() {
    this.userService.getMyInfo().subscribe(user => {
@@ -45,7 +44,6 @@ export class CreatePostComponent implements OnInit {
     this.postRefreshService.selectedPost$.subscribe((value) => {
       this.selectedPost = value;
     });
-
   }
   
   onSubmit() {
@@ -54,6 +52,7 @@ export class CreatePostComponent implements OnInit {
     } else {
       this.createPost();
     }
+    this.fileInput.nativeElement.value = '';
     
   }
   combinedMethod() {
@@ -62,32 +61,62 @@ export class CreatePostComponent implements OnInit {
 
   createPost() {
     if (this.group === undefined) {
-    this.postService.createPost(this.post).subscribe(() => {
-      this.postRefreshService.refreshPosts();
-      this.post.content = '';
-      this.closeModal();
+      const formData = new FormData();
+      formData.append('content', this.post.content);
+      for (let i = 0; i < this.selectedImages.length; i++) {
+        formData.append('images', this.selectedImages[i]);
+      }
+      this.postService.createPost(formData).subscribe(() => {
+        this.postRefreshService.refreshPosts();
+        this.post.content = '';
+        this.selectedImages = []; 
     });
   }else {
-    this.postService.createGroupPost(this.group.id, this.post).subscribe(() => {
+    const formData = new FormData();
+    formData.append('content', this.post.content);
+    for (let i = 0; i < this.selectedImages.length; i++) {
+      formData.append('images', this.selectedImages[i]);
+    }
+    this.postService.createGroupPost(this.group.id, formData).subscribe(() => {
       this.postRefreshService.refreshPosts();
       this.post.content = '';
+      this.selectedImages = []; 
       this.closeModal();
-  });
-}
+    });
+  }
 }
 
   updatePost() {
-    this.postService.updatePost(this.selectedPost.id, this.selectedPost).subscribe(() => {
+    const formData = new FormData();
+    formData.append('content', this.selectedPost.content);
+  
+    for (let i = 0; i < this.selectedImages.length; i++) {
+      formData.append('images', this.selectedImages[i]);
+    }
+
+    this.postService.updatePost(this.selectedPost.id, formData).subscribe(() => {
       this.postRefreshService.refreshPosts();
-      this.post.content = '';
+      this.selectedPost.content = '';
+      this.selectedImages = []; 
+     
+    });
+  }
+  deleteImage(image: Image): void {
+    this.postService.deleteImage(image.id).subscribe(() => {
+      const index = this.selectedPost.images.indexOf(image);
+      if (index !== -1) {
+        this.selectedPost.images.splice(index, 1);}
+      this.postRefreshService.refreshPosts();
     });
   }
   
-
+  
   onModalHidden() {
     this.userService.getMyInfo().subscribe(user => {
       this.selectedPost = new Post(0, '', new Date(), user, null, this.image); 
       });
+      
+    this.fileInput.nativeElement.value = '';
   }
   
   closeModal() {
@@ -97,7 +126,6 @@ export class CreatePostComponent implements OnInit {
   openModal() {
     this.createModal.nativeElement.show();
   }
-  
 
   hasSignedIn() {
     return !!this.userService.currentUser;

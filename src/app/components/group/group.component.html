@@ -23,15 +23,46 @@
           <p>{{ group.description }}</p>
           <p>Creation date: {{ formatDate(group.creationDate) }}</p>
           <p   *ngFor="let admin of group.groupAdmin" style="cursor: pointer;" [routerLink]="['/profile',admin.user.id]"> Group admin: {{ admin.user.username }}</p>
+          <button *ngIf="userType() === 'ADMIN'" type="submit" class="btn btn-warning" (click)="removeGroupAdmin(group)"> Remove group admin</button>
         </div>
       </div>
+
       <div class="col-lg-2">
         <button *ngIf="group.groupAdmin[0]?.user?.username !== userName()"
         type="submit" class="btn btn-warning"
         (click)="createGroupRequest(group)">Join group</button>
-        <button *ngIf="group.groupAdmin[0]?.user?.username === userName()" style="cursor: pointer;"
+
+        <button *ngIf="group.groupAdmin[0]?.user?.username === userName() || userType() === 'ADMIN'" style="cursor: pointer;"
         [routerLink]="['/groupRequests', group.id]" class="btn btn-warning">Group requests</button>
       </div>
+      <div class="col-lg-6">
+      <div class="card p-3" *ngIf="group.groupAdmin[0]?.user?.username === userName() || userType() === 'ADMIN'">
+        <div class="e-navlist e-navlist--active-bg">
+          <p>Members:</p>
+            <li *ngFor="let user of approvedUsers" class="nav-item">
+               <a  style="cursor: pointer;" [routerLink]="['/profile', user.id]">{{ user.username }}</a>
+               
+               <button style="cursor: pointer; margin: 10px;" class="btn btn-warning" 
+               (click)="block(user, group)" >Ban</button></li>
+            
+        </div>
+        </div>
+        </div>
+        <div class="col-lg-6">
+        <div class="card p-3" *ngIf="group.groupAdmin[0]?.user?.username === userName() || userType() === 'ADMIN'" >
+          <div class="e-navlist e-navlist--active-bg">
+            <p>Blocked Members:</p>
+            <div  *ngFor="let blockedGroupUser of blockedGroupUsers">
+              <li class="nav-item" *ngIf="!blockedGroupUser.isBlocked">
+                 <a  style="cursor: pointer;" [routerLink]="['/profile', blockedGroupUser.bannedUser?.id]">{{ blockedGroupUser.bannedUser?.username }}</a>
+                 
+                 <button 
+                 style="cursor: pointer; margin: 10px;"
+           class="btn btn-warning"   (click)="unblock(blockedGroupUser)">Unblock</button></li>
+              
+          </div>
+          </div>
+          </div>
     </div>
   </div>
   <p id = "message" *ngIf="showSuccessMessage">
@@ -42,8 +73,8 @@
   </p>
   
   <hr />
-<div *ngFor="let admin of group.groupAdmin">
-  <div *ngIf="showContent || admin.user.username === userName()">
+<div *ngFor="let admin of group.groupAdmin">    
+<div *ngIf="showContent || admin.user.username === userName() || userType() === 'ADMIN'">
     <app-create-post [group]="group"></app-create-post>
       <app-group-post  [group]="group"></app-group-post>
 </div>

@@ -5,6 +5,7 @@ import {map} from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class UserService {
 
   constructor(
     private apiService: ApiService,
-    private config: ConfigService
+    private config: ConfigService,
+    private http: HttpClient
   ) {
   }
 
@@ -45,7 +47,14 @@ export class UserService {
     const url = `${this.config.user_url}/update/${userId}`;
     return this.apiService.put(url, user);
   }
+  updateProfilePicture(userId: number, postData: FormData) {
+    const url = `${this.config.user_url}/updateProfilePicture/${userId}`;
+    return this.http.put(url, postData);
+  }
   setCurrentUser(user: User | null) {
     this.currentUserSubject.next(user);
+  }
+  deleteProfilePicture(userId: number) {
+    return this.apiService.delete(this.config.user_url + '/deleteProfilePicture/' + userId);
   }
 }
