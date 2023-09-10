@@ -34,7 +34,6 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { FriendRequestComponent } from './components/friend-request/friend-request.component';
 import { GroupAdminService } from './services/groupadmin.service';
 import { GroupService } from './services';
-import { CommentComponent } from './components/comment/comment.component';
 import { ReactionComponent } from './components/reaction/reaction.component';
 import { ReportComponent } from './components/report/report.component';
 import { CommentService } from './services/comment.service';
@@ -51,7 +50,9 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { GroupPostComponent } from './components/group-post/group-post.component';
 import { SuspendComponent } from './components/suspend/suspend.component';
 import { BannedService } from './services/banned.service';
-import { ReplyComponent } from './reply/reply.component';
+import { CreateCommentComponent } from './components/create-comment/create-comment.component';
+import { CommentsComponent } from './components/comments/comments.component';
+import { ComentComponent } from './components/coment/coment.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,6 @@ import { ReplyComponent } from './reply/reply.component';
     GroupsComponent,
     UserProfileComponent,
     FriendRequestComponent,
-    CommentComponent,
     ReactionComponent,
     ReportComponent,
     ReactionCommentComponent,
@@ -77,7 +77,9 @@ import { ReplyComponent } from './reply/reply.component';
     ProfileComponent,
     GroupPostComponent,
     SuspendComponent,
-    ReplyComponent
+    CreateCommentComponent,
+    CommentsComponent,
+    ComentComponent,
   ],
   imports: [
     HttpClientModule,

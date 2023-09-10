@@ -111,7 +111,7 @@ export class GroupComponent implements OnInit {
   }
   removeGroupAdmin(group: Group) {
     this.groupService.removeGroupAdmin(group.id).subscribe(() => {
-        this.refreshService.refresh();
+        
       });
       }
 

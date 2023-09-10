@@ -9,24 +9,28 @@ import { ReportComponent } from '../report/report.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-comment',
-  templateUrl: './comment.component.html',
-  styleUrls: ['./comment.component.css'],
+  selector: 'app-coment',
+  templateUrl: './coment.component.html',
+  styleUrls: ['./coment.component.css'],
     providers: [DatePipe]
 })
 
-export class CommentComponent {
+export class ComentComponent {
   @Input() postId!: number;
-  comments: Comment[] = [];
   parentComment = new Comment(0, '', new Date(), false, this.userService.currentUser);
-  comment = new Comment(0,'',new Date(),false, this.userService.currentUser, this.parentComment);
-  @Input() post!: Post;
+//   comment = new Comment(0,'',new Date(),false, this.userService.currentUser, this.parentComment);
   editingCommentId: number | null = null;
   replyingCommentId: number | null = null;
   newCommentText: string = '';
   replyCommentText: string = '';
   showReplyForm!: boolean;
-  sortingOrder: string = 'ascending';
+    @Input() post!: Post;
+  @Input() sortingOrder: string = 'ascending';
+  @Input() comments: Comment[] = [];
+  @Input() comment!: Comment;
+  @Input() replies!: Comment[];
+  @Input() parentId!: number | undefined;
+
 
   constructor(
     private userService: UserService,
@@ -37,8 +41,6 @@ export class CommentComponent {
   ) {  this.showReplyForm = false;}
 
   ngOnInit() {
-    this.load();
-    this.subscribeToRefresh();
   }
 
   onSubmit() {
@@ -48,7 +50,7 @@ export class CommentComponent {
   onSubmitUpdate(comment: Comment) {
     this.update(comment);
   }
-  
+ 
   create() {
     if (this.post.id !== undefined) {
       let newComment: Comment;
@@ -96,69 +98,9 @@ export class CommentComponent {
         this.showReplyForm = true;
       }
     }
-     
-    // load() {
-    //   if (this.post && this.post.id) {
-    //     this.commentService.getCommentsByPostId(this.post.id).subscribe((data: Comment[]) => {
-    //       this.comments = data;
-    //     });
-    //   } else {
-    //     this.comments = [];
-    //   }
-    // }
 
-  load() {
-    if (this.post && this.post.id) {
-      if (this.sortingOrder === 'ascending') {
-        this.commentService.getAllAscending(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      } else if (this.sortingOrder === 'descending') {
-        this.commentService.getAllDescending(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      } else if (this.sortingOrder === 'likesAscending') {
-        this.commentService.getAllByAscendingLikes(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      } else if (this.sortingOrder === 'likesDescending') {
-        this.commentService.getAllByDescendingLikes(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      } else if (this.sortingOrder === 'dislikesAscending') {
-        this.commentService.getAllByAscendingDislikes(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      } else if (this.sortingOrder === 'dislikesDescending') {
-        this.commentService.getAllByDescendingDislikes(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      } else if (this.sortingOrder === 'heartsAscending') {
-        this.commentService.getAllByAscendingHearts(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      } else if (this.sortingOrder === 'heartsDescending') {
-        this.commentService.getAllByDescendingHearts(this.post.id).subscribe((data: Comment[]) => {
-          this.comments = data;
-        });
-      }
-    } else {
-      this.comments = [];
-    }
-  }
-  
-  toggleSortingOrder(sortOption: string) {
-    if (sortOption === 'date') {
-      this.sortingOrder = this.sortingOrder === 'ascending' ? 'descending' : 'ascending';
-    } else if (sortOption === 'likes') {
-      this.sortingOrder = this.sortingOrder === 'likesAscending' ? 'likesDescending' : 'likesAscending';
-    } else if (sortOption === 'dislikes') {
-      this.sortingOrder = this.sortingOrder === 'dislikesAscending' ? 'dislikesDescending' : 'dislikesAscending';
-    } else if (sortOption === 'hearts') {
-      this.sortingOrder = this.sortingOrder === 'heartsAscending' ? 'heartsDescending' : 'heartsAscending';
-    }
-    this.load();
-  }
+      
+
   openReportModal(comment: Comment) {
     const dialogRef = this.dialog.open(ReportComponent, {
       width: '500px', 
@@ -169,12 +111,6 @@ export class CommentComponent {
     });
   }
   
-  
-    private subscribeToRefresh() {
-      this.refreshService.getRefreshObservable().subscribe(() => {
-        this.load();
-      });
-    }
 
     hasSignedIn() {
       return !!this.userService.currentUser;
