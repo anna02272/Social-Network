@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -63,7 +65,26 @@ public class GroupAdminController {
     groupAdminService.delete(groupAdmin);
     return ResponseEntity.ok(groupAdmin);
   }
+  @PostMapping("/createGroupAdmin/{groupId}/{userId}")
+  public ResponseEntity<GroupAdmin> createGroupAdmin(@PathVariable Long groupId,@PathVariable Long userId) throws ChangeSetPersister.NotFoundException {
+    User user = userService.findOneById(userId);
+    Group group = groupService.findOneById(groupId);
 
+    if (groupAdminService.existsByGroupAndUser(group, user)) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+
+    GroupAdmin groupAdmin = new GroupAdmin();
+    groupAdmin.setGroup(group);
+    groupAdmin.setUser(user);
+
+    List<GroupAdmin> groupAdmins = new ArrayList<>();
+    groupAdmins.add(groupAdmin);
+
+    GroupAdmin createdGroupAdmin = groupAdminService.save(groupAdmin);
+
+    return ResponseEntity.ok(createdGroupAdmin);
+  }
 
 
 }

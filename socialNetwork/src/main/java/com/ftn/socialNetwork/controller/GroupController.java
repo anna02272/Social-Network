@@ -106,27 +106,6 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
 
       return new ResponseEntity<>(updated, HttpStatus.OK);
     }
-  @PostMapping("/createGroupAdmin/{groupId}/{userId}")
-  public ResponseEntity<GroupAdmin> createGroupAdmin(@PathVariable Long groupId,@PathVariable Long userId) throws ChangeSetPersister.NotFoundException {
-    User user = userService.findOneById(userId);
-    Group group = groupService.findOneById(groupId);
-
-    if (groupAdminService.existsByGroupAndUser(group, user)) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
-
-    GroupAdmin groupAdmin = new GroupAdmin();
-    groupAdmin.setGroup(group);
-    groupAdmin.setUser(user);
-
-    List<GroupAdmin> groupAdmins = new ArrayList<>();
-    groupAdmins.add(groupAdmin);
-
-    GroupAdmin createdGroupAdmin = groupAdminService.save(groupAdmin);
-
-    return ResponseEntity.ok(createdGroupAdmin);
-  }
-
     @GetMapping("/find/{id}")
     public ResponseEntity<Group> getGroupById(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
         Group group = groupService.findOneById(id);
