@@ -62,7 +62,9 @@ export class CommentService {
      getCommentsByPostId(postId : number) {
       return this.apiService.get(this.config.comment_url + "/findByPost/" + postId );
      }
-     
+     getRepliesForParentComment(parentCommentId : number) {
+      return this.apiService.get(this.config.comment_url + "/replies/" + parentCommentId );
+     }
   
   }
 

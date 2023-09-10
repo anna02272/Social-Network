@@ -7,8 +7,7 @@ export class Comment {
   isDeleted: boolean;
   user: User;
   parentComment: Comment | null;
-  // replies: Comment[] | null;
-  
+  replies: Comment[] = [];
 
   constructor(
     id: number,
@@ -17,7 +16,7 @@ export class Comment {
     isDeleted: boolean,
     user: User,
     parentComment: Comment | null = null,
-    // replies: Comment[] | null = null
+    replies: Comment[] = []
   ) {
     this.id = id;
     this.text = text;
@@ -25,7 +24,7 @@ export class Comment {
     this.isDeleted = isDeleted;
     this.user = user;
     this.parentComment = parentComment;
-    // this.replies = replies
+    this.replies = [];
    
   }
 }
