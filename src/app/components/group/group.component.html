@@ -73,9 +73,15 @@
   </p>
   
   <hr />
+  <div *ngIf="group.groupAdmin">
 <div *ngFor="let admin of group.groupAdmin">    
-<div *ngIf="showContent || admin.user.username === userName() || userType() === 'ADMIN'">
+<div *ngIf="admin.user.username === userName()">
     <app-create-post [group]="group"></app-create-post>
       <app-group-post  [group]="group"></app-group-post>
 </div>
+</div>
+</div>
+<div *ngIf="showContent ||  userType() === 'ADMIN'">
+  <app-create-post [group]="group"></app-create-post>
+    <app-group-post  [group]="group"></app-group-post>
 </div>
