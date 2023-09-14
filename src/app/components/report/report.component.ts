@@ -60,8 +60,11 @@ export class ReportComponent implements OnInit {
     const user = this.userService.currentUser;
     return user ? user.username : '';
   }
+
+
+
   imageUrl() {
     const user = this.userService.currentUser;
-    return user ? user.image.path : '';
+    return user ? user.image?.path : '';
   }
 }
