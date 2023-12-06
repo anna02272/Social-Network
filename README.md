@@ -34,7 +34,7 @@ This repository contains the implementation for a social network application, in
 
 ### Server Web Technologies
 - Spring framework
-- Apache Tomcat (integrated with Spring Boot)
+- Spring Boot
 - MySQL
 
 ### Client Web Application
@@ -42,10 +42,23 @@ This repository contains the implementation for a social network application, in
 
 ## Application Architecture
 
-The application consists of a web browser, a Spring container (Tomcat or Spring Boot), and a relational database (SUBP). The backend communicates with the frontend via a RESTful service.
+The application consists of a web browser, a Spring container (Spring Boot), and a relational database (SUBP). The backend communicates with the frontend via a RESTful service.
 
 ## Data Model
-The data model includes entities such as User, Post, Comment, Reaction, Report, and Group, representing the key elements of the social network application.
+The data model includes entities:
+- The User entity represents registered user of the application and is intended to store data used for authentication and authorization. 
+- An unregistered user can only register to the application. 
+- A user can also be a system administrator or a group administrator.
+- A group administrator maintains a specific group, while a system administrator manages it application and has the ability to remove groups. 
+- Posts are described by the Post entity and they are text, but can also contain images. 
+- The Comment entity represents a comment in a given application. 
+- The Reaction entity represents a reaction to certain posts or comments.
+- If the content violates community or application rules, a related Report entity is created to a post, comment or user. 
+- The Group entity represents a group that contains posts and comments are owned by users and maintained by the group administrator.
+  ![social-network](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/f0c4375c-62fe-47a0-8a92-572fec27254f)
+
+##Images
+
 
 
 
