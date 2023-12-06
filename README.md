@@ -31,13 +31,9 @@ This repository contains the implementation for a social network application, in
 - Log messages about important events during application execution.
   
 ## Technologies Used
-
-### Server Web Technologies
 - Spring framework
 - Spring Boot
 - MySQL
-
-### Client Web Application
 - Angular framework
 
 ## Application Architecture
@@ -77,7 +73,7 @@ The data model includes entities:
 ## Comments
 ![Comments](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/c6a5ff73-b5d1-48b0-84b3-29999e0aa02c)
 
-## Create and edit group
+## Groups and create group
 ![Groups](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/1821af67-89bc-49c4-b504-3d800de9d1fa)
 ![Create group](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/3399a05e-90d1-494c-ac7b-916bf3e88067)
 
