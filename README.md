@@ -55,39 +55,39 @@ The data model includes entities:
 
 ## Images of project
 
-## Login and Register
+### Login and Register
 ![Login](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/6b4f6539-9f2d-4aeb-b1cd-34fff90179f6)
 ![Register](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/130a7280-dbc5-4812-98a3-d029f4a09ab6)
 
-## Posts
+### Posts
 ![Posts](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/e432449e-f4b9-427c-a39a-d9a96ef38dec)
 ![Post 2](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/d42daa2b-0500-4053-94ea-cfa469c5994f)
 
-## Like, dislike, heart comment
+### Like, dislike, heart comment
 ![Post with like and image](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/3c23d80e-0389-42fb-8575-7bc3636cacd7)
 
-## Create and edit post
+### Create and edit post
 ![Create Post](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/7997738c-380b-454e-80fc-2ecb2dc7e688)
 ![Update Post](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/775558a4-36bf-42d8-a3b2-2daffd151520)
 
-## Comments
+### Comments
 ![Comments](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/c6a5ff73-b5d1-48b0-84b3-29999e0aa02c)
 
-## Groups and create group
+### Groups and create group
 ![Groups](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/1821af67-89bc-49c4-b504-3d800de9d1fa)
 ![Create group](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/3399a05e-90d1-494c-ac7b-916bf3e88067)
 
-## Profile
+### Profile
 ![User profile](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/6a4b80d2-54e0-4d9d-88d5-fe3b1b97d179)
 ![Edit profile](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/947ff00c-7151-4e4c-8f4b-f6f76674419e)
 
-## Search for friends
+### Search for friends
 ![Search for friends](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/cf0bfc08-fae0-4617-a41d-42ae70beaf0f)
 
-## Friend requests
+### Friend requests
 ![Friend requests](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/00459a14-46c7-4dd9-b9bd-9857eeb6a43a)
 
-## Report
+### Report
 ![Report](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/733060f7-730f-41a6-9d7d-1d903fe0e6e2)
 ![Reports](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/9ae82a5b-3d12-49fe-af95-6566a3eec610)
 
