@@ -53,7 +53,7 @@ The data model includes entities:
 - The Group entity represents a group that contains posts and comments are owned by users and maintained by the group administrator.
   ![social-network](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/f0c4375c-62fe-47a0-8a92-572fec27254f)
 
-## Images
+## Images of project
 
 ## Login and Register
 ![Login](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/6b4f6539-9f2d-4aeb-b1cd-34fff90179f6)
