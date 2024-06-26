@@ -1,7 +1,6 @@
 package com.ftn.socialNetwork.indexservice.implementation;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
-import com.ftn.socialNetwork.exceptionhandling.exception.MalformedQueryException;
 import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupSearchService;
 import lombok.RequiredArgsConstructor;

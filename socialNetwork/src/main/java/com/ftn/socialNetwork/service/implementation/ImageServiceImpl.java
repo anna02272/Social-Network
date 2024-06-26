@@ -26,7 +26,7 @@ public class ImageServiceImpl implements ImageService {
       try {
         String fileName = generateUniqueFileName(imageFile.getOriginalFilename());
         String imagePath = "assets\\post_images\\" + fileName;
-        String saveImageToPath = "C:\\Users\\domon\\Desktop\\SR\\Serverske veb tehnologije\\ProjekatSVTKVT\\sr46-2021-svt_kvt2023-projekat\\socialNetwork_frontend\\src\\assets\\post_images\\"
+        String saveImageToPath = "C:\\Users\\domon\\Desktop\\SR\\Tehnologije i platforme za upravljanje elektronskim sadrzajima i dokumentima\\projekat\\Social-Network\\socialNetwork_frontend\\src\\assets\\post_images\\"
           + fileName;
         File file = new File(saveImageToPath);
         FileUtils.writeByteArrayToFile(file, imageFile.getBytes());

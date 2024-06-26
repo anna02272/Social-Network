@@ -46,4 +46,7 @@ public class GroupIndex {
 
     @Field(type = FieldType.Integer, store = true, name = "database_id")
     private Integer databaseId;
+
+    @Field(type = FieldType.Text, store = true, name = "pdfFile", index = false)
+    private String pdfFileUrl;
 }

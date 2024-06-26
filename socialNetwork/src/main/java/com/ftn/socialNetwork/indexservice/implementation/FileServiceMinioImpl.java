@@ -29,17 +29,17 @@ public class FileServiceMinioImpl implements FileService {
         }
 
         var originalFilenameTokens =
-            Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
+                Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
         var extension = originalFilenameTokens[originalFilenameTokens.length - 1];
 
         try {
             PutObjectArgs args = PutObjectArgs.builder()
-                .bucket(bucketName)
-                .object(serverFilename + "." + extension)
-                .headers(Collections.singletonMap("Content-Disposition",
-                    "attachment; filename=\"" + file.getOriginalFilename() + "\""))
-                .stream(file.getInputStream(), file.getInputStream().available(), -1)
-                .build();
+                    .bucket(bucketName)
+                    .object(serverFilename + "." + extension)
+                    .headers(Collections.singletonMap("Content-Disposition",
+                            "attachment; filename=\"" + file.getOriginalFilename() + "\""))
+                    .stream(file.getInputStream(), file.getInputStream().available(), -1)
+                    .build();
             minioClient.putObject(args);
         } catch (Exception e) {
             throw new StorageException("Error while storing file in Minio.");
@@ -52,31 +52,30 @@ public class FileServiceMinioImpl implements FileService {
     public void delete(String serverFilename) {
         try {
             RemoveObjectArgs args = RemoveObjectArgs.builder()
-                .bucket(bucketName)
-                .object(serverFilename)
-                .build();
+                    .bucket(bucketName)
+                    .object(serverFilename)
+                    .build();
             minioClient.removeObject(args);
         } catch (Exception e) {
             throw new StorageException("Error while deleting " + serverFilename + " from Minio.");
         }
     }
-
     @Override
     public GetObjectResponse loadAsResource(String serverFilename) {
         try {
             var argsDownload = GetPresignedObjectUrlArgs.builder()
-                .method(Method.GET)
-                .bucket(bucketName)
-                .object(serverFilename)
-                .expiry(60 * 5)
-                .build();
+                    .method(Method.GET)
+                    .bucket(bucketName)
+                    .object(serverFilename)
+                    .expiry(60 * 5)
+                    .build();
             var downloadUrl = minioClient.getPresignedObjectUrl(argsDownload);
             System.out.println(downloadUrl);
 
             var args = GetObjectArgs.builder()
-                .bucket(bucketName)
-                .object(serverFilename)
-                .build();
+                    .bucket(bucketName)
+                    .object(serverFilename)
+                    .build();
             return minioClient.getObject(args);
         } catch (Exception e) {
             throw new NotFoundException("Document " + serverFilename + " does not exist.");

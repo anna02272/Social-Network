@@ -53,5 +53,7 @@ public class Group {
     private  List<GroupRequest> groupRequest;
 //    @OneToMany
 //    private List<Banned> banned;
+    @Column
+    private String pdfFile;
 
 }

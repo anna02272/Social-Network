@@ -1,5 +1,7 @@
 package com.ftn.socialNetwork.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.service.intefraces.GroupAdminService;
 import com.ftn.socialNetwork.service.intefraces.GroupService;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -31,8 +34,12 @@ public class GroupController {
 
 
 @PostMapping("/create")
-public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal principal) {
-  if (groupService.existsByName(group.getName())) {
+public ResponseEntity<Group> createGroup (@RequestParam("group") String groupJson,
+                                          @RequestParam(value = "pdfFile", required = false) MultipartFile pdfFile,
+                                          Principal principal) throws JsonProcessingException {
+    Group group = new ObjectMapper().readValue(groupJson, Group.class);
+
+    if (groupService.existsByName(group.getName())) {
     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
   }
     String username = principal.getName();
@@ -40,7 +47,7 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
 
     group.setCreationDate(LocalDateTime.now());
     group.setSuspended(false);
-    Group createdGroup = groupService.createGroup(group);
+    Group createdGroup = groupService.createGroup(group, pdfFile);
 
     GroupAdmin groupAdmin = new GroupAdmin();
     groupAdmin.setGroup(createdGroup);
