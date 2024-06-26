@@ -1,7 +1,10 @@
 package com.ftn.socialNetwork.controller;
 
 import com.ftn.socialNetwork.model.entity.*;
-import com.ftn.socialNetwork.service.*;
+import com.ftn.socialNetwork.service.intefraces.BannedService;
+import com.ftn.socialNetwork.service.intefraces.GroupAdminService;
+import com.ftn.socialNetwork.service.intefraces.GroupService;
+import com.ftn.socialNetwork.service.intefraces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;

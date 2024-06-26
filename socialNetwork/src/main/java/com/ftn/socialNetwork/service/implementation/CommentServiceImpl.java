@@ -3,7 +3,7 @@ package com.ftn.socialNetwork.service.implementation;
 import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.repository.CommentRepository;
 import com.ftn.socialNetwork.repository.PostRepository;
-import com.ftn.socialNetwork.service.CommentService;
+import com.ftn.socialNetwork.service.intefraces.CommentService;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;

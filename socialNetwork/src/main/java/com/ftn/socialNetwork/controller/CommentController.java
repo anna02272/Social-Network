@@ -1,10 +1,10 @@
 package com.ftn.socialNetwork.controller;
 
 import com.ftn.socialNetwork.model.entity.*;
-import com.ftn.socialNetwork.service.CommentService;
-import com.ftn.socialNetwork.service.PostService;
-import com.ftn.socialNetwork.service.ReactionService;
-import com.ftn.socialNetwork.service.UserService;
+import com.ftn.socialNetwork.service.intefraces.CommentService;
+import com.ftn.socialNetwork.service.intefraces.PostService;
+import com.ftn.socialNetwork.service.intefraces.ReactionService;
+import com.ftn.socialNetwork.service.intefraces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;

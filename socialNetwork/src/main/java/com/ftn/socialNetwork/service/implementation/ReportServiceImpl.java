@@ -2,7 +2,7 @@ package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.repository.*;
-import com.ftn.socialNetwork.service.ReportService;
+import com.ftn.socialNetwork.service.intefraces.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;

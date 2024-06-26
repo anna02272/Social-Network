@@ -1,7 +1,7 @@
 package com.ftn.socialNetwork.security;
 
 import com.ftn.socialNetwork.model.entity.User;
-import com.ftn.socialNetwork.service.UserService;
+import com.ftn.socialNetwork.service.intefraces.UserService;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

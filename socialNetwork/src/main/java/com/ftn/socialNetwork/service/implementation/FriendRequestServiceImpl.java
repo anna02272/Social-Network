@@ -3,7 +3,7 @@ package com.ftn.socialNetwork.service.implementation;
 import com.ftn.socialNetwork.model.entity.FriendRequest;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.repository.FriendRequestRepository;
-import com.ftn.socialNetwork.service.FriendRequestService;
+import com.ftn.socialNetwork.service.intefraces.FriendRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;

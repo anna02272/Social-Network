@@ -1,24 +1,15 @@
 package com.ftn.socialNetwork.service.implementation;
 
-import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Image;
-import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.repository.ImageRepository;
-import com.ftn.socialNetwork.service.ImageService;
-import org.hibernate.Filter;
-import org.hibernate.Session;
+import com.ftn.socialNetwork.service.intefraces.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 

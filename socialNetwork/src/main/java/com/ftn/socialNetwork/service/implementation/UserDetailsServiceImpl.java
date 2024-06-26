@@ -1,7 +1,7 @@
 package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.model.entity.User;
-import com.ftn.socialNetwork.service.UserService;
+import com.ftn.socialNetwork.service.intefraces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,10 +1,9 @@
 package com.ftn.socialNetwork.controller;
 
 import com.ftn.socialNetwork.model.entity.*;
-import com.ftn.socialNetwork.security.TokenUtils;
-import com.ftn.socialNetwork.service.GroupAdminService;
-import com.ftn.socialNetwork.service.GroupService;
-import com.ftn.socialNetwork.service.UserService;
+import com.ftn.socialNetwork.service.intefraces.GroupAdminService;
+import com.ftn.socialNetwork.service.intefraces.GroupService;
+import com.ftn.socialNetwork.service.intefraces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
@@ -15,14 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
 @RestController
 @RequestMapping("api/groups")
 public class GroupController {
-  @Autowired
+    @Autowired
     private GroupService groupService;
 
     @Autowired
@@ -41,7 +39,7 @@ public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal pri
     User user = userService.findByUsername(username);
 
     group.setCreationDate(LocalDateTime.now());
-   group.setSuspended(false);
+    group.setSuspended(false);
     Group createdGroup = groupService.createGroup(group);
 
     GroupAdmin groupAdmin = new GroupAdmin();

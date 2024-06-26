@@ -5,15 +5,11 @@ import com.ftn.socialNetwork.model.entity.Group;
 import com.ftn.socialNetwork.model.entity.GroupRequest;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.repository.GroupRequestRepository;
-import com.ftn.socialNetwork.service.GroupRequestService;
-import com.ftn.socialNetwork.service.GroupService;
-import org.hibernate.Filter;
-import org.hibernate.Session;
+import com.ftn.socialNetwork.service.intefraces.GroupRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -2,13 +2,12 @@ package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.repository.GroupAdminRepository;
-import com.ftn.socialNetwork.service.GroupAdminService;
+import com.ftn.socialNetwork.service.intefraces.GroupAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service

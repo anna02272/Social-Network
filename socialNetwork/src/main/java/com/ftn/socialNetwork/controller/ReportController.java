@@ -1,10 +1,10 @@
 package com.ftn.socialNetwork.controller;
 
 import com.ftn.socialNetwork.model.entity.*;
-import com.ftn.socialNetwork.service.CommentService;
-import com.ftn.socialNetwork.service.PostService;
-import com.ftn.socialNetwork.service.ReportService;
-import com.ftn.socialNetwork.service.UserService;
+import com.ftn.socialNetwork.service.intefraces.CommentService;
+import com.ftn.socialNetwork.service.intefraces.PostService;
+import com.ftn.socialNetwork.service.intefraces.ReportService;
+import com.ftn.socialNetwork.service.intefraces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

@@ -1,10 +1,8 @@
 package com.ftn.socialNetwork.service.implementation;
 
-import com.ftn.socialNetwork.model.entity.Comment;
-import com.ftn.socialNetwork.model.entity.FriendRequest;
 import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.repository.PostRepository;
-import com.ftn.socialNetwork.service.PostService;
+import com.ftn.socialNetwork.service.intefraces.PostService;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,9 @@
 package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.model.entity.Banned;
-import com.ftn.socialNetwork.model.entity.Group;
 import com.ftn.socialNetwork.model.entity.User;
 import com.ftn.socialNetwork.repository.BannedRepository;
-import com.ftn.socialNetwork.service.BannedService;
+import com.ftn.socialNetwork.service.intefraces.BannedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;

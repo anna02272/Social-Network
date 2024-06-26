@@ -5,11 +5,10 @@ import com.ftn.socialNetwork.repository.ReactionRepository;
 import com.ftn.socialNetwork.repository.PostRepository;
 import com.ftn.socialNetwork.repository.CommentRepository;
 import com.ftn.socialNetwork.repository.UserRepository;
-import com.ftn.socialNetwork.service.ReactionService;
+import com.ftn.socialNetwork.service.intefraces.ReactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
