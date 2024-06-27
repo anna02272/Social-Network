@@ -15,16 +15,10 @@ public class GroupSearchController {
 
     private final GroupSearchService searchService;
 
-    @PostMapping("/groups/name")
+    @PostMapping("/groups/nameAndDescription")
     public Page<GroupIndex> nameSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                          Pageable pageable) {
-        return searchService.nameSearch(simpleSearchQuery.keywords(), pageable);
-    }
-
-    @PostMapping("/groups/description")
-    public Page<GroupIndex> descriptionSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
-                                         Pageable pageable) {
-        return searchService.descriptionSearch(simpleSearchQuery.keywords(), pageable);
+        return searchService.nameAndDescriptionSearch(simpleSearchQuery.keywords(), pageable);
     }
 
 //    @PostMapping("/groups/advanced")

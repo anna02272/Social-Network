@@ -49,4 +49,5 @@ public class GroupIndex {
 
     @Field(type = FieldType.Text, store = true, name = "pdfFile", index = false)
     private String pdfFileUrl;
+
 }

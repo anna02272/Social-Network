@@ -3,11 +3,10 @@ package com.ftn.socialNetwork.indexservice.implementation;
 import com.ftn.socialNetwork.exceptionhandling.exception.LoadingException;
 import com.ftn.socialNetwork.exceptionhandling.exception.StorageException;
 import com.ftn.socialNetwork.indexmodel.GroupIndex;
-import com.ftn.socialNetwork.indexmodel.Table;
 import com.ftn.socialNetwork.indexrepository.GroupIndexRepository;
-import com.ftn.socialNetwork.indexrepository.TableRepository;
 import com.ftn.socialNetwork.indexservice.interfaces.FileService;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
+import com.ftn.socialNetwork.model.entity.Group;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -29,7 +28,6 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
     private final LanguageDetector languageDetector;
     private final FileService fileService;
     private final GroupIndexRepository groupIndexingRepository;
-    private final TableRepository tableRepository;
 
 
     @Override
@@ -44,34 +42,35 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
 
     @Override
     @Transactional
-    public String indexDocument(MultipartFile documentFile) {
-        var newEntity = new Table();
-        var newIndex = new GroupIndex();
+    public void indexGroup(MultipartFile documentFile, Group group) {
+        var groupIndex = new GroupIndex();
 
-        var name = Objects.requireNonNull(documentFile.getOriginalFilename()).split("\\.")[0];
-        newIndex.setName(name);
-        newEntity.setTitle(name);
+        if (documentFile != null && !documentFile.isEmpty()) {
+            var pdfName = Objects.requireNonNull(documentFile.getOriginalFilename()).split("\\.")[0];
+            groupIndex.setPdfFileUrl(pdfName);
 
-        var documentContent = extractDocumentContent(documentFile);
-        if (detectLanguage(documentContent).equals("SR")) {
-            newIndex.setContentSr(documentContent);
-        } else {
-            newIndex.setContentEn(documentContent);
+            var documentContent = extractDocumentContent(documentFile);
+            if (detectLanguage(documentContent).equals("SR")) {
+                groupIndex.setContentSr(documentContent);
+            } else {
+                groupIndex.setContentEn(documentContent);
+            }
+
+            var serverFilename = fileService.store(documentFile, UUID.randomUUID().toString());
+            groupIndex.setServerFilename(serverFilename);
+            group.setPdfFile(serverFilename);
         }
-        newEntity.setTitle(name);
 
-        var serverFilename = fileService.store(documentFile, UUID.randomUUID().toString());
-        newIndex.setServerFilename(serverFilename);
-        newEntity.setServerFilename(serverFilename);
+        groupIndex.setId(group.getId().toString());
+        groupIndex.setName(group.getName());
+        groupIndex.setDescription(group.getDescription());
+        groupIndex.setCreationDate(group.getCreationDate());
+        groupIndex.setSuspended(group.isSuspended());
+        groupIndex.setSuspendedReason(group.getSuspendedReason());
 
-        newEntity.setMimeType(detectMimeType(documentFile));
-        var savedEntity = tableRepository.save(newEntity);
-
-        newIndex.setDatabaseId(savedEntity.getId());
-        groupIndexingRepository.save(newIndex);
-
-        return serverFilename;
+        groupIndexingRepository.save(groupIndex);
     }
+
 
     private String extractDocumentContent(MultipartFile multipartPdfFile) {
         String documentContent;

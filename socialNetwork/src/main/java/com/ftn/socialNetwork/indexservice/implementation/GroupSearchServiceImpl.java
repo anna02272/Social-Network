@@ -23,18 +23,9 @@ public class GroupSearchServiceImpl implements GroupSearchService {
 
     private final ElasticsearchOperations elasticsearchTemplate;
     @Override
-    public Page<GroupIndex> nameSearch(List<String> keywords, Pageable pageable) {
+    public Page<GroupIndex> nameAndDescriptionSearch(List<String> keywords, Pageable pageable) {
         var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery((co.elastic.clients.elasticsearch._types.query_dsl.Query) buildNameSearchQuery(keywords))
-                        .withPageable(pageable);
-
-        return runQuery(searchQueryBuilder.build());
-    }
-
-    @Override
-    public Page<GroupIndex> descriptionSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery((co.elastic.clients.elasticsearch._types.query_dsl.Query) buildDescriptionSearchQuery(keywords))
+                new NativeQueryBuilder().withQuery((co.elastic.clients.elasticsearch._types.query_dsl.Query) buildSearchQuery(keywords))
                         .withPageable(pageable);
 
         return runQuery(searchQueryBuilder.build());
@@ -55,25 +46,13 @@ public class GroupSearchServiceImpl implements GroupSearchService {
 //        return runQuery(searchQueryBuilder.build());
 //    }
 
-    private Query buildNameSearchQuery(List<String> tokens) {
+    private Query buildSearchQuery(List<String> tokens) {
         return (Query) BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
                 b.should(sb -> sb.match(
                         m -> m.field("name").fuzziness(Fuzziness.ONE.asString()).query(token)));
-
-                b.should(sb -> sb.match(m -> m.field("content_sr").query(token)));
-                b.should(sb -> sb.match(m -> m.field("content_en").query(token)));
-            });
-            return b;
-        })))._toQuery();
-    }
-
-    private Query buildDescriptionSearchQuery(List<String> tokens) {
-        return (Query) BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
-            tokens.forEach(token -> {
                 b.should(sb -> sb.match(
                         m -> m.field("description").fuzziness(Fuzziness.ONE.asString()).query(token)));
-
                 b.should(sb -> sb.match(m -> m.field("content_sr").query(token)));
                 b.should(sb -> sb.match(m -> m.field("content_en").query(token)));
             });

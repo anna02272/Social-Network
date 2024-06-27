@@ -2,6 +2,8 @@ package com.ftn.socialNetwork.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ftn.socialNetwork.dto.DocumentFileResponseDTO;
+import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
 import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.service.intefraces.GroupAdminService;
 import com.ftn.socialNetwork.service.intefraces.GroupService;

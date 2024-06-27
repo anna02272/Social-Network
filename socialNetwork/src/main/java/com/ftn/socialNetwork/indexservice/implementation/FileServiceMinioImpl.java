@@ -6,10 +6,13 @@ import com.ftn.socialNetwork.indexservice.interfaces.FileService;
 import io.minio.*;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -79,6 +82,17 @@ public class FileServiceMinioImpl implements FileService {
             return minioClient.getObject(args);
         } catch (Exception e) {
             throw new NotFoundException("Document " + serverFilename + " does not exist.");
+        }
+    }
+    private String extractTextFromPDF(MultipartFile file) {
+        try {
+            PDDocument document = PDDocument.load(file.getInputStream());
+            PDFTextStripper stripper = new PDFTextStripper();
+            String text = stripper.getText(document);
+            document.close();
+            return text;
+        } catch (IOException e) {
+            throw new StorageException("Error extracting text from PDF.");
         }
     }
 }
