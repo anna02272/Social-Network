@@ -13,4 +13,8 @@ public interface GroupIndexingService {
     void deleteById(String id);
 
     void indexGroup(MultipartFile documentFile, Group group);
+
+     void updateGroupIndex(Group group);
+
+    void suspendGroupIndex(Group group);
 }

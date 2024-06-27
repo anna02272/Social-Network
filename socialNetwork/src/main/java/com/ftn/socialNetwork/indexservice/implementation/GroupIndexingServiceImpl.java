@@ -1,6 +1,7 @@
 package com.ftn.socialNetwork.indexservice.implementation;
 
 import com.ftn.socialNetwork.exceptionhandling.exception.LoadingException;
+import com.ftn.socialNetwork.exceptionhandling.exception.NotFoundException;
 import com.ftn.socialNetwork.exceptionhandling.exception.StorageException;
 import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexrepository.GroupIndexRepository;
@@ -71,6 +72,29 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
         groupIndexingRepository.save(groupIndex);
     }
 
+    @Override
+    @Transactional
+    public void updateGroupIndex(Group group) {
+        var groupIndex = groupIndexingRepository.findById(group.getId().toString())
+                .orElseThrow(() -> new NotFoundException("Group index not found"));
+
+        groupIndex.setName(group.getName());
+        groupIndex.setDescription(group.getDescription());
+        groupIndex.setCreationDate(group.getCreationDate());
+        groupIndex.setSuspended(group.isSuspended());
+        groupIndex.setSuspendedReason(group.getSuspendedReason());
+
+        groupIndexingRepository.save(groupIndex);
+    }
+
+    @Override
+    @Transactional
+    public void suspendGroupIndex(Group group) {
+        var groupIndex = groupIndexingRepository.findById(group.getId().toString())
+                .orElseThrow(() -> new NotFoundException("Group index not found"));
+
+        groupIndexingRepository.delete(groupIndex);
+    }
 
     private String extractDocumentContent(MultipartFile multipartPdfFile) {
         String documentContent;

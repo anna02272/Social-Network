@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface GroupService {
     Group createGroup(Group group, MultipartFile pdfFile);
-    Group updateGroup(Group group);
+    Group updateGroup(Group group, MultipartFile pdfFile);
+
+    Group suspendGroup(Group group);
+
     Group deleteGroup(Long id);
     Group findOneById(Long id) throws ChangeSetPersister.NotFoundException;
     List<Group> findAll();

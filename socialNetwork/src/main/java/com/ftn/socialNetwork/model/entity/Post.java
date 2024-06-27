@@ -29,6 +29,9 @@ public class Post {
     private Long id;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
@@ -51,5 +54,7 @@ public class Post {
 
   @ManyToOne
   private Group group;
+    @Column
+    private String pdfFile;
 
 }

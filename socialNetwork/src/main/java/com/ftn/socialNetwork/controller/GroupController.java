@@ -64,15 +64,18 @@ public ResponseEntity<Group> createGroup (@RequestParam("group") String groupJso
   return ResponseEntity.ok(createdGroup);
 }
     @PutMapping("/update/{id}")
-    public ResponseEntity<Group> updateGroup(@PathVariable("id") Long groupId, @RequestBody Group group) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<Group> updateGroup(@PathVariable("id") Long groupId,
+                                             @RequestParam("group") String groupJson,
+                                             @RequestParam(value = "pdfFile", required = false) MultipartFile pdfFile) throws JsonProcessingException, ChangeSetPersister.NotFoundException {
+        Group group = new ObjectMapper().readValue(groupJson, Group.class);
         Group existingGroup = groupService.findOneById(groupId);
 
         if (existingGroup == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-      if (!existingGroup.getName().equals(group.getName()) && groupService.existsByName(group.getName())) {
+        if (!existingGroup.getName().equals(group.getName()) && groupService.existsByName(group.getName())) {
         return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-      }
+       }
         if (group.getName() != null) {
             existingGroup.setName(group.getName());
         }
@@ -85,11 +88,11 @@ public ResponseEntity<Group> createGroup (@RequestParam("group") String groupJso
         if (group.getSuspendedReason() != null) {
             existingGroup.setSuspendedReason(group.getSuspendedReason());
         }
-      if (group.isSuspended()){
-        existingGroup.setSuspended(group.isSuspended());
-      }
+        if (group.isSuspended()){
+            existingGroup.setSuspended(group.isSuspended());
+        }
 
-        Group updatedGroup = groupService.updateGroup(existingGroup);
+        Group updatedGroup = groupService.updateGroup(existingGroup, pdfFile);
 
         return new ResponseEntity<>(updatedGroup, HttpStatus.OK);
     }
@@ -100,6 +103,7 @@ public ResponseEntity<Group> createGroup (@RequestParam("group") String groupJso
 //        groupService.deleteGroup(id);
 //        return ResponseEntity.noContent().build();
 //    }
+
     @PutMapping("/delete/{id}")
     public ResponseEntity<Group> delete(@PathVariable Long id, @RequestBody String suspendedReason) throws ChangeSetPersister.NotFoundException {
       Group existing = groupService.findOneById(id);
@@ -109,10 +113,11 @@ public ResponseEntity<Group> createGroup (@RequestParam("group") String groupJso
       }
       existing.setSuspended(true);
       existing.setSuspendedReason(suspendedReason);
-      Group updated = groupService.updateGroup(existing);
+      Group updated = groupService.suspendGroup(existing);
 
       return new ResponseEntity<>(updated, HttpStatus.OK);
     }
+
     @GetMapping("/find/{id}")
     public ResponseEntity<Group> getGroupById(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
         Group group = groupService.findOneById(id);

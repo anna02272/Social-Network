@@ -1,6 +1,5 @@
 package com.ftn.socialNetwork.service.implementation;
 
-import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.FileService;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
 import com.ftn.socialNetwork.model.entity.Group;
@@ -15,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class GroupServiceImpl implements GroupService {
@@ -40,9 +38,20 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group updateGroup(Group group) {
+    public Group updateGroup(Group group, MultipartFile pdfFile) {
         Group updatedGroup = groupRepository.save(group);
-//        indexGroup(updatedGroup);
+        if (pdfFile != null && !pdfFile.isEmpty()) {
+            groupIndexService.indexGroup(pdfFile, updatedGroup);
+        } else {
+            groupIndexService.updateGroupIndex(updatedGroup);
+        }
+        return updatedGroup;
+    }
+
+    @Override
+    public Group suspendGroup(Group group) {
+        Group updatedGroup = groupRepository.save(group);
+        groupIndexService.suspendGroupIndex(updatedGroup);
         return updatedGroup;
     }
 
