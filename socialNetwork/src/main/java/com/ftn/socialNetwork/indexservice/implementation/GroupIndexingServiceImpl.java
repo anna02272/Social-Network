@@ -69,6 +69,8 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
         groupIndex.setSuspended(group.isSuspended());
         groupIndex.setSuspendedReason(group.getSuspendedReason());
         groupIndex.setPostCount(0);
+        groupIndex.setNumberOfPostsWithLikes(0);
+        groupIndex.setTotalLikes(0);
 
         groupIndexingRepository.save(groupIndex);
     }
@@ -115,6 +117,46 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
                 .orElseThrow(() -> new NotFoundException("Group index not found"));
 
         groupIndex.setPostCount(groupIndex.getPostCount() - 1);
+
+        groupIndexingRepository.save(groupIndex);
+    }
+
+    @Override
+    @Transactional
+    public void updateLikeCount(String groupId) {
+        var groupIndex = groupIndexingRepository.findById(groupId)
+                .orElseThrow(() -> new NotFoundException("Group index not found"));
+
+        groupIndex.setTotalLikes(groupIndex.getTotalLikes() + 1);
+        groupIndex.setNumberOfPostsWithLikes(groupIndex.getNumberOfPostsWithLikes() + 1);
+
+        if (groupIndex.getNumberOfPostsWithLikes() != 0) {
+            groupIndex.setPostAverageLikes((float) groupIndex.getTotalLikes() / groupIndex.getNumberOfPostsWithLikes());
+        } else {
+            groupIndex.setPostAverageLikes(0.0f);
+        }
+        groupIndexingRepository.save(groupIndex);
+    }
+
+    @Override
+    @Transactional
+    public void deleteLikeCount(String groupId) {
+        var groupIndex = groupIndexingRepository.findById(groupId)
+                .orElseThrow(() -> new NotFoundException("Group index not found"));
+
+        if (groupIndex.getTotalLikes() > 0) {
+            groupIndex.setTotalLikes(groupIndex.getTotalLikes() - 1);
+        }
+
+        if (groupIndex.getNumberOfPostsWithLikes() > 0) {
+            groupIndex.setNumberOfPostsWithLikes(groupIndex.getNumberOfPostsWithLikes() - 1);
+        }
+
+        if (groupIndex.getNumberOfPostsWithLikes() != 0) {
+            groupIndex.setPostAverageLikes((float) groupIndex.getTotalLikes() / groupIndex.getNumberOfPostsWithLikes());
+        } else {
+            groupIndex.setPostAverageLikes(0.0f);
+        }
 
         groupIndexingRepository.save(groupIndex);
     }

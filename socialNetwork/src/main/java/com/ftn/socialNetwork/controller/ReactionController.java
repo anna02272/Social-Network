@@ -1,11 +1,13 @@
 package com.ftn.socialNetwork.controller;
 
+import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
 import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.service.intefraces.CommentService;
 import com.ftn.socialNetwork.service.intefraces.PostService;
 import com.ftn.socialNetwork.service.intefraces.ReactionService;
 import com.ftn.socialNetwork.service.intefraces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,10 @@ public class ReactionController {
   @Autowired
   private CommentService commentService;
 
+  @Qualifier("groupIndexingServiceImpl")
+  @Autowired
+  private GroupIndexingService groupIndexService;
+
   @PostMapping("/reactToPost/{id}")
   public ResponseEntity<Reaction> reactToPost(@PathVariable("id") Long postId, @RequestBody Reaction reaction, Principal principal) throws ChangeSetPersister.NotFoundException {
     String username = principal.getName();
@@ -45,11 +51,24 @@ public class ReactionController {
       existingReaction.setType(reaction.getType());
       existingReaction.setTimeStamp(LocalDate.now());
       reactionService.create(existingReaction);
+
+      if (post.getGroup() != null) {
+        if (existingReaction.getType() == EReactionType.LIKE) {
+          groupIndexService.updateLikeCount(post.getGroup().getId().toString());
+        } else {
+          groupIndexService.deleteLikeCount(post.getGroup().getId().toString());
+        }
+      }
+
       return ResponseEntity.ok(existingReaction);
     }
 
     reaction.setPost(post);
     Reaction createdReaction = reactionService.create(reaction);
+
+    if (post.getGroup() != null && reaction.getType() == EReactionType.LIKE) {
+      groupIndexService.updateLikeCount(post.getGroup().getId().toString());
+    }
 
     return ResponseEntity.ok(createdReaction);
   }

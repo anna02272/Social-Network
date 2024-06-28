@@ -53,4 +53,10 @@ public class GroupIndex {
     @Field(type = FieldType.Float, store = true, name = "postAverageLikes", index = false)
     private Float postAverageLikes;
 
+    @Field(type = FieldType.Integer, store = true, name = "totalLikes", index = false)
+    private Integer totalLikes;
+
+    @Field(type = FieldType.Integer, store = true, name = "numberOfPostsWithLikes", index = false)
+    private Integer numberOfPostsWithLikes;
+
 }
