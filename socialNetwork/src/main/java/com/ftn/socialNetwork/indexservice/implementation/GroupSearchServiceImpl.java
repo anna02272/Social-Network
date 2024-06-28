@@ -27,7 +27,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     @Override
     public Page<GroupIndex> nameAndDescriptionSearch(List<String> keywords, Pageable pageable) {
         var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery((co.elastic.clients.elasticsearch._types.query_dsl.Query) buildSearchQuery(keywords))
+                new NativeQueryBuilder().withQuery(buildSearchQuery(keywords))
                         .withPageable(pageable);
 
         return runQuery(searchQueryBuilder.build());
@@ -56,7 +56,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
 //    }
 
     private Query buildSearchQuery(List<String> tokens) {
-        return (Query) BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
                 b.should(sb -> sb.match(
                         m -> m.field("name").fuzziness(Fuzziness.ONE.asString()).query(token)));
@@ -70,7 +70,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     }
 
     private Query buildRangeQuery(Integer from, Integer to) {
-        return (Query) BoolQuery.of(q -> q.filter(f -> f.range(RangeQuery.of(r -> r
+        return BoolQuery.of(q -> q.filter(f -> f.range(RangeQuery.of(r -> r
                 .field("postCount")
                 .gte(JsonData.of(from != null ? from : 0))
                 .lte(JsonData.of(to != null ? to : Integer.MAX_VALUE))

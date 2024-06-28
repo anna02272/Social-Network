@@ -1,15 +1,13 @@
 package com.ftn.socialNetwork.indexcontroller;
 
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
+import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.PostSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/search")
@@ -23,5 +21,14 @@ public class PostSearchController {
                                                  Pageable pageable) {
         return searchService.titleAndContentSearch(simpleSearchQuery.keywords(), pageable);
     }
+
+    @GetMapping("/posts/likeCountRange")
+    public Page<PostIndex> searchByLikeCountRange(
+            @RequestParam(value = "from", required = false) Integer from,
+            @RequestParam(value = "to", required = false) Integer to,
+            Pageable pageable) {
+        return searchService.searchByLikeCountRange(from, to, pageable);
+    }
+
 
 }

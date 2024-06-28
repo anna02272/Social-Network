@@ -2,6 +2,9 @@ package com.ftn.socialNetwork.indexservice.implementation;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
+import co.elastic.clients.json.JsonData;
+import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.PostSearchService;
 import com.ftn.socialNetwork.model.entity.Post;
@@ -32,6 +35,13 @@ public class PostSearchServiceImpl implements PostSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
+    @Override
+    public Page<PostIndex> searchByLikeCountRange(Integer from, Integer to, Pageable pageable) {
+        var rangeQuery = buildRangeQuery(from, to);
+        var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
+        return runQuery(searchQueryBuilder.build());
+    }
+
     private Query buildSearchQuery(List<String> tokens) {
         return (Query) BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
@@ -44,6 +54,14 @@ public class PostSearchServiceImpl implements PostSearchService {
             });
             return b;
         })))._toQuery();
+    }
+
+    private Query buildRangeQuery(Integer from, Integer to) {
+        return BoolQuery.of(q -> q.filter(f -> f.range(RangeQuery.of(r -> r
+                .field("likeCount")
+                .gte(JsonData.of(from != null ? from : 0))
+                .lte(JsonData.of(to != null ? to : Integer.MAX_VALUE))
+        ))))._toQuery();
     }
 
     private Page<PostIndex> runQuery(NativeQuery searchQuery) {

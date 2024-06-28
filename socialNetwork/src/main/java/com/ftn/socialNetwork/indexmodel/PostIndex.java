@@ -48,4 +48,7 @@ public class PostIndex {
     @Field(type = FieldType.Nested, store = true, name = "groupId")
     private String groupId;
 
+    @Field(type = FieldType.Integer, store = true, name = "likeCount", index = false)
+    private Integer likeCount;
+
 }
