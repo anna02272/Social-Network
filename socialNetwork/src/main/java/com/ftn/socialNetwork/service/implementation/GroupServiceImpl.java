@@ -8,6 +8,7 @@ import com.ftn.socialNetwork.service.intefraces.GroupService;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +20,12 @@ import java.util.List;
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final GroupIndexingService groupIndexService;
-    private final FileService fileService;
     private final EntityManager entityManager;
 
     @Autowired
-    public GroupServiceImpl(GroupRepository groupRepository, GroupIndexingService groupIndexService, FileService fileService, EntityManager entityManager) {
+    public GroupServiceImpl(GroupRepository groupRepository, @Qualifier("groupIndexingServiceImpl") GroupIndexingService groupIndexService, EntityManager entityManager) {
         this.groupRepository = groupRepository;
         this.groupIndexService = groupIndexService;
-        this.fileService = fileService;
         this.entityManager = entityManager;
     }
 

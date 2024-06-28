@@ -1,4 +1,6 @@
 package com.ftn.socialNetwork.controller;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.service.intefraces.GroupService;
 import com.ftn.socialNetwork.service.intefraces.ImageService;
@@ -56,42 +58,47 @@ public class PostController {
 //    return ResponseEntity.ok(createdPost);
 //  }
 
-
   @PostMapping("/create")
-  public ResponseEntity<Post> createPost(@RequestPart("content") String content,
+  public ResponseEntity<Post> createPost(@RequestPart("post") String postJson,
                                          @RequestPart(name = "images", required = false) List<MultipartFile> imageFiles,
-                                         Principal principal) {
+                                         @RequestPart(value = "pdfFile") MultipartFile pdfFile,
+                                         Principal principal) throws JsonProcessingException {
+
+    Post post = new ObjectMapper().readValue(postJson, Post.class);
+
     String username = principal.getName();
     User user = userService.findByUsername(username);
 
-    Post post = new Post();
     post.setUser(user);
-    post.setContent(content);
     post.setCreationDate(LocalDateTime.now());
     post.setIsDeleted(false);
 
-    return getPostResponseEntity(imageFiles, post);
+    return getPostResponseEntity(imageFiles, post, pdfFile);
   }
   @PostMapping("/create/{id}")
   public ResponseEntity<Post> createGroupPost(@PathVariable("id") Long groupId,
-                                              @RequestPart("content") String content,
+                                              @RequestPart("post") String postJson,
                                               @RequestPart(name = "images", required = false) List<MultipartFile> imageFiles,
-                                              Principal principal) throws ChangeSetPersister.NotFoundException {
+                                              @RequestPart(value = "pdfFile") MultipartFile pdfFile,
+                                              Principal principal) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
+
+    Post post = new ObjectMapper().readValue(postJson, Post.class);
+
     String username = principal.getName();
     User user = userService.findByUsername(username);
     Group group = groupService.findOneById(groupId);
-    Post post = new Post();
     post.setUser(user);
-    post.setContent(content);
     post.setCreationDate(LocalDateTime.now());
     post.setIsDeleted(false);
     post.setGroup(group);
 
-    return getPostResponseEntity(imageFiles, post);
+    return getPostResponseEntity(imageFiles, post, pdfFile);
   }
 
-  private ResponseEntity<Post> getPostResponseEntity(@RequestPart(name = "images", required = false) List<MultipartFile> imageFiles, Post post) {
-    Post createdPost = postService.createPost(post);
+  private ResponseEntity<Post> getPostResponseEntity(@RequestPart(name = "images", required = false) List<MultipartFile> imageFiles,
+                                                     Post post,
+                                                     MultipartFile pdfFile ) {
+    Post createdPost = postService.createPost(post, pdfFile);
     if (imageFiles != null && !imageFiles.isEmpty()) {
       List<Image> images = new ArrayList<>();
       for (MultipartFile imageFile : imageFiles) {
@@ -105,7 +112,7 @@ public class PostController {
       }
       createdPost.setImages(images);
     }
-    Post updatedPost = postService.updatePost(createdPost);
+    Post updatedPost = postService.updatePost(createdPost, pdfFile);
 
     return ResponseEntity.ok(updatedPost);
   }
@@ -113,15 +120,17 @@ public class PostController {
   @PutMapping("/update/{id}")
   public ResponseEntity<Post> updatePost(
     @PathVariable("id") Long postId,
-    @RequestPart("content") String content,
-    @RequestPart(name = "images", required = false) List<MultipartFile> imageFiles) throws ChangeSetPersister.NotFoundException {
+    @RequestPart("post") String postJson,
+    @RequestPart(name = "images", required = false) List<MultipartFile> imageFiles,
+    @RequestPart(value = "pdfFile", required = false) MultipartFile pdfFile) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
+
+    Post post = new ObjectMapper().readValue(postJson, Post.class);
 
     Post existingPost = postService.findOneById(postId);
 
     if (existingPost == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-    existingPost.setContent(content);
 
     if (imageFiles != null && !imageFiles.isEmpty()) {
       List<Image> images = new ArrayList<>();
@@ -136,7 +145,7 @@ public class PostController {
       }
       existingPost.setImages(images);
     }
-    Post updatedPost = postService.updatePost(existingPost);
+    Post updatedPost = postService.updatePost(existingPost, pdfFile);
 
     return new ResponseEntity<>(updatedPost, HttpStatus.OK);
   }
@@ -183,7 +192,7 @@ public class PostController {
       }
 
       existing.setIsDeleted(true);
-      Post updated = postService.updatePost(existing);
+      Post updated = postService.deletePost(existing);
 
       return new ResponseEntity<>(updated, HttpStatus.OK);
     }
