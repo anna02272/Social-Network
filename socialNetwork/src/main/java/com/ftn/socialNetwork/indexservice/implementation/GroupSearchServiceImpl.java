@@ -1,6 +1,8 @@
 package com.ftn.socialNetwork.indexservice.implementation;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
+import co.elastic.clients.json.JsonData;
 import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupSearchService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,13 @@ public class GroupSearchServiceImpl implements GroupSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
+    @Override
+    public Page<GroupIndex> searchByPostCountRange(Integer from, Integer to, Pageable pageable) {
+        var rangeQuery = buildRangeQuery(from, to);
+        var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
+        return runQuery(searchQueryBuilder.build());
+    }
+
 //    @Override
 //    public Page<GroupIndex> advancedSearch(List<String> expression, Pageable pageable) {
 //        if (expression.size() != 3) {
@@ -58,6 +67,14 @@ public class GroupSearchServiceImpl implements GroupSearchService {
             });
             return b;
         })))._toQuery();
+    }
+
+    private Query buildRangeQuery(Integer from, Integer to) {
+        return (Query) BoolQuery.of(q -> q.filter(f -> f.range(RangeQuery.of(r -> r
+                .field("postCount")
+                .gte(JsonData.of(from != null ? from : 0))
+                .lte(JsonData.of(to != null ? to : Integer.MAX_VALUE))
+        ))))._toQuery();
     }
 
 //    private Query buildAdvancedSearchQuery(List<String> operands, String operation) {

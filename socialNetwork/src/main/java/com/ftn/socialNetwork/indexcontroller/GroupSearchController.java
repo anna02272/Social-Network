@@ -22,6 +22,14 @@ public class GroupSearchController {
         return searchService.nameAndDescriptionSearch(simpleSearchQuery.keywords(), pageable);
     }
 
+    @GetMapping("/groups/postCountRange")
+    public Page<GroupIndex> searchByPostCountRange(
+            @RequestParam(value = "from", required = false) Integer from,
+            @RequestParam(value = "to", required = false) Integer to,
+            Pageable pageable) {
+        return searchService.searchByPostCountRange(from, to, pageable);
+    }
+
 //    @PostMapping("/groups/advanced")
 //    public Page<GroupIndex> advancedSearch(@RequestBody SearchQueryDTO advancedSearchQuery,
 //                                           Pageable pageable) {

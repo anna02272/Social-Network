@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 public interface GroupSearchService {
     Page<GroupIndex> nameAndDescriptionSearch(List<String> keywords, Pageable pageable);
+    Page<GroupIndex> searchByPostCountRange(Integer from, Integer to, Pageable pageable);
 
 //    Page<GroupIndex> advancedSearch(List<String> expression, Pageable pageable);
 }
