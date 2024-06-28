@@ -68,6 +68,7 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
         groupIndex.setCreationDate(group.getCreationDate());
         groupIndex.setSuspended(group.isSuspended());
         groupIndex.setSuspendedReason(group.getSuspendedReason());
+        groupIndex.setPostCount(0);
 
         groupIndexingRepository.save(groupIndex);
     }
@@ -95,6 +96,29 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
 
         groupIndexingRepository.delete(groupIndex);
     }
+
+    @Override
+    @Transactional
+    public void updatePostCount(String groupId) {
+        var groupIndex = groupIndexingRepository.findById(groupId)
+                .orElseThrow(() -> new NotFoundException("Group index not found"));
+
+        groupIndex.setPostCount(groupIndex.getPostCount() + 1);
+
+        groupIndexingRepository.save(groupIndex);
+    }
+
+    @Override
+    @Transactional
+    public void deletePostCount(String groupId) {
+        var groupIndex = groupIndexingRepository.findById(groupId)
+                .orElseThrow(() -> new NotFoundException("Group index not found"));
+
+        groupIndex.setPostCount(groupIndex.getPostCount() - 1);
+
+        groupIndexingRepository.save(groupIndex);
+    }
+
 
     private String extractDocumentContent(MultipartFile multipartPdfFile) {
         String documentContent;

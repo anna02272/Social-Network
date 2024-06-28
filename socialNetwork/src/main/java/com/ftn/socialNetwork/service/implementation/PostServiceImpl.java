@@ -1,6 +1,7 @@
 package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.exceptionhandling.exception.NotFoundException;
+import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
 import com.ftn.socialNetwork.indexservice.interfaces.PostIndexingService;
 import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.repository.PostRepository;
@@ -20,17 +21,25 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostIndexingService postIndexService;
+    private final GroupIndexingService groupIndexService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, @Qualifier("postIndexingServiceImpl") PostIndexingService postIndexService) {
+    public PostServiceImpl(PostRepository postRepository,
+                           @Qualifier("postIndexingServiceImpl") PostIndexingService postIndexService,
+                           @Qualifier("groupIndexingServiceImpl") GroupIndexingService groupIndexService) {
       this.postRepository = postRepository;
       this.postIndexService = postIndexService;
+      this.groupIndexService = groupIndexService;
     }
 
     @Override
     public Post createPost(Post post, MultipartFile pdfFile) {
         Post createdPost = postRepository.save(post);
         postIndexService.indexPost(pdfFile, createdPost);
+        if (post.getGroup() != null) {
+            var groupId = post.getGroup().getId().toString();
+            groupIndexService.updatePostCount(groupId);
+        }
         return createdPost;
     }
 
@@ -51,6 +60,10 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException("Post not found"));
         postRepository.save(postToDelete);
         postIndexService.deletePostIndex(postToDelete);
+        if (post.getGroup() != null) {
+            var groupId = post.getGroup().getId().toString();
+            groupIndexService.deletePostCount(groupId);
+        }
 
         return postToDelete;
     }
@@ -70,7 +83,6 @@ public class PostServiceImpl implements PostService {
     return postRepository.findAllByGroupIdAndIsDeleted(groupId, false);
   }
 
-
   @Autowired
   private EntityManager entityManager;
 
@@ -82,5 +94,10 @@ public class PostServiceImpl implements PostService {
     session.disableFilter("deletedPostFilter");
     return posts;
   }
+
+    @Override
+    public long countAllByGroupId(Long groupId) {
+        return postRepository.countAllByGroupIdAndIsDeleted(groupId, false);
+    }
 
 }

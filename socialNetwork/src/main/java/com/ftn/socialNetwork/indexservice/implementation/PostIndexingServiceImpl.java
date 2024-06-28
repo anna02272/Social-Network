@@ -6,6 +6,7 @@ import com.ftn.socialNetwork.exceptionhandling.exception.StorageException;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexrepository.PostIndexRepository;
 import com.ftn.socialNetwork.indexservice.interfaces.FileService;
+import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
 import com.ftn.socialNetwork.indexservice.interfaces.PostIndexingService;
 import com.ftn.socialNetwork.model.entity.Post;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,8 @@ public class PostIndexingServiceImpl implements PostIndexingService {
         postIndex.setCreationDate(post.getCreationDate());
 
         if (post.getGroup() != null) {
-            postIndex.setGroupId(post.getGroup().getId().toString());
+            var groupId = post.getGroup().getId().toString();
+            postIndex.setGroupId(groupId);
         }
 
         postIndexingRepository.save(postIndex);

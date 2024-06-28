@@ -17,4 +17,7 @@ public interface GroupIndexingService {
      void updateGroupIndex(Group group);
 
     void suspendGroupIndex(Group group);
+
+    void updatePostCount(String groupId);
+    void deletePostCount(String groupId);
 }

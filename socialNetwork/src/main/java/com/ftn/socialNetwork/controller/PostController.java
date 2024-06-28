@@ -246,5 +246,10 @@ public class PostController {
 
     return ResponseEntity.ok(posts);
   }
+  @GetMapping("/countAll/{groupId}")
+  public ResponseEntity<Long> countAllByGroup(@PathVariable Long groupId) {
+    long count = postService.countAllByGroupId(groupId);
+    return ResponseEntity.ok(count);
+  }
 
 }

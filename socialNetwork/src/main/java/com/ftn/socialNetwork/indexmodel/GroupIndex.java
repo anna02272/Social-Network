@@ -47,4 +47,10 @@ public class GroupIndex {
     @Field(type = FieldType.Text, store = true, name = "pdfFile", index = false)
     private String pdfFileUrl;
 
+    @Field(type = FieldType.Integer, store = true, name = "postCount", index = false)
+    private Integer postCount;
+
+    @Field(type = FieldType.Float, store = true, name = "postAverageLikes", index = false)
+    private Float postAverageLikes;
+
 }

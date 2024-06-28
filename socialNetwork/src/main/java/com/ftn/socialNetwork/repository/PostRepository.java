@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
   List<Post> findAllByGroupIdAndIsDeleted(Long groupId, boolean isDeleted);
+  long countAllByGroupIdAndIsDeleted(Long groupId, boolean isDeleted);
+
 }

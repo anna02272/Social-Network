@@ -10,11 +10,10 @@ import java.util.List;
 public interface PostService {
     Post createPost(Post post, MultipartFile pdfFile);
     Post updatePost(Post post, MultipartFile pdfFile);
-
     Post deletePost(Post post);
-
     Post findOneById(Long id) throws ChangeSetPersister.NotFoundException;
     List<Post> findAll();
-  List<Post> findAllByGroupId(Long groupId);
-  List<Post> findAllByIsDeleted(boolean isDeleted);
+    List<Post> findAllByGroupId(Long groupId);
+    List<Post> findAllByIsDeleted(boolean isDeleted);
+    long countAllByGroupId(Long groupId);
 }
