@@ -145,6 +145,9 @@ public class PostController {
       }
       existingPost.setImages(images);
     }
+
+    existingPost.setTitle(post.getTitle());
+    existingPost.setContent(post.getContent());
     Post updatedPost = postService.updatePost(existingPost, pdfFile);
 
     return new ResponseEntity<>(updatedPost, HttpStatus.OK);

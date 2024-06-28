@@ -45,7 +45,7 @@ public class PostIndex {
     @Field(type = FieldType.Text, store = true, name = "pdfFile", index = false)
     private String pdfFileUrl;
 
-    @Field(type = FieldType.Nested, store = true, name = "group")
-    private Group group;
+    @Field(type = FieldType.Nested, store = true, name = "groupId")
+    private String groupId;
 
 }

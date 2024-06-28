@@ -62,6 +62,10 @@ public class PostIndexingServiceImpl implements PostIndexingService {
         postIndex.setContent(post.getContent());
         postIndex.setCreationDate(post.getCreationDate());
 
+        if (post.getGroup() != null) {
+            postIndex.setGroupId(post.getGroup().getId().toString());
+        }
+
         postIndexingRepository.save(postIndex);
     }
 
@@ -74,6 +78,7 @@ public class PostIndexingServiceImpl implements PostIndexingService {
         postIndex.setTitle(post.getTitle());
         postIndex.setContent(post.getContent());
         postIndex.setCreationDate(post.getCreationDate());
+        postIndex.setGroupId(post.getGroup().getId().toString());
 
         postIndexingRepository.save(postIndex);
     }

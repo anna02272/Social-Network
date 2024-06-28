@@ -2,7 +2,6 @@ package com.ftn.socialNetwork.service.implementation;
 
 import com.ftn.socialNetwork.exceptionhandling.exception.NotFoundException;
 import com.ftn.socialNetwork.indexservice.interfaces.PostIndexingService;
-import com.ftn.socialNetwork.model.entity.Group;
 import com.ftn.socialNetwork.model.entity.Post;
 import com.ftn.socialNetwork.repository.PostRepository;
 import com.ftn.socialNetwork.service.intefraces.PostService;
@@ -48,14 +47,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post deletePost(Post post) {
-        return postRepository.save(post);
-    }
-
-    @Override
-    public Post delete(Long id) {
-        Post postToDelete = postRepository.findById(id)
+        Post postToDelete = postRepository.findById(post.getId())
                 .orElseThrow(() -> new NotFoundException("Post not found"));
-        postRepository.deleteById(id);
+        postRepository.save(postToDelete);
         postIndexService.deletePostIndex(postToDelete);
 
         return postToDelete;
