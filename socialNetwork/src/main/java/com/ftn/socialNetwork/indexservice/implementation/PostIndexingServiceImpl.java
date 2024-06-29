@@ -62,6 +62,7 @@ public class PostIndexingServiceImpl implements PostIndexingService {
         postIndex.setTitle(post.getTitle());
         postIndex.setContent(post.getContent());
         postIndex.setCreationDate(post.getCreationDate());
+        postIndex.setLikeCount(0);
 
         if (post.getGroup() != null) {
             var groupId = post.getGroup().getId().toString();
@@ -92,6 +93,28 @@ public class PostIndexingServiceImpl implements PostIndexingService {
                 .orElseThrow(() -> new NotFoundException("Post index not found"));
 
         postIndexingRepository.delete(postIndex);
+    }
+
+    @Override
+    @Transactional
+    public void updateLikeCount(String postId) {
+        var postIndex = postIndexingRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("Post index not found"));
+
+        postIndex.setLikeCount(postIndex.getLikeCount() + 1);
+
+        postIndexingRepository.save(postIndex);
+    }
+
+    @Override
+    @Transactional
+    public void deleteLikeCount(String postId) {
+        var postIndex = postIndexingRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("Post index not found"));
+
+        postIndex.setLikeCount(postIndex.getLikeCount() - 1);
+
+        postIndexingRepository.save(postIndex);
     }
 
     private String extractDocumentContent(MultipartFile multipartPdfFile) {

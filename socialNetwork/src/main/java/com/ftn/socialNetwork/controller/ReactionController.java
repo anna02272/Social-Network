@@ -1,6 +1,7 @@
 package com.ftn.socialNetwork.controller;
 
 import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
+import com.ftn.socialNetwork.indexservice.interfaces.PostIndexingService;
 import com.ftn.socialNetwork.model.entity.*;
 import com.ftn.socialNetwork.service.intefraces.CommentService;
 import com.ftn.socialNetwork.service.intefraces.PostService;
@@ -36,42 +37,43 @@ public class ReactionController {
   @Autowired
   private GroupIndexingService groupIndexService;
 
+  @Qualifier("postIndexingServiceImpl")
+  @Autowired
+  private PostIndexingService postIndexService;
+
   @PostMapping("/reactToPost/{id}")
-  public ResponseEntity<Reaction> reactToPost(@PathVariable("id") Long postId, @RequestBody Reaction reaction, Principal principal) throws ChangeSetPersister.NotFoundException {
+  public ResponseEntity<Reaction> reactToPost(@PathVariable("id") Long postId,
+                                              @RequestBody Reaction reaction,
+                                              Principal principal) throws ChangeSetPersister.NotFoundException {
+
     String username = principal.getName();
     User user = userService.findByUsername(username);
+
     reaction.setUser(user);
     reaction.setTimeStamp(LocalDate.now());
+
     Post post = postService.findOneById(postId);
     if (post == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+
     Reaction existingReaction = reactionService.findReactionByPostAndUser(post, user);
     if (existingReaction != null) {
+      EReactionType oldType = existingReaction.getType();
       existingReaction.setType(reaction.getType());
       existingReaction.setTimeStamp(LocalDate.now());
       reactionService.create(existingReaction);
-
-      if (post.getGroup() != null) {
-        if (existingReaction.getType() == EReactionType.LIKE) {
-          groupIndexService.updateLikeCount(post.getGroup().getId().toString());
-        } else {
-          groupIndexService.deleteLikeCount(post.getGroup().getId().toString());
-        }
-      }
-
+      updateLikeCount(existingReaction, post, oldType);
       return ResponseEntity.ok(existingReaction);
     }
 
     reaction.setPost(post);
     Reaction createdReaction = reactionService.create(reaction);
-
-    if (post.getGroup() != null && reaction.getType() == EReactionType.LIKE) {
-      groupIndexService.updateLikeCount(post.getGroup().getId().toString());
-    }
+    updateLikeCount(createdReaction, post, null);
 
     return ResponseEntity.ok(createdReaction);
   }
+
   @GetMapping("/count/post/{postId}")
   public ResponseEntity<Map<EReactionType, Integer>> countReactionsByPost(
     @PathVariable("postId") Long postId
@@ -100,24 +102,34 @@ public class ReactionController {
 
 
   @PostMapping("/reactToComment/{id}")
-  public ResponseEntity<Reaction> reactToComment(@PathVariable("id") Long commentId,@RequestBody Reaction reaction, Principal principal) throws ChangeSetPersister.NotFoundException {
+  public ResponseEntity<Reaction> reactToComment(@PathVariable("id") Long commentId,
+                                                 @RequestBody Reaction reaction,
+                                                 Principal principal) throws ChangeSetPersister.NotFoundException {
     String username = principal.getName();
     User user = userService.findByUsername(username);
     reaction.setUser(user);
+
     reaction.setTimeStamp(LocalDate.now());
+
     Comment comment = commentService.findOneById(commentId);
     if (comment == null) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+
     Reaction existingReaction = reactionService.findReactionByCommentAndUser(comment, user);
     if (existingReaction != null) {
+      EReactionType oldType = existingReaction.getType();
       existingReaction.setType(reaction.getType());
       existingReaction.setTimeStamp(LocalDate.now());
       reactionService.create(existingReaction);
+      updateLikeCountForComment(existingReaction, comment, oldType);
+
       return ResponseEntity.ok(existingReaction);
     }
+
     reaction.setComment(comment);
     Reaction createdReaction = reactionService.create(reaction);
+    postIndexService.updateLikeCount(comment.getPost().getId().toString());
 
     return ResponseEntity.ok(createdReaction);
   }
@@ -146,7 +158,34 @@ public class ReactionController {
     Reaction reaction = reactionService.findReactionByCommentAndUser(comment, user);
     return ResponseEntity.ok(reaction);
   }
+  private void updateLikeCount(Reaction reaction, Post post, EReactionType oldType) {
+    EReactionType newType = reaction.getType();
+    boolean isLike = EReactionType.LIKE.equals(newType);
+    boolean wasLike = EReactionType.LIKE.equals(oldType);
 
+    if (isLike && !wasLike) {
+      postIndexService.updateLikeCount(post.getId().toString());
+      if (post.getGroup() != null) {
+        groupIndexService.updateLikeCount(post.getGroup().getId().toString());
+      }
+    } else if (!isLike && wasLike) {
+      postIndexService.deleteLikeCount(post.getId().toString());
+      if (post.getGroup() != null) {
+        groupIndexService.deleteLikeCount(post.getGroup().getId().toString());
+      }
+    }
+  }
 
+  private void updateLikeCountForComment(Reaction reaction, Comment comment, EReactionType oldType) {
+    EReactionType newType = reaction.getType();
+    boolean isLike = EReactionType.LIKE.equals(newType);
+    boolean wasLike = EReactionType.LIKE.equals(oldType);
+
+    if (isLike && !wasLike) {
+      postIndexService.updateLikeCount(comment.getPost().getId().toString());
+    } else if (!isLike && wasLike) {
+      postIndexService.deleteLikeCount(comment.getPost().getId().toString());
+    }
+  }
 }
 

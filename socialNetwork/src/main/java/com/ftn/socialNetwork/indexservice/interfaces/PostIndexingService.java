@@ -7,14 +7,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public interface PostIndexingService {
-
     PostIndex save(PostIndex postIndex);
-
     void deleteById(String id);
-
     void indexPost(MultipartFile documentFile, Post post);
-
-     void updatePostIndex(Post post);
-
+    void updatePostIndex(Post post);
     void deletePostIndex(Post post);
+    void updateLikeCount(String postId);
+    void deleteLikeCount(String postId);
+
 }
