@@ -51,4 +51,9 @@ public class PostIndex {
     @Field(type = FieldType.Integer, store = true, name = "likeCount", index = false)
     private Integer likeCount;
 
+    @Field(type = FieldType.Integer, store = true, name = "commentCount", index = false)
+    private Integer commentCount;
+
+    @Field(type = FieldType.Text, store = true, name = "commentText", index = false)
+    private String commentText;
 }

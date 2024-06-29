@@ -30,5 +30,13 @@ public class PostSearchController {
         return searchService.searchByLikeCountRange(from, to, pageable);
     }
 
+    @GetMapping("/posts/commentCountRange")
+    public Page<PostIndex> searchByCommentCountRange(
+            @RequestParam(value = "from", required = false) Integer from,
+            @RequestParam(value = "to", required = false) Integer to,
+            Pageable pageable) {
+        return searchService.searchByCommentCountRange(from, to, pageable);
+    }
+
 
 }

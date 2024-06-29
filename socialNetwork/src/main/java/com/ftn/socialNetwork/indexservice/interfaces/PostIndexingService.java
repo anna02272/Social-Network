@@ -14,5 +14,6 @@ public interface PostIndexingService {
     void deletePostIndex(Post post);
     void updateLikeCount(String postId);
     void deleteLikeCount(String postId);
-
+    void updateCommentCount(String postId);
+    void deleteCommentCount(String postId);
 }

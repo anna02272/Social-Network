@@ -29,7 +29,7 @@ public class PostSearchServiceImpl implements PostSearchService {
     @Override
     public Page<PostIndex> titleAndContentSearch(List<String> keywords, Pageable pageable) {
         var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery((Query) buildSearchQuery(keywords))
+                new NativeQueryBuilder().withQuery(buildSearchQuery(keywords))
                         .withPageable(pageable);
 
         return runQuery(searchQueryBuilder.build());
@@ -42,8 +42,15 @@ public class PostSearchServiceImpl implements PostSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
+    @Override
+    public Page<PostIndex> searchByCommentCountRange(Integer from, Integer to, Pageable pageable) {
+        var rangeQuery = buildCommentRangeQuery(from, to);
+        var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
+        return runQuery(searchQueryBuilder.build());
+    }
+
     private Query buildSearchQuery(List<String> tokens) {
-        return (Query) BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
                 b.should(sb -> sb.match(
                         m -> m.field("title").fuzziness(Fuzziness.ONE.asString()).query(token)));
@@ -59,6 +66,14 @@ public class PostSearchServiceImpl implements PostSearchService {
     private Query buildRangeQuery(Integer from, Integer to) {
         return BoolQuery.of(q -> q.filter(f -> f.range(RangeQuery.of(r -> r
                 .field("likeCount")
+                .gte(JsonData.of(from != null ? from : 0))
+                .lte(JsonData.of(to != null ? to : Integer.MAX_VALUE))
+        ))))._toQuery();
+    }
+
+    private Query buildCommentRangeQuery(Integer from, Integer to) {
+        return BoolQuery.of(q -> q.filter(f -> f.range(RangeQuery.of(r -> r
+                .field("commentCount")
                 .gte(JsonData.of(from != null ? from : 0))
                 .lte(JsonData.of(to != null ? to : Integer.MAX_VALUE))
         ))))._toQuery();

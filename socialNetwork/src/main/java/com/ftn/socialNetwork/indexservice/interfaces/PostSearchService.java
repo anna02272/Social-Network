@@ -11,5 +11,5 @@ import java.util.List;
 public interface PostSearchService {
     Page<PostIndex> titleAndContentSearch(List<String> keywords, Pageable pageable);
     Page<PostIndex> searchByLikeCountRange(Integer from, Integer to, Pageable pageable);
-
+    Page<PostIndex> searchByCommentCountRange(Integer from, Integer to, Pageable pageable);
 }

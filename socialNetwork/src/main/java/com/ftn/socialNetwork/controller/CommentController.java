@@ -106,7 +106,7 @@ public ResponseEntity<Comment> delete(@PathVariable Long id) throws ChangeSetPer
   deleteChildComments(existing);
 
   existing.setIsDeleted(true);
-  Comment updated = commentService.update(existing);
+  Comment updated = commentService.deleteComment(existing);
 
   return new ResponseEntity<>(updated, HttpStatus.OK);
 }
@@ -115,7 +115,7 @@ public ResponseEntity<Comment> delete(@PathVariable Long id) throws ChangeSetPer
     for (Comment childComment : childComments) {
       deleteChildComments(childComment);
       childComment.setIsDeleted(true);
-      commentService.update(childComment);
+      commentService.deleteComment(childComment);
     }
   }
 
