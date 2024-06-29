@@ -11,6 +11,7 @@ import java.util.List;
 public interface GroupSearchService {
     Page<GroupIndex> nameAndDescriptionSearch(List<String> keywords, Pageable pageable);
     Page<GroupIndex> searchByPostCountRange(Integer from, Integer to, Pageable pageable);
+    Page<GroupIndex> searchByAverageLkeCountRange(Float from, Float to, Pageable pageable);
 
 //    Page<GroupIndex> advancedSearch(List<String> expression, Pageable pageable);
 }

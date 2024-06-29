@@ -40,6 +40,13 @@ public class GroupSearchServiceImpl implements GroupSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
+    @Override
+    public Page<GroupIndex> searchByAverageLkeCountRange(Float from, Float to, Pageable pageable) {
+        var rangeQuery = buildLikeRangeQuery(from, to);
+        var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
+        return runQuery(searchQueryBuilder.build());
+    }
+
 //    @Override
 //    public Page<GroupIndex> advancedSearch(List<String> expression, Pageable pageable) {
 //        if (expression.size() != 3) {
@@ -74,6 +81,14 @@ public class GroupSearchServiceImpl implements GroupSearchService {
                 .field("postCount")
                 .gte(JsonData.of(from != null ? from : 0))
                 .lte(JsonData.of(to != null ? to : Integer.MAX_VALUE))
+        ))))._toQuery();
+    }
+
+    private Query buildLikeRangeQuery(Float from, Float to) {
+        return BoolQuery.of(q -> q.filter(f -> f.range(RangeQuery.of(r -> r
+                .field("postAverageLikes")
+                .gte(JsonData.of(from != null ? from : 0))
+                .lte(JsonData.of(to != null ? to : Float.MAX_VALUE))
         ))))._toQuery();
     }
 

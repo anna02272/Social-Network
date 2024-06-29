@@ -30,6 +30,14 @@ public class GroupSearchController {
         return searchService.searchByPostCountRange(from, to, pageable);
     }
 
+    @GetMapping("/groups/averageLikeCountRange")
+    public Page<GroupIndex> searchByAverageLikeCountRange(
+            @RequestParam(value = "from", required = false) Float from,
+            @RequestParam(value = "to", required = false) Float to,
+            Pageable pageable) {
+        return searchService.searchByAverageLkeCountRange(from, to, pageable);
+    }
+
 //    @PostMapping("/groups/advanced")
 //    public Page<GroupIndex> advancedSearch(@RequestBody SearchQueryDTO advancedSearchQuery,
 //                                           Pageable pageable) {
