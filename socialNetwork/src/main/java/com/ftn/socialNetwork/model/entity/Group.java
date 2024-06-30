@@ -34,6 +34,9 @@ public class Group {
     @Column(nullable = false)
     private String description;
 
+    @Column
+    private String rules;
+
     @Column(nullable = false,  columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime creationDate;
 

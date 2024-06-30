@@ -26,6 +26,9 @@ public class GroupIndex {
     @Field(type = FieldType.Text, store = true, name = "description", analyzer = "serbian_simple", searchAnalyzer = "serbian_simple")
     private String description;
 
+    @Field(type = FieldType.Text, store = true, name = "rules", analyzer = "serbian_simple", searchAnalyzer = "serbian_simple")
+    private String rules;
+
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, store = true, name = "creationDate")
     private LocalDateTime creationDate;
 

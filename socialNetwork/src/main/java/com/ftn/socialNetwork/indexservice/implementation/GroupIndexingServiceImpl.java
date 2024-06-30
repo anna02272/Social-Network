@@ -65,6 +65,7 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
         groupIndex.setId(group.getId().toString());
         groupIndex.setName(group.getName());
         groupIndex.setDescription(group.getDescription());
+        groupIndex.setRules(group.getRules());
         groupIndex.setCreationDate(group.getCreationDate());
         groupIndex.setSuspended(group.isSuspended());
         groupIndex.setSuspendedReason(group.getSuspendedReason());
@@ -83,6 +84,7 @@ public class GroupIndexingServiceImpl implements GroupIndexingService {
 
         groupIndex.setName(group.getName());
         groupIndex.setDescription(group.getDescription());
+        groupIndex.setRules(group.getRules());
         groupIndex.setCreationDate(group.getCreationDate());
         groupIndex.setSuspended(group.isSuspended());
         groupIndex.setSuspendedReason(group.getSuspendedReason());

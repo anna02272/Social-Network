@@ -34,6 +34,15 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     }
 
     @Override
+    public Page<GroupIndex> rulesSearch(List<String> keywords, Pageable pageable) {
+        var searchQueryBuilder =
+                new NativeQueryBuilder().withQuery(buildRulesSearchQuery(keywords))
+                        .withPageable(pageable);
+
+        return runQuery(searchQueryBuilder.build());
+    }
+
+    @Override
     public Page<GroupIndex> searchByPostCountRange(Integer from, Integer to, Pageable pageable) {
         var rangeQuery = buildRangeQuery(from, to);
         var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
@@ -71,6 +80,16 @@ public class GroupSearchServiceImpl implements GroupSearchService {
                         m -> m.field("description").fuzziness(Fuzziness.ONE.asString()).query(token)));
                 b.should(sb -> sb.match(m -> m.field("content_sr").query(token)));
                 b.should(sb -> sb.match(m -> m.field("content_en").query(token)));
+            });
+            return b;
+        })))._toQuery();
+    }
+
+    private Query buildRulesSearchQuery(List<String> tokens) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            tokens.forEach(token -> {
+                b.should(sb -> sb.match(
+                        m -> m.field("rules").fuzziness(Fuzziness.ONE.asString()).query(token)));
             });
             return b;
         })))._toQuery();
