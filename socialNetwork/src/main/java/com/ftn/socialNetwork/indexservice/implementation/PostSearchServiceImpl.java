@@ -49,6 +49,15 @@ public class PostSearchServiceImpl implements PostSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
+    @Override
+    public Page<PostIndex> commentTextSearch(List<String> keywords, Pageable pageable) {
+        var searchQueryBuilder =
+                new NativeQueryBuilder().withQuery(buildCommentSearchQuery(keywords))
+                        .withPageable(pageable);
+
+        return runQuery(searchQueryBuilder.build());
+    }
+
     private Query buildSearchQuery(List<String> tokens) {
         return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
@@ -77,6 +86,16 @@ public class PostSearchServiceImpl implements PostSearchService {
                 .gte(JsonData.of(from != null ? from : 0))
                 .lte(JsonData.of(to != null ? to : Integer.MAX_VALUE))
         ))))._toQuery();
+    }
+
+    private Query buildCommentSearchQuery(List<String> tokens) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            tokens.forEach(token -> {
+                b.should(sb -> sb.match(
+                        m -> m.field("comments.text").fuzziness(Fuzziness.ONE.asString()).query(token)));
+            });
+            return b;
+        })))._toQuery();
     }
 
     private Page<PostIndex> runQuery(NativeQuery searchQuery) {

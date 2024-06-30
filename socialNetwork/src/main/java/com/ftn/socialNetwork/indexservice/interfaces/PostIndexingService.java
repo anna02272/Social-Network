@@ -1,6 +1,7 @@
 package com.ftn.socialNetwork.indexservice.interfaces;
 
 import com.ftn.socialNetwork.indexmodel.PostIndex;
+import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Post;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,4 +17,7 @@ public interface PostIndexingService {
     void deleteLikeCount(String postId);
     void updateCommentCount(String postId);
     void deleteCommentCount(String postId);
+    void createCommentTextIndex(Comment comment);
+    void updateCommentTextIndex(Comment comment);
+    void deleteCommentTextIndex(Comment comment);
 }

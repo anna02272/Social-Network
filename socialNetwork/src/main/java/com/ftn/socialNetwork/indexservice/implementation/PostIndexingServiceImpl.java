@@ -3,11 +3,13 @@ package com.ftn.socialNetwork.indexservice.implementation;
 import com.ftn.socialNetwork.exceptionhandling.exception.LoadingException;
 import com.ftn.socialNetwork.exceptionhandling.exception.NotFoundException;
 import com.ftn.socialNetwork.exceptionhandling.exception.StorageException;
+import com.ftn.socialNetwork.indexmodel.CommentIndex;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexrepository.PostIndexRepository;
 import com.ftn.socialNetwork.indexservice.interfaces.FileService;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
 import com.ftn.socialNetwork.indexservice.interfaces.PostIndexingService;
+import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -18,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -139,6 +143,58 @@ public class PostIndexingServiceImpl implements PostIndexingService {
 
         postIndexingRepository.save(postIndex);
     }
+
+    @Override
+    @Transactional
+    public void createCommentTextIndex(Comment comment) {
+        var postIndex = postIndexingRepository.findById(comment.getPost().getId().toString())
+                .orElseThrow(() -> new NotFoundException("Post index not found"));
+
+        List<CommentIndex> comments = postIndex.getComments();
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+
+        comments.add(new CommentIndex(comment.getId().toString(), comment.getText()));
+        postIndex.setComments(comments);
+
+        postIndexingRepository.save(postIndex);
+    }
+
+    @Override
+    @Transactional
+    public void updateCommentTextIndex(Comment comment) {
+        var postIndex = postIndexingRepository.findById(comment.getPost().getId().toString())
+                .orElseThrow(() -> new NotFoundException("Post index not found"));
+
+        List<CommentIndex> comments = postIndex.getComments();
+        if (comments != null) {
+            for (CommentIndex commentIndex : comments) {
+                if (commentIndex.getId().equals(comment.getId().toString())) {
+                    commentIndex.setText(comment.getText());
+                    break;
+                }
+            }
+        }
+
+        postIndexingRepository.save(postIndex);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCommentTextIndex(Comment comment) {
+        var postIndex = postIndexingRepository.findById(comment.getPost().getId().toString())
+                .orElseThrow(() -> new NotFoundException("Post index not found"));
+
+        List<CommentIndex> comments = postIndex.getComments();
+        if (comments != null) {
+            comments.removeIf(commentIndex -> commentIndex.getId().equals(comment.getId().toString()));
+            postIndex.setComments(comments);
+        }
+
+        postIndexingRepository.save(postIndex);
+    }
+
 
     private String extractDocumentContent(MultipartFile multipartPdfFile) {
         String documentContent;

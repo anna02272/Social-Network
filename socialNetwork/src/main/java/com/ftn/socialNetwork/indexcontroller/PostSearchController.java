@@ -38,5 +38,10 @@ public class PostSearchController {
         return searchService.searchByCommentCountRange(from, to, pageable);
     }
 
+    @PostMapping("/posts/commentText")
+    public Page<PostIndex> commentTextSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                                 Pageable pageable) {
+        return searchService.commentTextSearch(simpleSearchQuery.keywords(), pageable);
+    }
 
 }

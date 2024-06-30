@@ -30,12 +30,15 @@ public class CommentServiceImpl implements CommentService {
     Comment createdComment = commentRepository.save(comment);
     var postId = comment.getPost().getId().toString();
     postIndexService.updateCommentCount(postId);
+    postIndexService.createCommentTextIndex(comment);
     return createdComment;
   }
 
   @Override
   public Comment update(Comment comment) {
-    return commentRepository.save(comment);
+    Comment updatedComment = commentRepository.save(comment);
+    postIndexService.updateCommentTextIndex(comment);
+    return updatedComment;
   }
 
   @Override
@@ -43,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
     Comment deletedComment = commentRepository.save(comment);
     var postId = comment.getPost().getId().toString();
     postIndexService.deleteCommentCount(postId);
+    postIndexService.deleteCommentTextIndex(comment);
     return deletedComment;
   }
 

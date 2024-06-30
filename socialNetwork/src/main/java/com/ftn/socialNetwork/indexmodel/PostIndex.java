@@ -10,6 +10,8 @@ import org.springframework.data.elasticsearch.annotations.*;
 
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -54,6 +56,6 @@ public class PostIndex {
     @Field(type = FieldType.Integer, store = true, name = "commentCount", index = false)
     private Integer commentCount;
 
-    @Field(type = FieldType.Text, store = true, name = "commentText", index = false)
-    private String commentText;
+    @Field(type = FieldType.Nested, store = true, name = "comments")
+    private List<CommentIndex> comments = new ArrayList<>();
 }
