@@ -22,6 +22,12 @@ public class PostSearchController {
         return searchService.titleAndContentSearch(simpleSearchQuery.keywords(), pageable);
     }
 
+    @PostMapping("/posts/phrase/titleAndContent")
+    public Page<PostIndex> titleAndContentPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                                 Pageable pageable) {
+        return searchService.titleAndContentPhraseSearch(simpleSearchQuery.keywords(), pageable);
+    }
+
     @GetMapping("/posts/likeCountRange")
     public Page<PostIndex> searchByLikeCountRange(
             @RequestParam(value = "from", required = false) Integer from,
@@ -42,6 +48,12 @@ public class PostSearchController {
     public Page<PostIndex> commentTextSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                                  Pageable pageable) {
         return searchService.commentTextSearch(simpleSearchQuery.keywords(), pageable);
+    }
+
+    @PostMapping("/posts/phrase/commentText")
+    public Page<PostIndex> commentTextPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                             Pageable pageable) {
+        return searchService.commentTextPhraseSearch(simpleSearchQuery.keywords(), pageable);
     }
 
 }

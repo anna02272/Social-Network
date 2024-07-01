@@ -4,10 +4,8 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.json.JsonData;
-import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.PostSearchService;
-import com.ftn.socialNetwork.model.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.springframework.data.domain.Page;
@@ -36,6 +34,15 @@ public class PostSearchServiceImpl implements PostSearchService {
     }
 
     @Override
+    public Page<PostIndex> titleAndContentPhraseSearch(List<String> keywords, Pageable pageable) {
+        var searchQueryBuilder =
+                new NativeQueryBuilder().withQuery(buildPhraseSearchQuery(keywords))
+                        .withPageable(pageable);
+
+        return runQuery(searchQueryBuilder.build());
+    }
+
+    @Override
     public Page<PostIndex> searchByLikeCountRange(Integer from, Integer to, Pageable pageable) {
         var rangeQuery = buildRangeQuery(from, to);
         var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
@@ -58,6 +65,15 @@ public class PostSearchServiceImpl implements PostSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
+    @Override
+    public Page<PostIndex> commentTextPhraseSearch(List<String> keywords, Pageable pageable) {
+        var searchQueryBuilder =
+                new NativeQueryBuilder().withQuery(buildCommentPhraseSearchQuery(keywords))
+                        .withPageable(pageable);
+
+        return runQuery(searchQueryBuilder.build());
+    }
+
     private Query buildSearchQuery(List<String> tokens) {
         return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
@@ -67,6 +83,20 @@ public class PostSearchServiceImpl implements PostSearchService {
                         m -> m.field("content").fuzziness(Fuzziness.ONE.asString()).query(token)));
                 b.should(sb -> sb.match(m -> m.field("content_sr").query(token)));
                 b.should(sb -> sb.match(m -> m.field("content_en").query(token)));
+            });
+            return b;
+        })))._toQuery();
+    }
+
+    private Query buildPhraseSearchQuery(List<String> tokens) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            tokens.forEach(token -> {
+                b.should(sb -> sb.matchPhrase(
+                        m -> m.field("title").query(token)));
+                b.should(sb -> sb.matchPhrase(
+                        m -> m.field("content").query(token)));
+                b.should(sb -> sb.matchPhrase(m -> m.field("content_sr").query(token)));
+                b.should(sb -> sb.matchPhrase(m -> m.field("content_en").query(token)));
             });
             return b;
         })))._toQuery();
@@ -93,6 +123,16 @@ public class PostSearchServiceImpl implements PostSearchService {
             tokens.forEach(token -> {
                 b.should(sb -> sb.match(
                         m -> m.field("comments.text").fuzziness(Fuzziness.ONE.asString()).query(token)));
+            });
+            return b;
+        })))._toQuery();
+    }
+
+    private Query buildCommentPhraseSearchQuery(List<String> tokens) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            tokens.forEach(token -> {
+                b.should(sb -> sb.matchPhrase(
+                        m -> m.field("comments.text").query(token)));
             });
             return b;
         })))._toQuery();

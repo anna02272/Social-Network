@@ -16,16 +16,28 @@ public class GroupSearchController {
 
     private final GroupSearchService searchService;
 
-    @PostMapping("/groups/rules")
-    public Page<GroupIndex> rulesSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
-                                         Pageable pageable) {
-        return searchService.rulesSearch(simpleSearchQuery.keywords(), pageable);
-    }
-
     @PostMapping("/groups/nameAndDescription")
     public Page<GroupIndex> nameAndDescriptionSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                                      Pageable pageable) {
         return searchService.nameAndDescriptionSearch(simpleSearchQuery.keywords(), pageable);
+    }
+
+    @PostMapping("/groups/phrase/nameAndDescription")
+    public Page<GroupIndex> nameAndDescriptionPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                                     Pageable pageable) {
+        return searchService.nameAndDescriptionPhraseSearch(simpleSearchQuery.keywords(), pageable);
+    }
+
+    @PostMapping("/groups/rules")
+    public Page<GroupIndex> rulesSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                        Pageable pageable) {
+        return searchService.rulesSearch(simpleSearchQuery.keywords(), pageable);
+    }
+
+    @PostMapping("/groups/phrase/rules")
+    public Page<GroupIndex> rulesPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                        Pageable pageable) {
+        return searchService.rulesPhraseSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @GetMapping("/groups/postCountRange")

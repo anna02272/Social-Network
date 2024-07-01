@@ -34,9 +34,27 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     }
 
     @Override
+    public Page<GroupIndex> nameAndDescriptionPhraseSearch(List<String> keywords, Pageable pageable) {
+        var searchQueryBuilder =
+                new NativeQueryBuilder().withQuery(buildPhraseSearchQuery(keywords))
+                        .withPageable(pageable);
+
+        return runQuery(searchQueryBuilder.build());
+    }
+
+    @Override
     public Page<GroupIndex> rulesSearch(List<String> keywords, Pageable pageable) {
         var searchQueryBuilder =
                 new NativeQueryBuilder().withQuery(buildRulesSearchQuery(keywords))
+                        .withPageable(pageable);
+
+        return runQuery(searchQueryBuilder.build());
+    }
+
+    @Override
+    public Page<GroupIndex> rulesPhraseSearch(List<String> keywords, Pageable pageable) {
+        var searchQueryBuilder =
+                new NativeQueryBuilder().withQuery(buildPhraseRulesSearchQuery(keywords))
                         .withPageable(pageable);
 
         return runQuery(searchQueryBuilder.build());
@@ -85,11 +103,35 @@ public class GroupSearchServiceImpl implements GroupSearchService {
         })))._toQuery();
     }
 
+    private Query buildPhraseSearchQuery(List<String> tokens) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            tokens.forEach(token -> {
+                b.should(sb -> sb.matchPhrase(
+                        m -> m.field("name").query(token)));
+                b.should(sb -> sb.matchPhrase(
+                        m -> m.field("description").query(token)));
+                b.should(sb -> sb.matchPhrase(m -> m.field("content_sr").query(token)));
+                b.should(sb -> sb.matchPhrase(m -> m.field("content_en").query(token)));
+            });
+            return b;
+        })))._toQuery();
+    }
+
     private Query buildRulesSearchQuery(List<String> tokens) {
         return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
                 b.should(sb -> sb.match(
                         m -> m.field("rules").fuzziness(Fuzziness.ONE.asString()).query(token)));
+            });
+            return b;
+        })))._toQuery();
+    }
+
+    private Query buildPhraseRulesSearchQuery(List<String> tokens) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            tokens.forEach(token -> {
+                b.should(sb -> sb.matchPhrase(
+                        m -> m.field("rules").query(token)));
             });
             return b;
         })))._toQuery();
