@@ -56,9 +56,14 @@ public class GroupSearchController {
         return searchService.searchByAverageLkeCountRange(from, to, pageable);
     }
 
-//    @PostMapping("/groups/advanced")
-//    public Page<GroupIndex> advancedSearch(@RequestBody SearchQueryDTO advancedSearchQuery,
-//                                           Pageable pageable) {
-//        return searchService.advancedSearch(advancedSearchQuery.keywords(), pageable);
-//    }
+    @PostMapping("/groups/combined")
+    public Page<GroupIndex> combinedSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+        return searchService.combinedSearch(combinedSearchQuery, pageable);
+    }
+
+    @PostMapping("/groups/phrase/combined")
+    public Page<GroupIndex> combinedPhraseSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+        return searchService.combinedPhraseSearch(combinedSearchQuery, pageable);
+    }
+
 }
