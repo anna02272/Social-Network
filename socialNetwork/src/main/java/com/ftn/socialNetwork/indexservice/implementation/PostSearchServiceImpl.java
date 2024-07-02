@@ -89,6 +89,7 @@ public class PostSearchServiceImpl implements PostSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
+
     @Override
     public Page<PostIndex> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable) {
         var searchQueryBuilder = new NativeQueryBuilder()
@@ -104,12 +105,11 @@ public class PostSearchServiceImpl implements PostSearchService {
         return runQuery(searchQueryBuilder.build());
     }
 
-
     private Query buildSearchQuery(List<String> tokens) {
         return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
             tokens.forEach(token -> {
                 b.should(sb -> sb.match(
-                        m -> m.field("title").fuzziness(Fuzziness.ONE.asString()).query(token)));
+                        m -> m.field("title").fuzziness(Fuzziness.ONE.asString()).query(token).analyzer("serbian_simple")));
                 b.should(sb -> sb.match(
                         m -> m.field("content").fuzziness(Fuzziness.ONE.asString()).query(token)));
                 b.should(sb -> sb.match(m -> m.field("content_sr").query(token)));

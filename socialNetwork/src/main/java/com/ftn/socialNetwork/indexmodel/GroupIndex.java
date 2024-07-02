@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -61,5 +63,7 @@ public class GroupIndex {
 
     @Field(type = FieldType.Integer, store = true, name = "numberOfPostsWithLikes", index = false)
     private Integer numberOfPostsWithLikes;
+
+    private Map<String, List<String>> highlights;
 
 }

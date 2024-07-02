@@ -2,12 +2,10 @@ package com.ftn.socialNetwork.indexservice.implementation;
 
 import com.ftn.socialNetwork.exceptionhandling.exception.LoadingException;
 import com.ftn.socialNetwork.exceptionhandling.exception.NotFoundException;
-import com.ftn.socialNetwork.exceptionhandling.exception.StorageException;
 import com.ftn.socialNetwork.indexmodel.CommentIndex;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexrepository.PostIndexRepository;
 import com.ftn.socialNetwork.indexservice.interfaces.FileService;
-import com.ftn.socialNetwork.indexservice.interfaces.GroupIndexingService;
 import com.ftn.socialNetwork.indexservice.interfaces.PostIndexingService;
 import com.ftn.socialNetwork.model.entity.Comment;
 import com.ftn.socialNetwork.model.entity.Post;

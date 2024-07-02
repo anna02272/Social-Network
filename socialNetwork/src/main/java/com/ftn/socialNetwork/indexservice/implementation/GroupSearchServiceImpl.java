@@ -1,6 +1,7 @@
 package com.ftn.socialNetwork.indexservice.implementation;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.json.JsonData;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
@@ -9,15 +10,20 @@ import com.ftn.socialNetwork.indexservice.interfaces.GroupSearchService;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHitSupport;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
+import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightField;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -27,38 +33,71 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     private final ElasticsearchOperations elasticsearchTemplate;
     @Override
     public Page<GroupIndex> nameAndDescriptionSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildSearchQuery(keywords))
-                        .withPageable(pageable);
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("name"),
+                new HighlightField("description"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
-
     @Override
     public Page<GroupIndex> nameAndDescriptionPhraseSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildPhraseSearchQuery(keywords))
-                        .withPageable(pageable);
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("name"),
+                new HighlightField("description"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildPhraseSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     @Override
     public Page<GroupIndex> rulesSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildRulesSearchQuery(keywords))
-                        .withPageable(pageable);
+        List<HighlightField> requiredHighlights = List.of(
+                new HighlightField("rules")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildRulesSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     @Override
     public Page<GroupIndex> rulesPhraseSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildPhraseRulesSearchQuery(keywords))
-                        .withPageable(pageable);
+        List<HighlightField> requiredHighlights = List.of(
+                new HighlightField("rules")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildPhraseRulesSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     @Override
@@ -77,34 +116,64 @@ public class GroupSearchServiceImpl implements GroupSearchService {
 
     @Override
     public Page<GroupIndex> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable) {
-        var searchQueryBuilder = new NativeQueryBuilder()
-                .withQuery(buildCombinedSearchQuery(
-                        searchQuery.name(),
-                        searchQuery.description(),
-                        searchQuery.pdfContent(),
-                        searchQuery.rules(),
-                        searchQuery.postAverageLikes(),
-                        searchQuery.postCount(),
-                        searchQuery.operation()
-                ))
-                .withPageable(pageable);
-        return runQuery(searchQueryBuilder.build());
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("name"),
+                new HighlightField("description"),
+                new HighlightField("rules"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en"),
+                new HighlightField("postCount"),
+                new HighlightField("postAverageLikes")
+        );
+
+        Query combinedQuery = buildCombinedSearchQuery(
+                searchQuery.name(),
+                searchQuery.description(),
+                searchQuery.pdfContent(),
+                searchQuery.rules(),
+                searchQuery.postAverageLikes(),
+                searchQuery.postCount(),
+                searchQuery.operation()
+        );
+
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(combinedQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     @Override
     public Page<GroupIndex> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable) {
-        var searchQueryBuilder = new NativeQueryBuilder()
-                .withQuery(buildCombinedPhraseSearchQuery(
-                        searchQuery.name(),
-                        searchQuery.description(),
-                        searchQuery.pdfContent(),
-                        searchQuery.rules(),
-                        searchQuery.postAverageLikes(),
-                        searchQuery.postCount(),
-                        searchQuery.operation()
-                ))
-                .withPageable(pageable);
-        return runQuery(searchQueryBuilder.build());
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("name"),
+                new HighlightField("description"),
+                new HighlightField("rules"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en"),
+                new HighlightField("postCount"),
+                new HighlightField("postAverageLikes")
+        );
+
+        Query combinedQuery = buildCombinedPhraseSearchQuery(
+                searchQuery.name(),
+                searchQuery.description(),
+                searchQuery.pdfContent(),
+                searchQuery.rules(),
+                searchQuery.postAverageLikes(),
+                searchQuery.postCount(),
+                searchQuery.operation()
+        );
+
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(combinedQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     private Query buildSearchQuery(List<String> tokens) {
@@ -311,14 +380,18 @@ public class GroupSearchServiceImpl implements GroupSearchService {
             return b;
         })))._toQuery();
     }
-
     private Page<GroupIndex> runQuery(NativeQuery searchQuery) {
+        var searchHits = elasticsearchTemplate.search(searchQuery, GroupIndex.class, IndexCoordinates.of("group_index"));
 
-        var searchHits = elasticsearchTemplate.search(searchQuery, GroupIndex.class,
-                IndexCoordinates.of("group_index"));
+        List<GroupIndex> results = new ArrayList<>();
+        for (SearchHit<GroupIndex> hit : searchHits.getSearchHits()) {
+            GroupIndex groupIndex = hit.getContent();
+            groupIndex.setHighlights(hit.getHighlightFields());
+            results.add(groupIndex);
+        }
 
-        var searchHitsPaged = SearchHitSupport.searchPageFor(searchHits, searchQuery.getPageable());
-
-        return (Page<GroupIndex>) SearchHitSupport.unwrapSearchHits(searchHitsPaged);
+        return new PageImpl<>(results, searchQuery.getPageable(), searchHits.getTotalHits());
     }
+
+
 }
