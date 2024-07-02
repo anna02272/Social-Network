@@ -123,9 +123,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
                 new HighlightField("description"),
                 new HighlightField("rules"),
                 new HighlightField("content_sr"),
-                new HighlightField("content_en"),
-                new HighlightField("postCount"),
-                new HighlightField("postAverageLikes")
+                new HighlightField("content_en")
         );
 
         Query combinedQuery = buildCombinedSearchQuery(
@@ -154,9 +152,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
                 new HighlightField("description"),
                 new HighlightField("rules"),
                 new HighlightField("content_sr"),
-                new HighlightField("content_en"),
-                new HighlightField("postCount"),
-                new HighlightField("postAverageLikes")
+                new HighlightField("content_en")
         );
 
         Query combinedQuery = buildCombinedPhraseSearchQuery(

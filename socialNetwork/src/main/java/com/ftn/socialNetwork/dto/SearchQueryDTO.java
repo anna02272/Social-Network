@@ -1,7 +1,5 @@
 package com.ftn.socialNetwork.dto;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-
 import java.util.List;
 
 public record SearchQueryDTO(

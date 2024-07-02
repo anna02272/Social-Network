@@ -1,7 +1,7 @@
 package com.ftn.socialNetwork.indexcontroller;
 
+import com.ftn.socialNetwork.dto.PostSearchResultDTO;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
-import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.PostSearchService;
 import lombok.RequiredArgsConstructor;
@@ -17,19 +17,19 @@ public class PostSearchController {
     private final PostSearchService searchService;
 
     @PostMapping("/posts/titleAndContent")
-    public Page<PostIndex> titleAndContentSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
-                                                 Pageable pageable) {
+    public Page<PostSearchResultDTO> titleAndContentSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                                           Pageable pageable) {
         return searchService.titleAndContentSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @PostMapping("/posts/phrase/titleAndContent")
-    public Page<PostIndex> titleAndContentPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+    public Page<PostSearchResultDTO> titleAndContentPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                                  Pageable pageable) {
         return searchService.titleAndContentPhraseSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @GetMapping("/posts/likeCountRange")
-    public Page<PostIndex> searchByLikeCountRange(
+    public Page<PostSearchResultDTO> searchByLikeCountRange(
             @RequestParam(value = "from", required = false) Integer from,
             @RequestParam(value = "to", required = false) Integer to,
             Pageable pageable) {
@@ -37,7 +37,7 @@ public class PostSearchController {
     }
 
     @GetMapping("/posts/commentCountRange")
-    public Page<PostIndex> searchByCommentCountRange(
+    public Page<PostSearchResultDTO> searchByCommentCountRange(
             @RequestParam(value = "from", required = false) Integer from,
             @RequestParam(value = "to", required = false) Integer to,
             Pageable pageable) {
@@ -45,23 +45,23 @@ public class PostSearchController {
     }
 
     @PostMapping("/posts/commentText")
-    public Page<PostIndex> commentTextSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
-                                                 Pageable pageable) {
+    public Page<PostSearchResultDTO> commentTextSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                             Pageable pageable) {
         return searchService.commentTextSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @PostMapping("/posts/phrase/commentText")
-    public Page<PostIndex> commentTextPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+    public Page<PostSearchResultDTO> commentTextPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                              Pageable pageable) {
         return searchService.commentTextPhraseSearch(simpleSearchQuery.keywords(), pageable);
     }
     @PostMapping("/posts/combined")
-    public Page<PostIndex> combinedSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+    public Page<PostSearchResultDTO> combinedSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
         return searchService.combinedSearch(combinedSearchQuery, pageable);
     }
 
     @PostMapping("/posts/phrase/combined")
-    public Page<PostIndex> combinedPhraseSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+    public Page<PostSearchResultDTO> combinedPhraseSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
         return searchService.combinedPhraseSearch(combinedSearchQuery, pageable);
     }
 }

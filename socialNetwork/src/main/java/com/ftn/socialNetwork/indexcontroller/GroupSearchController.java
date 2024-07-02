@@ -1,7 +1,6 @@
 package com.ftn.socialNetwork.indexcontroller;
 
 import com.ftn.socialNetwork.dto.GroupSearchResultDTO;
-import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupSearchService;
 import lombok.RequiredArgsConstructor;

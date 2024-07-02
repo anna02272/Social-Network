@@ -4,21 +4,32 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.json.JsonData;
+import com.ftn.socialNetwork.dto.GroupSearchResultDTO;
+import com.ftn.socialNetwork.dto.PostSearchResultDTO;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
+import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.PostSearchService;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
+import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightField;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,83 +37,140 @@ public class PostSearchServiceImpl implements PostSearchService {
 
     private final ElasticsearchOperations elasticsearchTemplate;
     @Override
-    public Page<PostIndex> titleAndContentSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildSearchQuery(keywords))
-                        .withPageable(pageable);
+    public Page<PostSearchResultDTO> titleAndContentSearch(List<String> keywords, Pageable pageable) {
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("title"),
+                new HighlightField("content"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), PostIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     @Override
-    public Page<PostIndex> titleAndContentPhraseSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildPhraseSearchQuery(keywords))
-                        .withPageable(pageable);
+    public Page<PostSearchResultDTO> titleAndContentPhraseSearch(List<String> keywords, Pageable pageable) {
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("title"),
+                new HighlightField("content"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildPhraseSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), PostIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     @Override
-    public Page<PostIndex> searchByLikeCountRange(Integer from, Integer to, Pageable pageable) {
+    public Page<PostSearchResultDTO> searchByLikeCountRange(Integer from, Integer to, Pageable pageable) {
         var rangeQuery = buildRangeQuery(from, to);
         var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
         return runQuery(searchQueryBuilder.build());
     }
 
     @Override
-    public Page<PostIndex> searchByCommentCountRange(Integer from, Integer to, Pageable pageable) {
+    public Page<PostSearchResultDTO> searchByCommentCountRange(Integer from, Integer to, Pageable pageable) {
         var rangeQuery = buildCommentRangeQuery(from, to);
         var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
         return runQuery(searchQueryBuilder.build());
     }
 
     @Override
-    public Page<PostIndex> commentTextSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildCommentSearchQuery(keywords))
-                        .withPageable(pageable);
+    public Page<PostSearchResultDTO> commentTextSearch(List<String> keywords, Pageable pageable) {
+        List<HighlightField> requiredHighlights = List.of(
+                new HighlightField("comments.text")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildCommentSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), PostIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     @Override
-    public Page<PostIndex> commentTextPhraseSearch(List<String> keywords, Pageable pageable) {
-        var searchQueryBuilder =
-                new NativeQueryBuilder().withQuery(buildCommentPhraseSearchQuery(keywords))
-                        .withPageable(pageable);
+    public Page<PostSearchResultDTO> commentTextPhraseSearch(List<String> keywords, Pageable pageable) {
+        List<HighlightField> requiredHighlights = List.of(
+                new HighlightField("comments.text")
+        );
 
-        return runQuery(searchQueryBuilder.build());
+        Query searchQuery = buildCommentPhraseSearchQuery(keywords);
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(searchQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), PostIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
     @Override
-    public Page<PostIndex> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable) {
-        var searchQueryBuilder = new NativeQueryBuilder()
-                .withQuery(buildCombinedSearchQuery(
+    public Page<PostSearchResultDTO> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable) {
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("title"),
+                new HighlightField("content"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en")
+        );
+
+        Query combinedQuery = buildCombinedSearchQuery(
                         searchQuery.title(),
                         searchQuery.content(),
                         searchQuery.pdfContent(),
                         searchQuery.likeCount(),
                         searchQuery.commentCount(),
                         searchQuery.operation()
-                ))
-                .withPageable(pageable);
-        return runQuery(searchQueryBuilder.build());
+                );
+
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(combinedQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
-
     @Override
-    public Page<PostIndex> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable) {
-        var searchQueryBuilder = new NativeQueryBuilder()
-                .withQuery(buildCombinedPhraseSearchQuery(
-                        searchQuery.title(),
-                        searchQuery.content(),
-                        searchQuery.pdfContent(),
-                        searchQuery.likeCount(),
-                        searchQuery.commentCount(),
-                        searchQuery.operation()
-                ))
-                .withPageable(pageable);
-        return runQuery(searchQueryBuilder.build());
+    public Page<PostSearchResultDTO> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable) {
+        List<HighlightField> requiredHighlights = Arrays.asList(
+                new HighlightField("title"),
+                new HighlightField("content"),
+                new HighlightField("content_sr"),
+                new HighlightField("content_en")
+        );
+
+        Query combinedQuery = buildCombinedPhraseSearchQuery(
+                searchQuery.title(),
+                searchQuery.content(),
+                searchQuery.pdfContent(),
+                searchQuery.likeCount(),
+                searchQuery.commentCount(),
+                searchQuery.operation()
+        );
+
+        NativeQuery queryBuilder = new NativeQueryBuilder()
+                .withQuery(combinedQuery)
+                .withPageable(pageable)
+                .withHighlightQuery(new HighlightQuery(new Highlight(requiredHighlights), GroupIndex.class))
+                .build();
+
+        return runQuery(queryBuilder);
     }
 
     private Query buildSearchQuery(List<String> tokens) {
@@ -294,13 +362,25 @@ public class PostSearchServiceImpl implements PostSearchService {
         })))._toQuery();
     }
 
-    private Page<PostIndex> runQuery(NativeQuery searchQuery) {
+    private Page<PostSearchResultDTO> runQuery(NativeQuery searchQuery) {
+        var searchHits = elasticsearchTemplate.search(searchQuery, PostIndex.class, IndexCoordinates.of("post_index"));
 
-        var searchHits = elasticsearchTemplate.search(searchQuery, PostIndex.class,
-                IndexCoordinates.of("post_index"));
+        List<PostSearchResultDTO> results = new ArrayList<>();
+        for (SearchHit<PostIndex> hit : searchHits.getSearchHits()) {
+            PostIndex postIndex = hit.getContent();
+            Map<String, List<String>> highlights = hit.getHighlightFields();
 
-        var searchHitsPaged = SearchHitSupport.searchPageFor(searchHits, searchQuery.getPageable());
+            PostSearchResultDTO resultDTO = new PostSearchResultDTO(
+                    postIndex.getTitle(),
+                    postIndex.getContent(),
+                    postIndex.getLikeCount(),
+                    postIndex.getCommentCount()
+            );
+            resultDTO.setHighlights(highlights);
 
-        return (Page<PostIndex>) SearchHitSupport.unwrapSearchHits(searchHitsPaged);
+            results.add(resultDTO);
+        }
+
+        return new PageImpl<>(results, searchQuery.getPageable(), searchHits.getTotalHits());
     }
 }
