@@ -1,5 +1,6 @@
 package com.ftn.socialNetwork.indexcontroller;
 
+import com.ftn.socialNetwork.dto.GroupSearchResultDTO;
 import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupSearchService;
@@ -17,31 +18,31 @@ public class GroupSearchController {
     private final GroupSearchService searchService;
 
     @PostMapping("/groups/nameAndDescription")
-    public Page<GroupIndex> nameAndDescriptionSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
-                                                     Pageable pageable) {
+    public Page<GroupSearchResultDTO> nameAndDescriptionSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+                                                               Pageable pageable) {
         return searchService.nameAndDescriptionSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @PostMapping("/groups/phrase/nameAndDescription")
-    public Page<GroupIndex> nameAndDescriptionPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+    public Page<GroupSearchResultDTO> nameAndDescriptionPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                                      Pageable pageable) {
         return searchService.nameAndDescriptionPhraseSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @PostMapping("/groups/rules")
-    public Page<GroupIndex> rulesSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+    public Page<GroupSearchResultDTO> rulesSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                         Pageable pageable) {
         return searchService.rulesSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @PostMapping("/groups/phrase/rules")
-    public Page<GroupIndex> rulesPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
+    public Page<GroupSearchResultDTO> rulesPhraseSearch(@RequestBody SearchQueryDTO simpleSearchQuery,
                                         Pageable pageable) {
         return searchService.rulesPhraseSearch(simpleSearchQuery.keywords(), pageable);
     }
 
     @GetMapping("/groups/postCountRange")
-    public Page<GroupIndex> searchByPostCountRange(
+    public Page<GroupSearchResultDTO> searchByPostCountRange(
             @RequestParam(value = "from", required = false) Integer from,
             @RequestParam(value = "to", required = false) Integer to,
             Pageable pageable) {
@@ -49,7 +50,7 @@ public class GroupSearchController {
     }
 
     @GetMapping("/groups/averageLikeCountRange")
-    public Page<GroupIndex> searchByAverageLikeCountRange(
+    public Page<GroupSearchResultDTO> searchByAverageLikeCountRange(
             @RequestParam(value = "from", required = false) Float from,
             @RequestParam(value = "to", required = false) Float to,
             Pageable pageable) {
@@ -57,12 +58,12 @@ public class GroupSearchController {
     }
 
     @PostMapping("/groups/combined")
-    public Page<GroupIndex> combinedSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+    public Page<GroupSearchResultDTO> combinedSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
         return searchService.combinedSearch(combinedSearchQuery, pageable);
     }
 
     @PostMapping("/groups/phrase/combined")
-    public Page<GroupIndex> combinedPhraseSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+    public Page<GroupSearchResultDTO> combinedPhraseSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
         return searchService.combinedPhraseSearch(combinedSearchQuery, pageable);
     }
 

@@ -1,5 +1,6 @@
 package com.ftn.socialNetwork.indexservice.interfaces;
 
+import com.ftn.socialNetwork.dto.GroupSearchResultDTO;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
 import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import org.springframework.data.domain.Page;
@@ -10,13 +11,13 @@ import java.util.List;
 
 @Service
 public interface GroupSearchService {
-    Page<GroupIndex> nameAndDescriptionSearch(List<String> keywords, Pageable pageable);
-    Page<GroupIndex> nameAndDescriptionPhraseSearch(List<String> keywords, Pageable pageable);
-    Page<GroupIndex> rulesSearch(List<String> keywords, Pageable pageable);
-    Page<GroupIndex> rulesPhraseSearch(List<String> keywords, Pageable pageable);
-    Page<GroupIndex> searchByPostCountRange(Integer from, Integer to, Pageable pageable);
-    Page<GroupIndex> searchByAverageLkeCountRange(Float from, Float to, Pageable pageable);
-    Page<GroupIndex> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable);
+    Page<GroupSearchResultDTO> nameAndDescriptionSearch(List<String> keywords, Pageable pageable);
+    Page<GroupSearchResultDTO> nameAndDescriptionPhraseSearch(List<String> keywords, Pageable pageable);
+    Page<GroupSearchResultDTO> rulesSearch(List<String> keywords, Pageable pageable);
+    Page<GroupSearchResultDTO> rulesPhraseSearch(List<String> keywords, Pageable pageable);
+    Page<GroupSearchResultDTO> searchByPostCountRange(Integer from, Integer to, Pageable pageable);
+    Page<GroupSearchResultDTO> searchByAverageLkeCountRange(Float from, Float to, Pageable pageable);
+    Page<GroupSearchResultDTO> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable);
 
-    Page<GroupIndex> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable);
+    Page<GroupSearchResultDTO> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable);
 }

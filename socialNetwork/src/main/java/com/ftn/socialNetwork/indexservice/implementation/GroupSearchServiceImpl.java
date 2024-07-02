@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.json.JsonData;
+import com.ftn.socialNetwork.dto.GroupSearchResultDTO;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
 import com.ftn.socialNetwork.indexmodel.GroupIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.GroupSearchService;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
 
     private final ElasticsearchOperations elasticsearchTemplate;
     @Override
-    public Page<GroupIndex> nameAndDescriptionSearch(List<String> keywords, Pageable pageable) {
+    public Page<GroupSearchResultDTO> nameAndDescriptionSearch(List<String> keywords, Pageable pageable) {
         List<HighlightField> requiredHighlights = Arrays.asList(
                 new HighlightField("name"),
                 new HighlightField("description"),
@@ -50,7 +52,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
         return runQuery(queryBuilder);
     }
     @Override
-    public Page<GroupIndex> nameAndDescriptionPhraseSearch(List<String> keywords, Pageable pageable) {
+    public Page<GroupSearchResultDTO> nameAndDescriptionPhraseSearch(List<String> keywords, Pageable pageable) {
         List<HighlightField> requiredHighlights = Arrays.asList(
                 new HighlightField("name"),
                 new HighlightField("description"),
@@ -69,7 +71,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     }
 
     @Override
-    public Page<GroupIndex> rulesSearch(List<String> keywords, Pageable pageable) {
+    public Page<GroupSearchResultDTO> rulesSearch(List<String> keywords, Pageable pageable) {
         List<HighlightField> requiredHighlights = List.of(
                 new HighlightField("rules")
         );
@@ -85,7 +87,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     }
 
     @Override
-    public Page<GroupIndex> rulesPhraseSearch(List<String> keywords, Pageable pageable) {
+    public Page<GroupSearchResultDTO> rulesPhraseSearch(List<String> keywords, Pageable pageable) {
         List<HighlightField> requiredHighlights = List.of(
                 new HighlightField("rules")
         );
@@ -101,21 +103,21 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     }
 
     @Override
-    public Page<GroupIndex> searchByPostCountRange(Integer from, Integer to, Pageable pageable) {
+    public Page<GroupSearchResultDTO> searchByPostCountRange(Integer from, Integer to, Pageable pageable) {
         var rangeQuery = buildRangeQuery(from, to);
         var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
         return runQuery(searchQueryBuilder.build());
     }
 
     @Override
-    public Page<GroupIndex> searchByAverageLkeCountRange(Float from, Float to, Pageable pageable) {
+    public Page<GroupSearchResultDTO> searchByAverageLkeCountRange(Float from, Float to, Pageable pageable) {
         var rangeQuery = buildLikeRangeQuery(from, to);
         var searchQueryBuilder = new NativeQueryBuilder().withQuery(rangeQuery).withPageable(pageable);
         return runQuery(searchQueryBuilder.build());
     }
 
     @Override
-    public Page<GroupIndex> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable) {
+    public Page<GroupSearchResultDTO> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable) {
         List<HighlightField> requiredHighlights = Arrays.asList(
                 new HighlightField("name"),
                 new HighlightField("description"),
@@ -146,7 +148,7 @@ public class GroupSearchServiceImpl implements GroupSearchService {
     }
 
     @Override
-    public Page<GroupIndex> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable) {
+    public Page<GroupSearchResultDTO> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable) {
         List<HighlightField> requiredHighlights = Arrays.asList(
                 new HighlightField("name"),
                 new HighlightField("description"),
@@ -380,14 +382,25 @@ public class GroupSearchServiceImpl implements GroupSearchService {
             return b;
         })))._toQuery();
     }
-    private Page<GroupIndex> runQuery(NativeQuery searchQuery) {
+
+    private Page<GroupSearchResultDTO> runQuery(NativeQuery searchQuery) {
         var searchHits = elasticsearchTemplate.search(searchQuery, GroupIndex.class, IndexCoordinates.of("group_index"));
 
-        List<GroupIndex> results = new ArrayList<>();
+        List<GroupSearchResultDTO> results = new ArrayList<>();
         for (SearchHit<GroupIndex> hit : searchHits.getSearchHits()) {
             GroupIndex groupIndex = hit.getContent();
-            groupIndex.setHighlights(hit.getHighlightFields());
-            results.add(groupIndex);
+            Map<String, List<String>> highlights = hit.getHighlightFields();
+
+            GroupSearchResultDTO resultDTO = new GroupSearchResultDTO(
+                    groupIndex.getName(),
+                    groupIndex.getDescription(),
+                    groupIndex.getRules(),
+                    groupIndex.getPostCount(),
+                    groupIndex.getPostAverageLikes()
+            );
+            resultDTO.setHighlights(highlights);
+
+            results.add(resultDTO);
         }
 
         return new PageImpl<>(results, searchQuery.getPageable(), searchHits.getTotalHits());
