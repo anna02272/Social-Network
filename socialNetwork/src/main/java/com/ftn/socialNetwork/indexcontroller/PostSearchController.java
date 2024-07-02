@@ -55,5 +55,13 @@ public class PostSearchController {
                                              Pageable pageable) {
         return searchService.commentTextPhraseSearch(simpleSearchQuery.keywords(), pageable);
     }
+    @PostMapping("/posts/combined")
+    public Page<PostIndex> combinedSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+        return searchService.combinedSearch(combinedSearchQuery, pageable);
+    }
 
+    @PostMapping("/posts/phrase/combined")
+    public Page<PostIndex> combinedPhraseSearch(@RequestBody SearchQueryDTO combinedSearchQuery, Pageable pageable) {
+        return searchService.combinedPhraseSearch(combinedSearchQuery, pageable);
+    }
 }

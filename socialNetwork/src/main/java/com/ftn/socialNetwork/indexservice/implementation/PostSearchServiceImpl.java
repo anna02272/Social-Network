@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.json.JsonData;
+import com.ftn.socialNetwork.dto.SearchQueryDTO;
 import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.PostSearchService;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +74,36 @@ public class PostSearchServiceImpl implements PostSearchService {
 
         return runQuery(searchQueryBuilder.build());
     }
+    @Override
+    public Page<PostIndex> combinedSearch(SearchQueryDTO searchQuery, Pageable pageable) {
+        var searchQueryBuilder = new NativeQueryBuilder()
+                .withQuery(buildCombinedSearchQuery(
+                        searchQuery.title(),
+                        searchQuery.content(),
+                        searchQuery.pdfContent(),
+                        searchQuery.likeCount(),
+                        searchQuery.commentCount(),
+                        searchQuery.operation()
+                ))
+                .withPageable(pageable);
+        return runQuery(searchQueryBuilder.build());
+    }
+
+    @Override
+    public Page<PostIndex> combinedPhraseSearch(SearchQueryDTO searchQuery, Pageable pageable) {
+        var searchQueryBuilder = new NativeQueryBuilder()
+                .withQuery(buildCombinedPhraseSearchQuery(
+                        searchQuery.title(),
+                        searchQuery.content(),
+                        searchQuery.pdfContent(),
+                        searchQuery.likeCount(),
+                        searchQuery.commentCount(),
+                        searchQuery.operation()
+                ))
+                .withPageable(pageable);
+        return runQuery(searchQueryBuilder.build());
+    }
+
 
     private Query buildSearchQuery(List<String> tokens) {
         return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
@@ -134,6 +165,131 @@ public class PostSearchServiceImpl implements PostSearchService {
                 b.should(sb -> sb.matchPhrase(
                         m -> m.field("comments.text").query(token)));
             });
+            return b;
+        })))._toQuery();
+    }
+
+    private Query buildCombinedSearchQuery(String title, String content,  String pdfContent, List<Integer> likeCount, List<Integer> commentCount, String operation) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            if ("AND".equalsIgnoreCase(operation)) {
+                if (title != null && !title.isEmpty()) {
+                    b.must(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.match(m -> m.field("title").fuzziness(Fuzziness.ONE.asString()).query(title)))));
+                }
+                if (content != null && !content.isEmpty()) {
+                    b.must(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.match(m -> m.field("content").fuzziness(Fuzziness.ONE.asString()).query(content)))));
+                }
+                if (pdfContent != null && !pdfContent.isEmpty()) {
+                    b.must(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.match(m -> m.field("content_sr").fuzziness(Fuzziness.ONE.asString()).query(pdfContent)))
+                            .should(subShould -> subShould.match(m -> m.field("content_en").fuzziness(Fuzziness.ONE.asString()).query(pdfContent)))));
+                }
+                if (likeCount != null && !likeCount.isEmpty()) {
+                    for (int i = 0; i < likeCount.size(); i += 2) {
+                        int lowerBound = likeCount.get(i);
+                        int upperBound = likeCount.get(i + 1);
+                        b.must(sb -> sb.range(r -> r.field("likeCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+                if (commentCount != null && !commentCount.isEmpty()) {
+                    for (int i = 0; i < commentCount.size(); i += 2) {
+                        int lowerBound = commentCount.get(i);
+                        int upperBound = commentCount.get(i + 1);
+                        b.must(sb -> sb.range(r -> r.field("commentCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+            } else if ("OR".equalsIgnoreCase(operation)) {
+                if (title != null && !title.isEmpty()) {
+                    b.should(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.match(m -> m.field("title").fuzziness(Fuzziness.ONE.asString()).query(title)))));
+                }
+                if (content != null && !content.isEmpty()) {
+                    b.should(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.match(m -> m.field("content").fuzziness(Fuzziness.ONE.asString()).query(content)))));
+                }
+                if (pdfContent != null && !pdfContent.isEmpty()) {
+                    b.should(sb -> sb.match(m -> m.field("content_sr").fuzziness(Fuzziness.ONE.asString()).query(pdfContent)));
+                    b.should(sb -> sb.match(m -> m.field("content_en").fuzziness(Fuzziness.ONE.asString()).query(pdfContent)));
+                }
+                if (likeCount != null && !likeCount.isEmpty()) {
+                    for (int i = 0; i < likeCount.size(); i += 2) {
+                        int lowerBound = likeCount.get(i);
+                        int upperBound = likeCount.get(i + 1);
+                        b.should(sb -> sb.range(r -> r.field("likeCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+                if (commentCount != null && !commentCount.isEmpty()) {
+                    for (int i = 0; i < commentCount.size(); i += 2) {
+                        int lowerBound = commentCount.get(i);
+                        int upperBound = commentCount.get(i + 1);
+                        b.should(sb -> sb.range(r -> r.field("commentCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+            }
+            return b;
+        })))._toQuery();
+    }
+
+    private Query buildCombinedPhraseSearchQuery(String title, String content,  String pdfContent, List<Integer> likeCount, List<Integer> commentCount,  String operation) {
+        return BoolQuery.of(q -> q.must(mb -> mb.bool(b -> {
+            if ("AND".equalsIgnoreCase(operation)) {
+                if (title != null && !title.isEmpty()) {
+                    b.must(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.matchPhrase(m -> m.field("title").query(title)))));
+                }
+                if (content != null && !content.isEmpty()) {
+                    b.must(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.matchPhrase(m -> m.field("content").query(content)))));
+                }
+                if (pdfContent != null && !pdfContent.isEmpty()) {
+                    b.must(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.matchPhrase(m -> m.field("content_sr").query(pdfContent)))
+                            .should(subShould -> subShould.matchPhrase(m -> m.field("content_en").query(pdfContent)))
+                    ));
+                }
+                if (likeCount != null && !likeCount.isEmpty()) {
+                    for (int i = 0; i < likeCount.size(); i += 2) {
+                        int lowerBound = likeCount.get(i);
+                        int upperBound = likeCount.get(i + 1);
+                        b.must(sb -> sb.range(r -> r.field("likeCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+                if (commentCount != null && !commentCount.isEmpty()) {
+                    for (int i = 0; i < commentCount.size(); i += 2) {
+                        int lowerBound = commentCount.get(i);
+                        int upperBound = commentCount.get(i + 1);
+                        b.must(sb -> sb.range(r -> r.field("commentCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+            } else if ("OR".equalsIgnoreCase(operation)) {
+                if (title != null && !title.isEmpty()) {
+                    b.should(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.matchPhrase(m -> m.field("title").query(title)))));
+                }
+                if (content != null && !content.isEmpty()) {
+                    b.should(sb -> sb.bool(subBool -> subBool
+                            .should(subShould -> subShould.matchPhrase(m -> m.field("content").query(content)))));
+                }
+                if (pdfContent != null && !pdfContent.isEmpty()) {
+                    b.should(sb -> sb.matchPhrase(m -> m.field("content_sr").query(pdfContent)));
+                    b.should(sb -> sb.matchPhrase(m -> m.field("content_en").query(pdfContent)));
+                }
+                if (likeCount != null && !likeCount.isEmpty()) {
+                    for (int i = 0; i < likeCount.size(); i += 2) {
+                        int lowerBound = likeCount.get(i);
+                        int upperBound = likeCount.get(i + 1);
+                        b.should(sb -> sb.range(r -> r.field("likeCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+                if (commentCount != null && !commentCount.isEmpty()) {
+                    for (int i = 0; i < commentCount.size(); i += 2) {
+                        int lowerBound = commentCount.get(i);
+                        int upperBound = commentCount.get(i + 1);
+                        b.should(sb -> sb.range(r -> r.field("commentCount").gte(JsonData.of(lowerBound)).lte(JsonData.of(upperBound))));
+                    }
+                }
+            }
             return b;
         })))._toQuery();
     }
