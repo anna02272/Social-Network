@@ -2,7 +2,6 @@ package com.ftn.socialNetwork.indexservice.interfaces;
 
 import com.ftn.socialNetwork.dto.PostSearchResultDTO;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
-import com.ftn.socialNetwork.indexmodel.PostIndex;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

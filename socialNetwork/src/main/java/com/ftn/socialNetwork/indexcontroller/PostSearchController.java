@@ -2,7 +2,6 @@ package com.ftn.socialNetwork.indexcontroller;
 
 import com.ftn.socialNetwork.dto.PostSearchResultDTO;
 import com.ftn.socialNetwork.dto.SearchQueryDTO;
-import com.ftn.socialNetwork.indexmodel.PostIndex;
 import com.ftn.socialNetwork.indexservice.interfaces.PostSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
