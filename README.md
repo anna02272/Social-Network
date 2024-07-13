@@ -4,6 +4,78 @@
 
 This repository contains the implementation for a social network application, inspired by popular platforms like Facebook, Instagram, and Twitter. The application provides various functionalities for users, including registration, posting, commenting, group creation, and more.
 
+## Launch Guide
+
+Below are the steps to get the project up and running on your local environment.
+
+### Prerequisites:
+1. Java 11 or higher
+2. Maven
+3. MySQL
+4. Elasticsearch
+5. MinIO
+6. Node.js
+7. Docker
+8. IntelliJ IDEA
+9. Visual Studio Code
+
+### Step 1: Clone the Repository
+Clone the repository to your local machine:
+```bash
+git clone https://github.com/anna02272/Social-Network
+```
+
+### Step 2: Import the Project in IntelliJ IDEA
+Open IntelliJ IDEA and import the cloned repository.
+
+### Step 3: Load Maven Dependencies
+Ensure all necessary Maven dependencies are downloaded.
+
+### Step 4: Set Up the Database
+- Ensure MySQL is installed and running.
+- Create a database named `socialNetwork`.
+- Update the `application.properties` file with your MySQL credentials.
+
+### Step 5: Run the Application
+
+### Step 6: Start Angular Frontend
+1. Open Visual Studio Code.
+2. Navigate to the frontend directory in the cloned repository.
+3. Start the Angular app with npm:
+```bash
+npm install
+npm start
+```
+
+### Step 7: Access the Platform
+Once the services are up and running, you can access the platform via the provided endpoints:
+- **Frontend:** Open a web browser and go to [https://localhost:4200/](https://localhost:4200/)
+
+### Option 2: Additional Steps for UES Branch
+
+#### Step 1: Switch to UES Branch
+```bash
+git checkout ues
+```
+
+#### Step 2: Set Up Elasticsearch and MinIO
+- Ensure Elasticsearch is installed and running.
+- Ensure MinIO is installed and running.
+- Update the `application.properties` file with your Elasticsearch and MinIO configurations.
+
+#### Step 3: Install ICU Tokenizer
+```bash
+sudo docker exec -it ddmdemo-elasticsearch /bin/bash
+elasticsearch-plugin install analysis-icu
+# Restart Elasticsearch
+```
+
+#### Step 4: Build Docker Images and Start Docker Compose
+```bash
+docker-compose build
+docker-compose up
+```
+
 ## Functionalities
 
 - **User Registration:** Users can register, with a system administrator already predefined in the system.
@@ -29,16 +101,49 @@ This repository contains the implementation for a social network application, in
 - User authentication using username and password.
 - Authorization using the token mechanism.
 - Log messages about important events during application execution.
+
+## UES Branch Functionalities
+This section describes the additional functionalities implemented in the UES branch. The UES branch can be found [here](https://github.com/anna02272/Social-Network/tree/ues).
+
+- Indexing of groups and posts in Elasticsearch, and saving documents in the MinIO database.
+
+### Group Search:
+- Search groups by name
+- Search groups by description
+- Search groups by description from the attached PDF file
+- Search groups by the range of the number of posts (from - to), where the lower and/or upper limit of the range can be set
+- Search groups by the average number of likes of posts in the group in the range (from - to), where the lower and/or upper limit of the range can be set
+- Combine previous search parameters (BooleanQuery, enable AND and OR operator between fields)
+- Preprocess the query to be case-insensitive, supporting both Cyrillic and Latin alphabets
+- Provide support in form fields for PhraseQuery and FuzzyQuery input
+- Search by group rules
+- Display results showing the name of the group, the number of posts, the average number of likes, and a dynamic summary (Highlighter)
+
+### Post Search:
+- Search posts by title
+- Search posts by text
+- Search posts by text from the attached PDF file
+- Search posts by text in comments
+- Search posts by the number of likes (from - to, including likes on the post itself and in comments), where the lower and/or upper range limit can be set
+- Combine previous search parameters (BooleanQuery, enable AND and OR operator between fields)
+- Preprocess the query to be case-insensitive, supporting both Cyrillic and Latin alphabets
+- Provide support in form fields for PhraseQuery and FuzzyQuery input
+- Search posts that have a number of comments in the range (from-to), with a lower and/or upper range limit
+- Display results showing the title of the post, the text of the post, and a dynamic summary (Highlighter)
   
 ## Technologies Used
 - Spring framework
 - Spring Boot
 - MySQL
 - Angular framework
+- Elasticsearch
+- MinIO
 
 ## Application Architecture
 
-The application consists of a web browser, a Spring container (Spring Boot), and a relational database (SUBP). The backend communicates with the frontend via a RESTful service.
+The application consists of a web browser, a Spring container (Spring Boot), and a relational database (SUBP), also Elasticsearch and MinIO. The backend communicates with the frontend via a RESTful service.
+
+![Screenshot (258)](https://github.com/user-attachments/assets/d71c0718-a71e-4db8-acce-b5225b0cab38)
 
 ## Data Model
 The data model includes entities:
@@ -91,6 +196,8 @@ The data model includes entities:
 ![Report](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/733060f7-730f-41a6-9d7d-1d903fe0e6e2)
 ![Reports](https://github.com/anna02272/SR46-2021-SVT_KVT2023-projekat/assets/96575598/9ae82a5b-3d12-49fe-af95-6566a3eec610)
 
+### Search
+![Smiley - Google Chrome 7_13_2024 12_31_28 PM](https://github.com/user-attachments/assets/8eb0ab4b-046d-4d86-9049-a9b4df6298dc)
 
 
 
