@@ -4,6 +4,11 @@
 
 This repository contains the implementation for a social network application, inspired by popular platforms like Facebook, Instagram, and Twitter. The application provides various functionalities for users, including registration, posting, commenting, group creation, and more.
 
+### Applications
+- **Server**: Java Spring Boot backend. [Server Repository](https://github.com/anna02272/Social-Network)
+- **Web Client**: Angular frontend.
+- **Mobile Client**: Android application. [Mobile App Repository](https://github.com/anna02272/Social-Network_mobile)
+  
 ## Launch Guide
 
 Below are the steps to get the project up and running on your local environment.
