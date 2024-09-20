@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,50 +65,67 @@ public class UserController {
     }
   }
 
-
   @PostMapping("/signup")
-  public ResponseEntity<UserDTO> create(@RequestBody @Validated UserDTO newUser) {
+  public ResponseEntity<?> create(@RequestBody @Validated UserDTO newUser) {
     if (userService.existsByUsername(newUser.getUsername())) {
-      return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+      return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body("Username already exists.");
     }
     if (userService.existsByEmail(newUser.getEmail())) {
-      return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+      return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body("Email already exists.");
     }
     User createdUser = userService.createUser(newUser);
 
     if (createdUser == null) {
-      return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+        .body("User could not be created.");
     }
     UserDTO userDTO = new UserDTO(createdUser);
 
     return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
   }
 
+
   @PostMapping("/login")
-  public ResponseEntity<UserTokenState> createAuthenticationToken(
+  public ResponseEntity<?> createAuthenticationToken(
     @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
-    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-      authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-    String jwt = tokenUtils.generateToken(userDetails);
-    int expiresIn = tokenUtils.getExpiredIn();
+    try {
+      Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+          authenticationRequest.getUsername(),
+          authenticationRequest.getPassword()
+        )
+      );
 
-    updateUserLoginStatus(authenticationRequest.getUsername(), true);
-    User user = userService.findByUsername(authenticationRequest.getUsername());
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+      UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+      String jwt = tokenUtils.generateToken(userDetails);
+      int expiresIn = tokenUtils.getExpiredIn();
 
-    Banned existingBanned = bannedService.findExistingBanned(user);
-    if (existingBanned != null && existingBanned.isBlocked()) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+      updateUserLoginStatus(authenticationRequest.getUsername(), true);
+      User user = userService.findByUsername(authenticationRequest.getUsername());
+
+      Banned existingBanned = bannedService.findExistingBanned(user);
+      if (existingBanned != null && existingBanned.isBlocked()) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+          .body("Your account is blocked.");
+      }
+
+      user.setLastLogin(LocalDateTime.now());
+      userService.updateUser(user);
+
+      return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+
+    } catch (BadCredentialsException e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body("Invalid username or password.");
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("An unexpected error occurred.");
     }
-
-    user.setLastLogin(LocalDateTime.now());
-    userService.updateUser(user);
-
-    return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
   }
-
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpServletRequest request) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

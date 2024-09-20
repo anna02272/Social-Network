@@ -49,4 +49,8 @@ public class BannedServiceImpl implements BannedService {
   public List<Banned> getAllBlockedUsersByGroupId(boolean isBlocked, Long groupId){
     return bannedRepository.findAllByIsBlockedAndGroupId(isBlocked, groupId);
   }
+  @Override
+  public Banned findExistingBannedInGroup(User bannedUser, Group group) {
+    return bannedRepository.findByBannedUserAndGroup(bannedUser, group);
+  }
 }

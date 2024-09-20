@@ -13,5 +13,6 @@ public interface BannedService {
   Banned findOneById(Long id) throws ChangeSetPersister.NotFoundException;
   List<Banned> getAllBlockedUsers(boolean isBlocked);
   List<Banned> getAllBlockedUsersByGroupId(boolean isBlocked, Long groupId);
-  Banned findExistingBanned(User bannedUser);;
+  Banned findExistingBanned(User bannedUser);
+  Banned findExistingBannedInGroup(User bannedUser, Group group) ;
 }

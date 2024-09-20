@@ -14,5 +14,6 @@ public interface BannedRepository extends JpaRepository<Banned, Long> {
   Banned findByBannedUserAndIsBlockedAndGroup(User bannedUser, boolean isBlocked, Group group);
   List<Banned> findAllByIsBlockedAndGroupId(boolean isBlocked, Long groupId);
   List<Banned> findAllByIsBlockedAndGroup(boolean isBlocked, Group group);
+  Banned findByBannedUserAndGroup(User bannedUser, Group group);
 
 }

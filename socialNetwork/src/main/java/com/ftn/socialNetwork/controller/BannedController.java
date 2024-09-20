@@ -83,7 +83,7 @@ public class BannedController {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    Banned existingBanned = bannedService.findExistingBanned(bannedUser);
+    Banned existingBanned = bannedService.findExistingBannedInGroup(bannedUser, group);
     if (existingBanned != null) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
@@ -93,10 +93,12 @@ public class BannedController {
 
     return ResponseEntity.ok(created);
   }
+
   @GetMapping("/allBlockedGroupUsers/{groupId}")
   public ResponseEntity<List<Banned>> getAllBlockedGroupUsers( @PathVariable("groupId") Long groupId) {
     List<Banned> banns = bannedService.getAllBlockedUsersByGroupId(true, groupId);
     return ResponseEntity.ok(banns);
   }
+
 }
 

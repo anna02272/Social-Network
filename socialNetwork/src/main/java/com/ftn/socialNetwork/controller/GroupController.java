@@ -33,9 +33,9 @@ public class GroupController {
 
 
 @PostMapping("/create")
-public ResponseEntity<Group> createGroup(@RequestBody Group group, Principal principal) {
+public ResponseEntity<?> createGroup(@RequestBody Group group, Principal principal) {
   if (groupService.existsByName(group.getName())) {
-    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+    return ResponseEntity.status(HttpStatus.CONFLICT).body("Group name already exists.");
   }
     String username = principal.getName();
     User user = userService.findByUsername(username);

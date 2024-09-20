@@ -1,4 +1,4 @@
- 
+
 <div class="container-fluid">
   <div class="row justify-content-evenly">
   <div class="col-12 col-lg-6 pb-5">
@@ -15,7 +15,7 @@
               <!-- author -->
             <div *ngFor="let post of posts"  >
               <div *ngIf="post.user.username === userName() || shouldDisplayPost(post) ">
-              <hr />  
+              <hr />
               <div class="d-flex justify-content-between">
                 <!-- avatar -->
                 <div class="d-flex">
@@ -51,7 +51,7 @@
                        style="cursor: pointer"  data-bs-toggle="modal"
                        data-bs-target="#createModal"
                        *ngIf="post.user.username == userName() || userType() === 'ADMIN'"
-                       (click)="onSelectedPost(post)" 
+                       (click)="onSelectedPost(post)"
                     >
                       Edit Post</a
                     >
@@ -74,7 +74,7 @@
                       Report Post
                     </a>
                   </li>
-                  
+
                 </ul>
               </div>
               <!-- post content -->
@@ -84,7 +84,7 @@
                   <p>
                  {{ post.content }}
                   </p>
-                  <div class="image-pair-container">     
+                  <div class="image-pair-container">
                  <div class="image-container" *ngFor="let image of post.images">
                   <img [src]="image.path" />
                 </div>
@@ -92,7 +92,7 @@
                 </div>
                 <!-- likes & comments -->
                 <div class="post__comment mt-3 position-relative">
-                
+
                   <!-- comments start-->
                   <div class="accordion" id="accordionExample">
                     <div class="accordion-item border-0">
@@ -116,6 +116,5 @@
             </div>
             </div>
              </div>
-       
-          
-           
+
+

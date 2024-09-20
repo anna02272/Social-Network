@@ -1,7 +1,7 @@
 package com.ftn.socialNetwork.model.entity;
 
 public enum EReportReason {
-    BREAKES_RULES,
+    BRAKES_RULES,
     HARASSMENT,
     HATE,
     SHARING_PERSONAL_INFORMATION,

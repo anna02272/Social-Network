@@ -73,10 +73,14 @@ public class ReactionController {
     User user = userService.findOneById(userId);
 
     if (post == null || user == null) {
-      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     }
 
     Reaction reaction = reactionService.findReactionByPostAndUser(post, user);
+    if (reaction == null) {
+      return ResponseEntity.notFound().build();
+    }
+
     return ResponseEntity.ok(reaction);
   }
 
@@ -122,10 +126,13 @@ public class ReactionController {
     User user = userService.findOneById(userId);
 
     if (comment == null || user == null) {
-      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     }
 
     Reaction reaction = reactionService.findReactionByCommentAndUser(comment, user);
+    if (reaction == null) {
+      return ResponseEntity.notFound().build();
+    }
     return ResponseEntity.ok(reaction);
   }
 
