@@ -85,6 +85,11 @@ public class BannedController {
 
     Banned existingBanned = bannedService.findExistingBannedInGroup(bannedUser, group);
     if (existingBanned != null) {
+      if (!existingBanned.isBlocked()) {
+        existingBanned.setBlocked(true);
+        bannedService.update(existingBanned);
+        return ResponseEntity.ok(existingBanned);
+      }
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
     banned.setBannedUser(bannedUser);
