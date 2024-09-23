@@ -49,7 +49,8 @@ public class Post {
   @OneToMany
   private List<Comment> comments;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "group_id")
   private Group group;
 
 }

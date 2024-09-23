@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -59,9 +60,16 @@ public class PostServiceImpl implements PostService {
     Session session = entityManager.unwrap(Session.class);
     Filter filter = session.enableFilter("deletedPostFilter");
     filter.setParameter("isDeleted", isDeleted);
-    List<Post> posts = postRepository.findAll();
+
+    List<Post> allPosts = postRepository.findAll();
     session.disableFilter("deletedPostFilter");
-    return posts;
+
+    List<Post> filteredPosts = allPosts.stream()
+      .filter(post -> post.getGroup() == null || !post.getGroup().isSuspended())
+      .collect(Collectors.toList());
+
+    return filteredPosts;
   }
+
 
 }
